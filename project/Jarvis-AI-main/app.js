@@ -87,7 +87,7 @@ function takeCommand(message) {
     } else if (message.includes('how are you')) {
         speak("I'm just a bunch of code, but I'm doing great! Thanks for asking.");
     } else if (message.includes('who are you')) {
-        speak("I'm your virtual assistant, here to make your life easier!");
+        speak("I'm your virtual assistant, made by Rojan ,here to make your life easier!");
     } else if (message.includes('who is your creator')) {
         speak("I was created by some clever programmers, and now I live in your device!");
     } else if (message.includes('sing a song')) {
