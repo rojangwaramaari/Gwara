@@ -8868,7 +8868,24 @@ h1, h2, h3, h4, h5,
       color: #000000; }
       .services-1:hover h3:after {
         background: #000000; }
+/* Restrain image icon size */
+.services-1 .icon .service-icon-img {
+    width: 50px !important;       /* Change to 40px or 60px if you want it smaller/larger */
+    height: 50px !important;      /* Keep it square */
+    object-fit: cover !important;  /* Crops the image cleanly into the square box */
+    border-radius: 8px;           /* Optional: slightly rounded corners */
+    display: inline-block;
+    margin-bottom: 15px;
+}
 
+/* Fix flex alignment inside the icon container */
+.services-1 .icon {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    margin: 0 auto 20px auto;
+}
 .progress-wrap {
   width: 100%;
   margin-bottom: 30px; }
