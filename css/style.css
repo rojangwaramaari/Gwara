@@ -9699,3 +9699,24 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+/* ===== HERO TO SERVICES GAP FIX ===== */
+
+.home-slider,
+.slider-item {
+    min-height: 0 !important;
+}
+
+.slider-item .js-fullheight {
+    height: 82vh !important;
+    min-height: 0 !important;
+}
+
+/* Reduce top spacing of Services */
+#services-section {
+    padding-top: 30px !important;
+}
+
+#services-section .row.justify-content-center {
+    padding-top: 20px !important;
+    margin-top: 0 !important;
+}
