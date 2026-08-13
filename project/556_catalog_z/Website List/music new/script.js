@@ -11,14 +11,30 @@ const playlists = {
       videoId: "clQK__cONpI"
     },
   ],
-  
-  "Roadside Radio": [
-    // { id: "rr-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2001, duration: 230, videoId: "YOUR_VIDEO_ID" },
+
+   "Roadside Radio": [
+    {
+      id: "gm-01",
+      title: "Mana Ki Rani",
+      artist: "Kuma Sagar",
+      film: "Kuma Sagar",
+      year: 2024,
+      duration: 240,
+      videoId: "clQK__cONpI"
+    },
   ],
 
-  "Late Night": [
-    // { id: "ln-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2002, duration: 250, videoId: "YOUR_VIDEO_ID" },
-  ]
+   "Late Night": [
+    {
+      id: "gm-01",
+      title: "Mana Ki Rani",
+      artist: "Kuma Sagar",
+      film: "Kuma Sagar",
+      year: 2024,
+      duration: 240,
+      videoId: "clQK__cONpI"
+    },
+  ],
 };
 
 let playlistName = Object.keys(playlists)[0];
