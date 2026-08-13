@@ -3,9 +3,7 @@ const playlists = {
     { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
     { id: "gm-02", title: "Hawa Ko Lahar", artist: "kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
     { id: "gm-03", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }, 
-    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" },
-    
- 
+    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" }, 
   ],
 
   "Roadside Radio": [
@@ -25,6 +23,7 @@ let isPlaying = false;
 let playerReady = false;
 let currentTrack = null;
 let progressTimer = null;
+let autoPlayNext = false;
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -351,6 +350,7 @@ function nextTrack() {
   const tracks = playlists[playlistName] || [];
   if (!tracks.length) return;
 
+  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
   trackIndex = (trackIndex + 1) % tracks.length;
   renderPlayer();
 }
@@ -359,19 +359,14 @@ function previousTrack() {
   const tracks = playlists[playlistName] || [];
   if (!tracks.length) return;
 
+  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
   trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
   renderPlayer();
 }
 
-function switchPlaylist(name) {
-  playlistName = name;
-  trackIndex = 0;
-
-  if (ytPlayer) {
-    try { ytPlayer.stopVideo(); } catch {}
-  }
-
-  renderTabs();
+window.selectTrack = function(index) {
+  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
+  trackIndex = index;
   renderPlayer();
 }
 
