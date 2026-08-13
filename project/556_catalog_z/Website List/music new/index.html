@@ -3,18 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <title>Nostalgia — Music for old memories</title>
   <meta name="description" content="A cinematic nostalgia music player powered by YouTube.">
-  <link rel="stylesheet" href="style.css">
+
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
+
 <body>
+
   <main>
+
     <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-gradient" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
 
     <header class="topbar">
-      <div id="clock">12:00 PM</div>
+
+      <div id="clock">Loading...</div>
 
       <div class="listeners">
         <span>NOW LISTENING</span>
@@ -26,16 +32,28 @@
         <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YT</a>
         <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">IG</a>
       </nav>
+
     </header>
 
     <section class="player-wrap">
+
       <div id="playlist-tabs" class="playlist-tabs"></div>
+
       <div id="player"></div>
-      <div class="rights-note">YOUTUBE PLAYER • RIGHTS-HOLDER UPLOADS ONLY</div>
+
+      <div class="rights-note">
+        YOUTUBE PLAYER • RIGHTS-HOLDER UPLOADS ONLY
+      </div>
+
     </section>
+
   </main>
 
-  <script src="script.js"></script>
+  <!-- Load YouTube API first -->
   <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- Then your website JavaScript -->
+  <script src="script.js?v=3"></script>
+
 </body>
 </html>

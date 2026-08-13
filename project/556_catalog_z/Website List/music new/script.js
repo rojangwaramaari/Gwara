@@ -62,21 +62,22 @@ function analytics(name, payload) {
 }
 
 function updateClock() {
+  const clock = document.getElementById("clock");
+
+  if (!clock) return;
+
   const now = new Date();
 
-  const time = new Intl.DateTimeFormat("en-US", {
+  clock.textContent = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Kathmandu",
     hour: "numeric",
     minute: "2-digit",
     hour12: true
   }).format(now);
-
-  const clock = document.getElementById("clock");
-
-  if (clock) {
-    clock.textContent = time;
-  }
 }
+
+updateClock();
+setInterval(updateClock, 1000);
 
   const hour = parts.find(p => p.type === "hour")?.value || "12";
   const minute = parts.find(p => p.type === "minute")?.value || "00";
