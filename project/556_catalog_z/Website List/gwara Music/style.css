@@ -32,14 +32,19 @@ main {
 /* BACKGROUND CINEMATIC LAYERS */
 .hero-bg {
   position: fixed;
-  inset: 0;
-  z-index: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10; /* Set negative so it stays behind all content */
+
   background-image: url("img/bgmusic.png");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+  
   filter: contrast(1.05) saturate(1.1);
 }
 
