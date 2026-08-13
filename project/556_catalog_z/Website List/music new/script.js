@@ -3,7 +3,7 @@ const playlists = {
     { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
     { id: "gm-02", title: "Hawa Ko Lahar", artist: "kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
     { id: "gm-03", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }, 
-    { id: "gm-04", title: "Next Song Title", artist: "Artist Name", film: "Album", year: 2024, duration: 180, videoId: "REAL_VIDEO_ID_HERE" }
+    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" }
     
     // --- ADD MORE SONGS HERE (3 to 50) ---
     
@@ -56,11 +56,11 @@ const playlists = {
   ],
 
   "Roadside Radio": [
-    { id: "rr-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" }
+    { id: "rr-01", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }
   ],
 
   "Late Night": [
-    { id: "ln-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" }
+    { id: "ln-01", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }
   ]
 };
 
