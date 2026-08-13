@@ -11,7 +11,7 @@ const playlists = {
     },
     {
       id: "gm-02",
-      title: "Man Dulayera",
+      title: "Man Dulayeraa",
       artist: "ShreeGo",
       film: "ShreeGo",
       year: 2025,
