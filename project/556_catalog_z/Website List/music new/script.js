@@ -1,9 +1,17 @@
 const playlists = {
+ const playlists = {
   "Golden Memories": [
-    // Add ONE rights-cleared YouTube track per line:
-    // { id: "gm-01", title: "Mana ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
+    {
+      id: "gm-01",
+      title: "Mana Ki Rani",
+      artist: "Kuma Sagar",
+      film: "Kuma Sagar",
+      year: 2024,
+      duration: 240,
+      videoId: "clQK__cONpI"
+    },
   ],
-
+  
   "Roadside Radio": [
     // { id: "rr-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2001, duration: 230, videoId: "YOUR_VIDEO_ID" },
   ],
