@@ -1,6 +1,6 @@
 const playlists = {
   "Golden Memories": [
-    { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", duration: 240, cover: "https://img.youtube.com/vi/clQK__cONpI/hqdefault.jpg", youtubeId: "clQK__cONpI" },
+    { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", duration: 240, cover: "https://img.youtube.com/vi/clQK__cONpI/hqdefault.jpg", youtubeId: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
     { id: "gm-02", title: "Hawa Ko Lahar", artist: "Kuma Sagar", duration: 210, cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=300", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
     { id: "gm-03", title: "Man Dulayera", artist: "ShreeGo", duration: 180, cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
     { id: "gm-04", title: "Syndicate", artist: "Bipul Chettri", duration: 260, cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=300", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
