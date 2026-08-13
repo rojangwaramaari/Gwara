@@ -1,48 +1,66 @@
 const playlists = {
   "Golden Memories": [
-    {
-      id: "gm-01",
-      title: "Mana Ki Rani",
-      artist: "Kuma Sagar",
-      film: "Kuma Sagar",
-      year: 2024,
-      duration: 240,
-      videoId: "clQK__cONpI"
-    },
-    {
-      id: "gm-02",
-      title: "Man Dulayeraa",
-      artist: "ShreeGo",
-      film: "ShreeGo",
-      year: 2025,
-      duration: 240,
-      videoId: "RfGfPMFl19w"
-    },
+    { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
+    { id: "gm-02", title: "Man Dulayeraa", artist: "ShreeGo", film: "ShreeGo", year: 2025, duration: 240, videoId: "RfGfPMFl19w" },
+    
+    // --- ADD MORE SONGS HERE (3 to 50) ---
+    { id: "gm-03", title: "Song Title 3", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-04", title: "Song Title 4", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-05", title: "Song Title 5", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-06", title: "Song Title 6", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-07", title: "Song Title 7", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-08", title: "Song Title 8", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-09", title: "Song Title 9", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-10", title: "Song Title 10", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-11", title: "Song Title 11", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-12", title: "Song Title 12", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-13", title: "Song Title 13", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-14", title: "Song Title 14", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-15", title: "Song Title 15", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-16", title: "Song Title 16", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-17", title: "Song Title 17", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-18", title: "Song Title 18", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-19", title: "Song Title 19", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-20", title: "Song Title 20", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-21", title: "Song Title 21", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-22", title: "Song Title 22", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-23", title: "Song Title 23", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-24", title: "Song Title 24", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-25", title: "Song Title 25", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-26", title: "Song Title 26", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-27", title: "Song Title 27", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-28", title: "Song Title 28", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-29", title: "Song Title 29", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-30", title: "Song Title 30", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-31", title: "Song Title 31", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-32", title: "Song Title 32", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-33", title: "Song Title 33", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-34", title: "Song Title 34", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-35", title: "Song Title 35", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-36", title: "Song Title 36", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-37", title: "Song Title 37", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-38", title: "Song Title 38", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-39", title: "Song Title 39", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-40", title: "Song Title 40", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-41", title: "Song Title 41", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-42", title: "Song Title 42", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-43", title: "Song Title 43", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-44", title: "Song Title 44", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-45", title: "Song Title 45", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-46", title: "Song Title 46", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-47", title: "Song Title 47", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-48", title: "Song Title 48", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-49", title: "Song Title 49", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    { id: "gm-50", title: "Song Title 50", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" }
   ],
 
-   "Roadside Radio": [
-    {
-      id: "gm-01",
-      title: "Mana Ki Rani",
-      artist: "Kuma Sagar",
-      film: "Kuma Sagar",
-      year: 2024,
-      duration: 240,
-      videoId: "clQK__cONpI"
-    },
+  "Roadside Radio": [
+    { id: "rr-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" }
   ],
 
-   "Late Night": [
-    {
-      id: "gm-01",
-      title: "Mana Ki Rani",
-      artist: "Kuma Sagar",
-      film: "Kuma Sagar",
-      year: 2024,
-      duration: 240,
-      videoId: "clQK__cONpI"
-    },
-  ],
+  "Late Night": [
+    { id: "ln-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" }
+  ]
 };
 
 let playlistName = Object.keys(playlists)[0];
@@ -71,11 +89,9 @@ function analytics(name, payload) {
 
 function updateClock() {
   const clock = document.getElementById("clock");
-
   if (!clock) return;
 
   const now = new Date();
-
   clock.textContent = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Kathmandu",
     hour: "numeric",
@@ -84,12 +100,9 @@ function updateClock() {
   }).format(now);
 }
 
-updateClock();
-setInterval(updateClock, 1000);
-
-
 function renderTabs() {
   const tabs = $("#playlist-tabs");
+  if (!tabs) return;
   tabs.innerHTML = "";
 
   Object.keys(playlists).forEach(name => {
@@ -161,6 +174,9 @@ function playerMarkup(track) {
         ${transportMarkup("mobile")}
       </div>
     </div>
+
+    <!-- Scrollable tracklist for current playlist -->
+    <div id="track-list" class="track-list"></div>
   `;
 }
 
@@ -212,19 +228,38 @@ function renderPlayer() {
   $("#player").innerHTML = playerMarkup(currentTrack);
 
   ["desktop", "mobile"].forEach(prefix => {
-    $(`#${prefix}-play`).addEventListener("click", togglePlayback);
-    $(`#${prefix}-prev`).addEventListener("click", previousTrack);
-    $(`#${prefix}-next`).addEventListener("click", nextTrack);
+    $(`#${prefix}-play`)?.addEventListener("click", togglePlayback);
+    $(`#${prefix}-prev`)?.addEventListener("click", previousTrack);
+    $(`#${prefix}-next`)?.addEventListener("click", nextTrack);
   });
 
   setupSeek("seek-desktop");
   setupSeek("seek-mobile");
+  renderTrackList();
 
   playerReady = false;
   isPlaying = false;
 
   if (apiReady) createYouTubePlayer();
 }
+
+function renderTrackList() {
+  const container = document.getElementById("track-list");
+  if (!container) return;
+
+  const tracks = playlists[playlistName] || [];
+  container.innerHTML = tracks.map((t, index) => `
+    <button class="track-item ${index === trackIndex ? 'active' : ''}" onclick="selectTrack(${index})">
+      <span class="track-title">${index + 1}. ${escapeHtml(t.title)}</span>
+      <span class="track-artist">${escapeHtml(t.artist)}</span>
+    </button>
+  `).join('');
+}
+
+window.selectTrack = function(index) {
+  trackIndex = index;
+  renderPlayer();
+};
 
 function setupSeek(id) {
   const seek = document.getElementById(id);
@@ -304,8 +339,6 @@ function createYouTubePlayer() {
   const desktopHost = document.getElementById("yt-desktop");
   const mobileHost = document.getElementById("yt-mobile");
 
-  // The same visible player is mounted into the currently visible layout.
-  // On resize, recreate the player so the artwork remains visible.
   const host = window.matchMedia("(max-width: 639px)").matches ? mobileHost : desktopHost;
   if (!host) return;
 
@@ -399,7 +432,6 @@ setInterval(updateClock, 1000);
 renderTabs();
 renderPlayer();
 
-// Rebuild the visible YouTube player when crossing the mobile/desktop breakpoint.
 let wasMobile = window.matchMedia("(max-width: 639px)").matches;
 
 window.addEventListener("resize", () => {

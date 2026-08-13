@@ -33,6 +33,7 @@ main {
   inset: 0;
 }
 
+/* BACKGROUND IMAGE */
 .hero-bg {
   position: fixed;
   inset: 0;
@@ -114,6 +115,7 @@ main {
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
+  max-height: 85vh;
 }
 
 .playlist-tabs {
@@ -325,6 +327,68 @@ main {
 .play-btn:hover { transform: scale(1.03); }
 .play-btn:disabled { opacity: .5; cursor: not-allowed; }
 
+/* TRACK LIST CONTAINER */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 576px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Custom Scrollbar for Tracklist */
+.track-list::-webkit-scrollbar {
+  width: 4px;
+}
+.track-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.track-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.track-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.track-item.active {
+  background: rgba(244, 179, 94, 0.2);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.track-title {
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-artist {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
 .rights-note {
   margin-top: 8px;
   color: rgb(255 255 255 / .35);
@@ -415,6 +479,10 @@ main {
     color: rgb(255 255 255 / .50);
     font-size: 10.5px;
     font-variant-numeric: tabular-nums;
+  }
+
+  .track-list {
+    max-height: 130px;
   }
 }
 
