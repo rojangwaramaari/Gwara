@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #f4b35e;
+  --color-accent-soft: #ffd99f;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: #050505;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+}
+
+.hero-bg {
+  background-image: url("/bg/scene-wide.png");
+  background-size: cover;
+  background-position: center;
+}
+
+@media (orientation: portrait) {
+  .hero-bg {
+    background-image: url("/bg/scene-tall.png");
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.vinyl-spin {
+  animation: spin 8s linear infinite;
+}
+
+.clock-colon {
+  animation: blink 1s steps(1, end) infinite;
+}
+
+.glass {
+  border: 1px solid rgb(255 255 255 / 0.10);
+  background: linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.15),
+    rgb(255 255 255 / 0.055)
+  );
+  backdrop-filter: blur(48px) saturate(1.7);
+  -webkit-backdrop-filter: blur(48px) saturate(1.7);
+  box-shadow:
+    0 16px 48px -12px rgb(0 0 0 / 0.8),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+
+.yt-frame {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.yt-frame iframe {
+  display: block;
+  width: 142px;
+  height: 80px;
+  margin-left: -31px;
+  border: 0;
+}
+
+.mobile-yt {
+  aspect-ratio: 16 / 9;
+  width: 64px;
+  flex: 0 0 64px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.mobile-yt iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.seek-track {
+  touch-action: none;
+  cursor: pointer;
+}
+
+.seek-track::before {
+  content: "";
+  position: absolute;
+  inset: 10px 0;
+}
+
+.seek-knob {
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.seek-track:hover .seek-knob,
+.seek-track:focus-within .seek-knob,
+.seek-track:active .seek-knob {
+  opacity: 1;
+}
+
+.safe-top {
+  top: max(1rem, env(safe-area-inset-top));
+}
+
+.safe-left {
+  left: max(1rem, env(safe-area-inset-left));
+}
+
+.safe-right {
+  right: max(1rem, env(safe-area-inset-right));
+}
+
+.safe-bottom {
+  bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 639px) {
+  .glass {
+    border-radius: 26px;
+  }
+}
