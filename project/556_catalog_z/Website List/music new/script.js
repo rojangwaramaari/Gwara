@@ -38,12 +38,21 @@ function analytics(name, payload) {
 }
 
 function updateClock() {
-  const parts = new Intl.DateTimeFormat("en-IN", {
+  const now = new Date();
+
+  const time = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Kathmandu",
     hour: "numeric",
     minute: "2-digit",
     hour12: true
-  }).formatToParts(new Date());
+  }).format(now);
+
+  const clock = document.getElementById("clock");
+
+  if (clock) {
+    clock.textContent = time;
+  }
+}
 
   const hour = parts.find(p => p.type === "hour")?.value || "12";
   const minute = parts.find(p => p.type === "minute")?.value || "00";
@@ -359,15 +368,21 @@ window.onYouTubeIframeAPIReady = function () {
 
 updateClock();
 setInterval(updateClock, 1000);
+
 renderTabs();
 renderPlayer();
 
 // Rebuild the visible YouTube player when crossing the mobile/desktop breakpoint.
 let wasMobile = window.matchMedia("(max-width: 639px)").matches;
+
 window.addEventListener("resize", () => {
   const mobile = window.matchMedia("(max-width: 639px)").matches;
+
   if (mobile !== wasMobile) {
     wasMobile = mobile;
-    if (apiReady && currentTrack) createYouTubePlayer();
+
+    if (apiReady && currentTrack) {
+      createYouTubePlayer();
+    }
   }
 });
