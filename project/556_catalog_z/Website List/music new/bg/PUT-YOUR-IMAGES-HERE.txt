@@ -1,1 +1,0 @@
-Put your scene-wide.png and scene-tall.png files in this folder.

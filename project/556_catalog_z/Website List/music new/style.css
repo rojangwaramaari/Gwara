@@ -35,7 +35,7 @@ main {
 
 .hero-bg {
   z-index: -20;
-  background: url("bg/scene-wide.png") center / cover no-repeat;
+  background: url("bg/Music\ Bg.png") center / cover no-repeat;
 }
 
 @media (orientation: portrait) {
