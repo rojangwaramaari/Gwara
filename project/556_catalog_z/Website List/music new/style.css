@@ -34,13 +34,18 @@ main {
 }
 
 .hero-bg {
+  position: fixed;
+  inset: 0;
   z-index: -20;
-  background: url("bg/MusicBg.png") center / cover no-repeat;
+  background-image: url("bg/MusicBg.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 @media (orientation: portrait) {
   .hero-bg {
-    background-image: url("bg/scene-tall.png");
+    background-image: url("bg/MusicBg.png");
   }
 }
 
