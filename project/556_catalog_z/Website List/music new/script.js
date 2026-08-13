@@ -1,8 +1,8 @@
 const playlists = {
   "Golden Memories": [
     { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
-    { id: "gm-02", title: "Man Dulayeraa", artist: "ShreeGo", film: "ShreeGo", year: 2025, duration: 240, videoId: "RfGfPMFl19w" },
-    { id: "gm-03", title: "Maya", artist: "Ashutosh KC", film: "Single", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }, /* Put real YouTube video ID here */
+    { id: "gm-02", title: "Hawa Ko Lahar", artist: "kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
+    { id: "gm-03", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }, 
     { id: "gm-04", title: "Next Song Title", artist: "Artist Name", film: "Album", year: 2024, duration: 180, videoId: "REAL_VIDEO_ID_HERE" }
     
     // --- ADD MORE SONGS HERE (3 to 50) ---
