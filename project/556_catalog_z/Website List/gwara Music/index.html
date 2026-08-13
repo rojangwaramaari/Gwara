@@ -3,45 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gwara— Chill Nepali Vibes</title>
-  <link rel="stylesheet" href="style.css?v=999">
+  <title>Gwaramaari Music — Kathmandu Lo-Fi & Radio</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <!-- Background Layers -->
-    <div class="hero-bg"></div>
-    <div class="hero-gradient"></div>
-    <div class="grain"></div>
 
-    <!-- Top Bar -->
-    <header class="topbar">
-      <div class="left-bar">
-        <span id="clock">12:00 PM</span>
-        <nav class="socials">
-          <a href="https://youtube.com" target="_blank" rel="noopener">YT</a>
-          <a href="https://instagram.com" target="_blank" rel="noopener">IG</a>
-        </nav>
+  <!-- BACKGROUND IMAGE LAYER -->
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="app-container">
+    
+    <!-- TOP HEADER WITH CUSTOM CLOCK & AMBIENCE -->
+    <header class="top-section">
+      <!-- BRAND TITLE -->
+      <div class="brand">
+        <h1>GWARAMAARI MUSIC</h1>
+        <p>Ason Chok Audio Lounge</p>
       </div>
 
-      <div class="listeners">
-        <span>NOW LISTENING</span> <b>•</b> <strong>12 listeners</strong>
+      <!-- KATHMANDU CLOCK WIDGET (MATCHING SPEC) -->
+      <div class="ktm-clock-card">
+        <div class="clock-digital">
+          <div id="digi-time">12:00 PM</div>
+          <div class="clock-sub">Kathmandu, NP</div>
+          <div class="clock-sub muted" id="utc-offset">Today, NPT</div>
+        </div>
+        <div class="clock-analog">
+          <svg viewBox="0 0 100 100" id="analog-svg">
+            <circle cx="50" cy="50" r="48" fill="none" />
+            <!-- Hour numbers -->
+            <text x="50" y="18" class="num">12</text>
+            <text x="78" y="26" class="num">1</text>
+            <text x="88" y="54" class="num">2</text>
+            <text x="88" y="82" class="num">3</text>
+            <text x="78" y="90" class="num">4</text>
+            <text x="50" y="96" class="num">5</text>
+            <text x="50" y="96" class="num">6</text>
+            <text x="22" y="90" class="num">7</text>
+            <text x="12" y="82" class="num">8</text>
+            <text x="12" y="54" class="num">9</text>
+            <text x="22" y="26" class="num">10</text>
+            <text x="22" y="18" class="num">11</text>
+            
+            <!-- Dial Hands -->
+            <line id="hand-hour" x1="50" y1="50" x2="50" y2="28" class="hand-hour" />
+            <line id="hand-min" x1="50" y1="50" x2="50" y2="18" class="hand-min" />
+            <line id="hand-sec" x1="50" y1="50" x2="50" y2="12" class="hand-sec" />
+            <circle cx="50" cy="50" r="2.5" class="hand-pin" />
+          </svg>
+        </div>
       </div>
     </header>
 
-    <!-- Floating Audio Player -->
-    <div class="player-wrap">
-      <!-- Playlist Tabs -->
-      <div class="playlist-tabs" id="playlist-tabs"></div>
+    <!-- CENTER MUSIC PLAYER CARD -->
+    <section class="player-card">
+      
+      <!-- VISUALIZER CANVAS -->
+      <canvas id="visualizer"></canvas>
 
-      <!-- Main Player Shell -->
-      <div class="player" id="player"></div>
-
-      <!-- Footer Rights Note -->
-      <div class="rights-note">
-        AMBIENT RADIO • CHILL NEPALI AUDIO EXPERIENCES
+      <!-- ARTWORK & TRACK INFO -->
+      <div class="track-header">
+        <div class="vinyl-box" id="vinyl-box">
+          <img id="cover-art" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300" alt="Cover">
+          <div class="vinyl-center"></div>
+        </div>
+        <div class="meta">
+          <h2 id="track-title">Mana Ki Rani</h2>
+          <h3 id="track-artist">Kuma Sagar</h3>
+          <span class="badge" id="source-badge">MP3 Audio</span>
+        </div>
       </div>
-    </div>
+
+      <!-- SEEKBAR -->
+      <div class="seek-container">
+        <input type="range" id="seek-bar" value="0" min="0" max="100" step="0.1">
+        <div class="time-row">
+          <span id="curr-time">0:00</span>
+          <span id="dur-time">0:00</span>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls-row">
+        <button class="btn-sub" id="btn-shuffle" title="Shuffle">🔀</button>
+        <button class="btn-sub" id="btn-prev" title="Previous">⏮</button>
+        <button class="btn-main" id="btn-play" title="Play/Pause">▶</button>
+        <button class="btn-sub" id="btn-next" title="Next">⏭</button>
+        <button class="btn-sub" id="btn-loop" title="Loop">🔁</button>
+      </div>
+
+      <!-- VOLUME & AMBIENCE TOGGLES -->
+      <div class="bottom-tools">
+        <div class="vol-box">
+          <span>🔊</span>
+          <input type="range" id="vol-bar" min="0" max="1" step="0.01" value="0.8">
+        </div>
+
+        <div class="ambience-box">
+          <button id="btn-rain" class="tag-btn">🌧️ Rain</button>
+          <button id="btn-chatter" class="tag-btn">☕ Street Chatter</button>
+        </div>
+      </div>
+
+      <!-- PLAYLIST & UPLOADER -->
+      <div class="playlist-section">
+        <div class="playlist-header">
+          <span>PLAYLIST</span>
+          <label for="file-input" class="upload-btn">+ Add Local MP3</label>
+          <input type="file" id="file-input" accept="audio/*" multiple style="display:none">
+        </div>
+        <div class="song-list" id="song-list"></div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- YouTube Hidden Player Container -->
+  <div id="yt-node" style="position:fixed; top:-999px; left:-999px; pointer-events:none;"></div>
 
   <script src="script.js"></script>
 </body>
