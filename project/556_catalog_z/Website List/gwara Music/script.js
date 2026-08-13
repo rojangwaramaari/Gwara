@@ -1,266 +1,373 @@
-// PLAYLIST DATA (Supports Local MP3 & YouTube Fallback)
-let playlist = [
-  {
-    title: "Mana Ki Rani",
-    artist: "Kuma Sagar",
-    duration: "4:00",
-    cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    type: "MP3"
-  },
-  {
-    title: "Hawa Ko Lahar",
-    artist: "Kuma Sagar",
-    duration: "3:30",
-    cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=300",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    type: "MP3"
-  },
-  {
-    title: "Pahadi Lofi Session",
-    artist: "Acoustic Nepal",
-    duration: "4:15",
-    cover: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=300",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    type: "MP3"
-  }
-];
+const playlists = {
+  "Golden Memories": [
+    // Add ONE rights-cleared YouTube track per line:
+    // { id: "gm-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2000, duration: 240, videoId: "YOUR_VIDEO_ID" },
+  ],
 
-let currentIndex = 0;
+  "Roadside Radio": [
+    // { id: "rr-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2001, duration: 230, videoId: "YOUR_VIDEO_ID" },
+  ],
+
+  "Late Night": [
+    // { id: "ln-01", title: "Your licensed track", artist: "Artist", film: "Film", year: 2002, duration: 250, videoId: "YOUR_VIDEO_ID" },
+  ]
+};
+
+let playlistName = Object.keys(playlists)[0];
+let trackIndex = 0;
+let ytPlayer = null;
+let apiReady = false;
 let isPlaying = false;
-let isShuffle = false;
-let isLoop = false;
+let playerReady = false;
+let currentTrack = null;
+let progressTimer = null;
 
-const audio = new Audio();
-const $ = (id) => document.getElementById(id);
+const $ = (selector) => document.querySelector(selector);
 
-// --- KATHMANDU CLOCK SYSTEM ---
-function updateKathmanduClock() {
-  const now = new Date();
-  
-  // Convert to NPT (UTC + 5:45)
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const ktmTime = new Date(utc + (3600000 * 5.75));
-
-  let hours = ktmTime.getHours();
-  const minutes = ktmTime.getMinutes();
-  const seconds = ktmTime.getSeconds();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-
-  hours = hours % 12;
-  hours = hours ? hours : 12; 
-
-  const strTime = `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-  if ($('digi-time')) $('digi-time').textContent = strTime;
-
-  // Analog Hands Calculations
-  const secDeg = (seconds / 60) * 360;
-  const minDeg = ((minutes + seconds / 60) / 60) * 360;
-  const hourDeg = (((hours % 12) + minutes / 60) / 12) * 360;
-
-  setHandAngle('hand-sec', secDeg);
-  setHandAngle('hand-min', minDeg);
-  setHandAngle('hand-hour', hourDeg);
+function formatTime(seconds) {
+  const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+  const minutes = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${minutes}:${String(secs).padStart(2, "0")}`;
 }
 
-function setHandAngle(id, deg) {
-  const hand = $(id);
-  if (hand) {
-    hand.setAttribute('transform', `rotate(${deg} 50 50)`);
-  }
+function analytics(name, payload) {
+  window.dispatchEvent(new CustomEvent("nostalgia:analytics", {
+    detail: { name, ...payload }
+  }));
 }
 
-setInterval(updateKathmanduClock, 1000);
-updateKathmanduClock();
+function updateClock() {
+  const parts = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  }).formatToParts(new Date());
 
-// --- PLAYER ENGINE ---
-function loadTrack(index) {
-  currentIndex = index;
-  const track = playlist[currentIndex];
+  const hour = parts.find(p => p.type === "hour")?.value || "12";
+  const minute = parts.find(p => p.type === "minute")?.value || "00";
+  const period = parts.find(p => p.type === "dayPeriod")?.value || "AM";
 
-  $('track-title').textContent = track.title;
-  $('track-artist').textContent = track.artist;
-  $('cover-art').src = track.cover;
-  $('source-badge').textContent = track.type;
-
-  audio.src = track.url;
-  audio.load();
-
-  renderPlaylist();
-
-  if (isPlaying) {
-    audio.play().catch(() => {});
-  }
+  $("#clock").innerHTML = `${hour}<span class="colon">:</span>${minute} ${period}`;
 }
 
-function togglePlay() {
-  if (isPlaying) {
-    audio.pause();
-    isPlaying = false;
-  } else {
-    audio.play();
-    isPlaying = true;
-  }
-  updateUIState();
-}
+function renderTabs() {
+  const tabs = $("#playlist-tabs");
+  tabs.innerHTML = "";
 
-function updateUIState() {
-  $('btn-play').textContent = isPlaying ? '⏸' : '▶';
-  if (isPlaying) {
-    $('vinyl-box').classList.add('playing');
-  } else {
-    $('vinyl-box').classList.remove('playing');
-  }
-}
-
-function nextTrack() {
-  if (isShuffle) {
-    currentIndex = Math.floor(Math.random() * playlist.length);
-  } else {
-    currentIndex = (currentIndex + 1) % playlist.length;
-  }
-  loadTrack(currentIndex);
-  if (!isPlaying) togglePlay();
-}
-
-function prevTrack() {
-  currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-  loadTrack(currentIndex);
-  if (!isPlaying) togglePlay();
-}
-
-// --- RENDER PLAYLIST & FILE UPLOAD ---
-function renderPlaylist() {
-  const container = $('song-list');
-  container.innerHTML = '';
-
-  playlist.forEach((song, i) => {
-    const div = document.createElement('div');
-    div.className = `song-item ${i === currentIndex ? 'active' : ''}`;
-    div.innerHTML = `
-      <div>
-        <div class="song-title">${song.title}</div>
-        <div class="song-artist">${song.artist}</div>
-      </div>
-      <span style="font-size:10px; opacity:0.6">${song.duration}</span>
-    `;
-    div.onclick = () => {
-      loadTrack(i);
-      if (!isPlaying) togglePlay();
-    };
-    container.appendChild(div);
+  Object.keys(playlists).forEach(name => {
+    const button = document.createElement("button");
+    button.textContent = name;
+    button.className = name === playlistName ? "active" : "";
+    button.addEventListener("click", () => switchPlaylist(name));
+    tabs.appendChild(button);
   });
 }
 
-// Handle Local File Upload
-$('file-input').addEventListener('change', (e) => {
-  const files = e.target.files;
-  for (let file of files) {
-    const url = URL.createObjectURL(file);
-    playlist.push({
-      title: file.name.replace(/\.[^/.]+$/, ""),
-      artist: "Local Upload",
-      duration: "Local",
-      cover: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=300",
-      url: url,
-      type: "Local MP3"
-    });
-  }
-  renderPlaylist();
-});
-
-// --- CONTROLS EVENT LISTENERS ---
-$('btn-play').onclick = togglePlay;
-$('btn-next').onclick = nextTrack;
-$('btn-prev').onclick = prevTrack;
-
-$('btn-shuffle').onclick = () => {
-  isShuffle = !isShuffle;
-  $('btn-shuffle').classList.toggle('active', isShuffle);
-};
-
-$('btn-loop').onclick = () => {
-  isLoop = !isLoop;
-  $('btn-loop').classList.toggle('active', isLoop);
-};
-
-audio.addEventListener('timeupdate', () => {
-  if (audio.duration) {
-    $('seek-bar').value = (audio.currentTime / audio.duration) * 100;
-    $('curr-time').textContent = formatTime(audio.currentTime);
-    $('dur-time').textContent = formatTime(audio.duration);
-  }
-});
-
-audio.addEventListener('ended', () => {
-  if (isLoop) {
-    audio.currentTime = 0;
-    audio.play();
-  } else {
-    nextTrack();
-  }
-});
-
-$('seek-bar').oninput = (e) => {
-  if (audio.duration) {
-    audio.currentTime = (e.target.value / 100) * audio.duration;
-  }
-};
-
-$('vol-bar').oninput = (e) => {
-  audio.volume = e.target.value;
-};
-
-function formatTime(secs) {
-  const m = Math.floor(secs / 60);
-  const s = Math.floor(secs % 60);
-  return `${m}:${s < 10 ? '0' : ''}${s}`;
+function emptyMarkup() {
+  return `
+    <div class="player empty">
+      <strong>Your nostalgia station is ready.</strong>
+      <p>Add a rights-cleared YouTube video to <code>script.js</code>.</p>
+    </div>
+  `;
 }
 
-// --- AMBIENT NOISE GENERATOR (TEA SHOP & RAIN) ---
-let audioCtx, rainNode, chatterNode;
+function playerMarkup(track) {
+  return `
+    <div class="player desktop-player">
+      <div class="artwork" id="artwork">
+        <div id="yt-desktop"></div>
+        <div class="spindle"></div>
+      </div>
 
-function toggleAmbience(type, btnId) {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
-  const btn = $(btnId);
-  btn.classList.toggle('active');
+      <div class="info">
+        <div class="title">${escapeHtml(track.title)}</div>
+        <div class="artist">${escapeHtml(track.artist)}</div>
+        <div class="seek" id="seek-desktop" role="slider" aria-label="Seek">
+          <div class="rail"></div>
+          <div class="fill" id="fill-desktop"></div>
+          <div class="knob" id="knob-desktop"></div>
+        </div>
+        <div class="times">
+          <span id="elapsed-desktop">0:00</span>
+          <span id="duration-desktop">${formatTime(track.duration)}</span>
+        </div>
+      </div>
 
-  if (btn.classList.contains('active')) {
-    // Generate pink noise / ambient simulation
-    const bufferSize = audioCtx.sampleRate * 2;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
+      ${transportMarkup("desktop")}
+    </div>
+
+    <div class="player mobile-player">
+      <div class="mobile-top">
+        <div class="mobile-artwork" id="mobile-artwork">
+          <div id="yt-mobile"></div>
+        </div>
+        <div class="info">
+          <div class="title">${escapeHtml(track.title)}</div>
+          <div class="artist">${escapeHtml(track.artist)}</div>
+          <div class="meta">${escapeHtml(track.film)} • ${track.year}</div>
+        </div>
+      </div>
+
+      <div class="seek" id="seek-mobile" role="slider" aria-label="Seek">
+        <div class="rail"></div>
+        <div class="fill" id="fill-mobile"></div>
+        <div class="knob" id="knob-mobile"></div>
+      </div>
+
+      <div class="mobile-controls">
+        <div class="mobile-times">
+          <span id="elapsed-mobile">0:00</span> /
+          <span id="duration-mobile">${formatTime(track.duration)}</span>
+        </div>
+        ${transportMarkup("mobile")}
+      </div>
+    </div>
+  `;
+}
+
+function transportMarkup(prefix) {
+  return `
+    <div class="transport">
+      <button class="icon-btn" id="${prefix}-prev" aria-label="Previous">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 5v14M18 6l-8 6 8 6V6Z"/>
+        </svg>
+      </button>
+
+      <button class="play-btn" id="${prefix}-play" aria-label="Play" disabled>
+        <svg class="play-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5.2v13.6c0 .8.9 1.3 1.6.9l10-6.8c.6-.4.6-1.3 0-1.7l-10-6.8C8.9 4 8 4.4 8 5.2Z"/>
+        </svg>
+        <svg class="pause-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+          <path d="M7 5h3v14H7V5Zm7 0h3v14h-3V5Z"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" id="${prefix}-next" aria-label="Next">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 5v14M6 6l8 6-8 6V6Z"/>
+        </svg>
+      </button>
+    </div>
+  `;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderPlayer() {
+  const tracks = playlists[playlistName] || [];
+  currentTrack = tracks[trackIndex];
+
+  if (!currentTrack) {
+    $("#player").innerHTML = emptyMarkup();
+    return;
+  }
+
+  $("#player").innerHTML = playerMarkup(currentTrack);
+
+  ["desktop", "mobile"].forEach(prefix => {
+    $(`#${prefix}-play`).addEventListener("click", togglePlayback);
+    $(`#${prefix}-prev`).addEventListener("click", previousTrack);
+    $(`#${prefix}-next`).addEventListener("click", nextTrack);
+  });
+
+  setupSeek("seek-desktop");
+  setupSeek("seek-mobile");
+
+  playerReady = false;
+  isPlaying = false;
+
+  if (apiReady) createYouTubePlayer();
+}
+
+function setupSeek(id) {
+  const seek = document.getElementById(id);
+  if (!seek) return;
+
+  seek.addEventListener("pointerdown", event => {
+    if (!ytPlayer || !playerReady || !currentTrack) return;
+
+    const rect = seek.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    const duration = ytPlayer.getDuration() || currentTrack.duration;
+
+    ytPlayer.seekTo(ratio * duration, true);
+    updateProgress(ratio * duration, duration);
+  });
+}
+
+function setPlayIcon() {
+  ["desktop", "mobile"].forEach(prefix => {
+    const button = $(`#${prefix}-play`);
+    if (!button) return;
+
+    button.disabled = !playerReady;
+    button.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
+
+    const play = button.querySelector(".play-icon");
+    const pause = button.querySelector(".pause-icon");
+
+    if (play) play.style.display = isPlaying ? "none" : "block";
+    if (pause) pause.style.display = isPlaying ? "block" : "none";
+  });
+
+  ["artwork", "mobile-artwork"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.animationPlayState = isPlaying ? "running" : "paused";
+  });
+}
+
+function updateProgress(current, duration) {
+  const percent = duration ? Math.min(100, Math.max(0, current / duration * 100)) : 0;
+
+  ["desktop", "mobile"].forEach(prefix => {
+    const fill = $(`#fill-${prefix}`);
+    const knob = $(`#knob-${prefix}`);
+    const elapsed = $(`#elapsed-${prefix}`);
+    const total = $(`#duration-${prefix}`);
+
+    if (fill) fill.style.width = `${percent}%`;
+    if (knob) knob.style.left = `${percent}%`;
+    if (elapsed) elapsed.textContent = formatTime(current);
+    if (total) total.textContent = formatTime(duration);
+  });
+}
+
+function startProgressTimer() {
+  clearInterval(progressTimer);
+
+  progressTimer = setInterval(() => {
+    if (!ytPlayer || !playerReady) return;
+
+    try {
+      const current = ytPlayer.getCurrentTime();
+      const duration = ytPlayer.getDuration() || currentTrack?.duration || 0;
+      updateProgress(current, duration);
+    } catch {}
+  }, 400);
+}
+
+function createYouTubePlayer() {
+  if (!window.YT || !window.YT.Player || !currentTrack) return;
+
+  if (ytPlayer) {
+    try { ytPlayer.destroy(); } catch {}
+    ytPlayer = null;
+  }
+
+  const desktopHost = document.getElementById("yt-desktop");
+  const mobileHost = document.getElementById("yt-mobile");
+
+  // The same visible player is mounted into the currently visible layout.
+  // On resize, recreate the player so the artwork remains visible.
+  const host = window.matchMedia("(max-width: 639px)").matches ? mobileHost : desktopHost;
+  if (!host) return;
+
+  ytPlayer = new YT.Player(host, {
+    videoId: currentTrack.videoId,
+    playerVars: {
+      autoplay: 0,
+      controls: 1,
+      rel: 0,
+      modestbranding: 1,
+      playsinline: 1
+    },
+    events: {
+      onReady: event => {
+        playerReady = true;
+        const actualDuration = event.target.getDuration();
+        updateProgress(0, actualDuration || currentTrack.duration);
+        setPlayIcon();
+        startProgressTimer();
+      },
+
+      onStateChange: event => {
+        if (event.data === YT.PlayerState.PLAYING) {
+          isPlaying = true;
+          setPlayIcon();
+        } else if (event.data === YT.PlayerState.PAUSED) {
+          isPlaying = false;
+          setPlayIcon();
+        } else if (event.data === YT.PlayerState.ENDED) {
+          isPlaying = false;
+          setPlayIcon();
+          nextTrack();
+        }
+      },
+
+      onError: event => {
+        analytics("youtube_track_error", {
+          code: event.data,
+          videoId: currentTrack.videoId,
+          trackId: currentTrack.id
+        });
+        nextTrack();
+      }
     }
-
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    noise.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
-    filter.frequency.value = type === 'rain' ? 800 : 1200;
-
-    const gain = audioCtx.createGain();
-    gain.gain.value = 0.05;
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
-    noise.start();
-
-    if (type === 'rain') rainNode = noise;
-    else chatterNode = noise;
-  } else {
-    if (type === 'rain' && rainNode) rainNode.stop();
-    if (type === 'chatter' && chatterNode) chatterNode.stop();
-  }
+  });
 }
 
-$('btn-rain').onclick = () => toggleAmbience('rain', 'btn-rain');
-$('btn-chatter').onclick = () => toggleAmbience('chatter', 'btn-chatter');
+function togglePlayback() {
+  if (!ytPlayer || !playerReady) return;
 
-// Initialize
-loadTrack(0);
+  if (isPlaying) ytPlayer.pauseVideo();
+  else ytPlayer.playVideo();
+}
+
+function nextTrack() {
+  const tracks = playlists[playlistName] || [];
+  if (!tracks.length) return;
+
+  trackIndex = (trackIndex + 1) % tracks.length;
+  renderPlayer();
+}
+
+function previousTrack() {
+  const tracks = playlists[playlistName] || [];
+  if (!tracks.length) return;
+
+  trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
+  renderPlayer();
+}
+
+function switchPlaylist(name) {
+  playlistName = name;
+  trackIndex = 0;
+
+  if (ytPlayer) {
+    try { ytPlayer.stopVideo(); } catch {}
+  }
+
+  renderTabs();
+  renderPlayer();
+}
+
+window.onYouTubeIframeAPIReady = function () {
+  apiReady = true;
+  createYouTubePlayer();
+};
+
+updateClock();
+setInterval(updateClock, 1000);
+renderTabs();
+renderPlayer();
+
+// Rebuild the visible YouTube player when crossing the mobile/desktop breakpoint.
+let wasMobile = window.matchMedia("(max-width: 639px)").matches;
+window.addEventListener("resize", () => {
+  const mobile = window.matchMedia("(max-width: 639px)").matches;
+  if (mobile !== wasMobile) {
+    wasMobile = mobile;
+    if (apiReady && currentTrack) createYouTubePlayer();
+  }
+});

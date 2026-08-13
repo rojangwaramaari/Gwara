@@ -1,201 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gwaramaari Music — Kathmandu Lo-Fi</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background: #0d0d0f url("bgmusic.png") center/cover no-repeat;
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .hero-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
-    }
-
-    .player-card {
-      position: relative;
-      z-index: 10;
-      width: 90%;
-      max-width: 420px;
-      background: rgba(22, 22, 26, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding-bottom: 12px;
-    }
-
-    .brand h1 {
-      font-size: 15px;
-      letter-spacing: 1.2px;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    .brand p {
-      font-size: 11px;
-      color: #f59e0b;
-    }
-
-    .clock-display {
-      text-align: right;
-    }
-
-    .clock-time {
-      font-size: 16px;
-      font-weight: 700;
-      color: #3b82f6;
-    }
-
-    .clock-location {
-      font-size: 10px;
-      color: #a1a1aa;
-    }
-
-    .track-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .album-art {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: 2px solid #f59e0b;
-      object-fit: cover;
-    }
-
-    .meta h2 {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .meta p {
-      font-size: 12px;
-      color: #a1a1aa;
-      margin-top: 2px;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-    }
-
-    button {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      transition: transform 0.1s ease;
-    }
-
-    button:active {
-      transform: scale(0.92);
-    }
-
-    .btn-play {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #f59e0b;
-      color: #0d0d0f;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 18px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nostalgia — Music for old memories</title>
+  <meta name="description" content="A cinematic nostalgia music player powered by YouTube.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main>
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-gradient" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
 
-  <div class="hero-overlay"></div>
+    <header class="topbar">
+      <div id="clock">12:00 PM</div>
 
-  <main class="player-card">
-    <header class="top-header">
-      <div class="brand">
-        <h1>GWARAMAARI MUSIC</h1>
-        <p>Ason Chok Audio Lounge</p>
+      <div class="listeners">
+        <span>NOW LISTENING</span>
+        <b>•</b>
+        <strong>1,284 listeners</strong>
       </div>
-      <div class="clock-display">
-        <div class="clock-time" id="ktm-time">--:-- --</div>
-        <div class="clock-location">Kathmandu, NP</div>
-      </div>
+
+      <nav>
+        <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YT</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">IG</a>
+      </nav>
     </header>
 
-    <div class="track-info">
-      <img class="album-art" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=200" alt="Cover">
-      <div class="meta">
-        <h2>Mana Ki Rani</h2>
-        <p>Kuma Sagar</p>
-      </div>
-    </div>
-
-    <div class="controls">
-      <button id="btn-prev">⏮</button>
-      <button class="btn-play" id="btn-play">▶</button>
-      <button id="btn-next">⏭</button>
-    </div>
+    <section class="player-wrap">
+      <div id="playlist-tabs" class="playlist-tabs"></div>
+      <div id="player"></div>
+      <div class="rights-note">YOUTUBE PLAYER • RIGHTS-HOLDER UPLOADS ONLY</div>
+    </section>
   </main>
 
-  <script>
-    // Live Kathmandu Time Calculator
-    function updateClock() {
-      const now = new Date();
-      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      const ktm = new Date(utc + (3600000 * 5.75));
-      
-      let hours = ktm.getHours();
-      const minutes = ktm.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-
-      document.getElementById('ktm-time').textContent = `${hours}:${minutes} ${ampm}`;
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Toggle Play/Pause UI State
-    let isPlaying = false;
-    const playBtn = document.getElementById('btn-play');
-    
-    playBtn.onclick = () => {
-      isPlaying = !isPlaying;
-      playBtn.textContent = isPlaying ? '⏸' : '▶';
-    };
-  </script>
+  <script src="script.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
