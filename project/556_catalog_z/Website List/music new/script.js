@@ -9,6 +9,15 @@ const playlists = {
       duration: 240,
       videoId: "clQK__cONpI"
     },
+    {
+      id: "gm-01",
+      title: "Man Dulayera",
+      artist: "ShreeGo",
+      film: "ShreeGo",
+      year: 2025,
+      duration: 240,
+      videoId: "RfGfPMFl19w"
+    },
   ],
 
    "Roadside Radio": [
