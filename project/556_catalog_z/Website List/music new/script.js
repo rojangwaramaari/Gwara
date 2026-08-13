@@ -2,10 +2,11 @@ const playlists = {
   "Golden Memories": [
     { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
     { id: "gm-02", title: "Man Dulayeraa", artist: "ShreeGo", film: "ShreeGo", year: 2025, duration: 240, videoId: "RfGfPMFl19w" },
+    { id: "gm-03", title: "Maya", artist: "Ashutosh KC", film: "Single", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }, /* Put real YouTube video ID here */
+    { id: "gm-04", title: "Next Song Title", artist: "Artist Name", film: "Album", year: 2024, duration: 180, videoId: "REAL_VIDEO_ID_HERE" }
     
     // --- ADD MORE SONGS HERE (3 to 50) ---
-    { id: "gm-03", title: "Song Title 3", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
-    { id: "gm-04", title: "Song Title 4", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
+    
     { id: "gm-05", title: "Song Title 5", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
     { id: "gm-06", title: "Song Title 6", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
     { id: "gm-07", title: "Song Title 7", artist: "Artist Name", film: "Album/Film", year: 2024, duration: 200, videoId: "YOUR_YOUTUBE_ID" },
