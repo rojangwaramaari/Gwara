@@ -10,7 +10,7 @@ const playlists = {
       videoId: "clQK__cONpI"
     },
     {
-      id: "gm-01",
+      id: "gm-02",
       title: "Man Dulayera",
       artist: "ShreeGo",
       film: "ShreeGo",
