@@ -1,17 +1,21 @@
 const playlists = {
   "Golden Memories": [
-    { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
-    { id: "gm-02", title: "Hawa Ko Lahar", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
-    { id: "gm-03", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }, 
-    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" } 
+    { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Single", year: 2024, duration: 240, videoId: "clQK__cONpI" },
+    { id: "gm-02", title: "Hawa Ko Lahar", artist: "Kuma Sagar", film: "Single", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
+    { id: "gm-03", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" },
+    { id: "gm-04", title: "Syndicate", artist: "Bipul Chettri", film: "Sketches of Darjeeling", year: 2014, duration: 260, videoId: "fJ9rUzIMcZQ" }
   ],
 
   "Roadside Radio": [
-    { id: "rr-01", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }
+    { id: "rr-01", title: "Sarangi", artist: "Sushant KC", film: "Single", year: 2023, duration: 215, videoId: "3JZ_D3ELwOQ" },
+    { id: "rr-02", title: "Maya", artist: "Ashutosh KC", film: "Single", year: 2022, duration: 200, videoId: "2Vv-BfVoq4g" },
+    { id: "rr-03", title: "Kasaari", artist: "Swoopna Suman", film: "Single", year: 2021, duration: 230, videoId: "L_LUpnjgPso" }
   ],
 
   "Late Night": [
-    { id: "ln-01", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }
+    { id: "ln-01", title: "lofi hip hop radio - beats to relax/study to", artist: "Lofi Girl", film: "Stream", year: 2024, duration: 300, videoId: "jfKfPfyJRdk" },
+    { id: "ln-02", title: "Midnight City", artist: "M83", film: "Hurry Up, We're Dreaming", year: 2011, duration: 243, videoId: "DX3InT7p1oM" },
+    { id: "ln-03", title: "Night Trouble", artist: "Petit Biscuit", film: "Single", year: 2015, duration: 228, videoId: "dQw4w9WgXcQ" }
   ]
 };
 
