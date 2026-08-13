@@ -1,17 +1,17 @@
 const playlists = {
   "Golden Memories": [
     { id: "gm-01", title: "Mana Ki Rani", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2024, duration: 240, videoId: "clQK__cONpI" },
-    { id: "gm-02", title: "Hawa Ko Lahar", artist: "kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
-    { id: "gm-03", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }, 
-    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" }, 
+    { id: "gm-02", title: "Hawa Ko Lahar", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2025, duration: 240, videoId: "gebozQyu-pY" },
+    { id: "gm-03", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }, 
+    { id: "gm-04", title: "Man Dulayera", artist: "ShreeGo", film: "Album", year: 2024, duration: 180, videoId: "RfGfPMFl19w" } 
   ],
 
   "Roadside Radio": [
-    { id: "rr-01", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }
+    { id: "rr-01", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }
   ],
 
   "Late Night": [
-    { id: "ln-01", title: "Chahare Sari ", artist: "kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dUYclbkc2_Js" }
+    { id: "ln-01", title: "Chahare Sari", artist: "Kuma Sagar", film: "Kuma Sagar", year: 2023, duration: 210, videoId: "dQw4w9WgXcQ" }
   ]
 };
 
@@ -20,10 +20,9 @@ let trackIndex = 0;
 let ytPlayer = null;
 let apiReady = false;
 let isPlaying = false;
-let playerReady = false;
 let currentTrack = null;
 let progressTimer = null;
-let autoPlayNext = false;
+let initialRenderDone = false;
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -32,12 +31,6 @@ function formatTime(seconds) {
   const minutes = Math.floor(safe / 60);
   const secs = safe % 60;
   return `${minutes}:${String(secs).padStart(2, "0")}`;
-}
-
-function analytics(name, payload) {
-  window.dispatchEvent(new CustomEvent("nostalgia:analytics", {
-    detail: { name, ...payload }
-  }));
 }
 
 function updateClock() {
@@ -67,15 +60,6 @@ function renderTabs() {
   });
 }
 
-function emptyMarkup() {
-  return `
-    <div class="player empty">
-      <strong>Your nostalgia station is ready.</strong>
-      <p>Add a rights-cleared YouTube video to <code>script.js</code>.</p>
-    </div>
-  `;
-}
-
 function playerMarkup(track) {
   return `
     <div class="player desktop-player">
@@ -85,8 +69,8 @@ function playerMarkup(track) {
       </div>
 
       <div class="info">
-        <div class="title">${escapeHtml(track.title)}</div>
-        <div class="artist">${escapeHtml(track.artist)}</div>
+        <div class="title" id="track-title-desktop">${escapeHtml(track.title)}</div>
+        <div class="artist" id="track-artist-desktop">${escapeHtml(track.artist)}</div>
         <div class="seek" id="seek-desktop" role="slider" aria-label="Seek">
           <div class="rail"></div>
           <div class="fill" id="fill-desktop"></div>
@@ -107,9 +91,9 @@ function playerMarkup(track) {
           <div id="yt-mobile"></div>
         </div>
         <div class="info">
-          <div class="title">${escapeHtml(track.title)}</div>
-          <div class="artist">${escapeHtml(track.artist)}</div>
-          <div class="meta">${escapeHtml(track.film)} • ${track.year}</div>
+          <div class="title" id="track-title-mobile">${escapeHtml(track.title)}</div>
+          <div class="artist" id="track-artist-mobile">${escapeHtml(track.artist)}</div>
+          <div class="meta" id="track-meta-mobile">${escapeHtml(track.film)} • ${track.year}</div>
         </div>
       </div>
 
@@ -128,7 +112,6 @@ function playerMarkup(track) {
       </div>
     </div>
 
-    <!-- Scrollable tracklist for current playlist -->
     <div id="track-list" class="track-list"></div>
   `;
 }
@@ -142,7 +125,7 @@ function transportMarkup(prefix) {
         </svg>
       </button>
 
-      <button class="play-btn" id="${prefix}-play" aria-label="Play" disabled>
+      <button class="play-btn" id="${prefix}-play" aria-label="Play">
         <svg class="play-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
           <path d="M8 5.2v13.6c0 .8.9 1.3 1.6.9l10-6.8c.6-.4.6-1.3 0-1.7l-10-6.8C8.9 4 8 4.4 8 5.2Z"/>
         </svg>
@@ -169,31 +152,63 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function loadTrack(shouldPlay = false) {
+  const tracks = playlists[playlistName] || [];
+  currentTrack = tracks[trackIndex];
+  if (!currentTrack) return;
+
+  ["desktop", "mobile"].forEach(prefix => {
+    const titleEl = $(`#track-title-${prefix}`);
+    const artistEl = $(`#track-artist-${prefix}`);
+    const metaEl = $(`#track-meta-${prefix}`);
+
+    if (titleEl) titleEl.textContent = currentTrack.title;
+    if (artistEl) artistEl.textContent = currentTrack.artist;
+    if (metaEl) metaEl.textContent = `${currentTrack.film} • ${currentTrack.year}`;
+    
+    const playBtn = $(`#${prefix}-play`);
+    if (playBtn) playBtn.disabled = false;
+  });
+
+  renderTrackList();
+  updateProgress(0, currentTrack.duration);
+
+  if (ytPlayer && typeof ytPlayer.loadVideoById === "function") {
+    try {
+      if (shouldPlay) {
+        ytPlayer.loadVideoById(currentTrack.videoId);
+      } else {
+        ytPlayer.cueVideoById(currentTrack.videoId);
+      }
+    } catch (err) {
+      console.warn("Player video swap error:", err);
+    }
+  }
+}
+
 function renderPlayer() {
   const tracks = playlists[playlistName] || [];
   currentTrack = tracks[trackIndex];
 
-  if (!currentTrack) {
-    $("#player").innerHTML = emptyMarkup();
-    return;
+  if (!initialRenderDone) {
+    $("#player").innerHTML = playerMarkup(currentTrack);
+
+    ["desktop", "mobile"].forEach(prefix => {
+      $(`#${prefix}-play`)?.addEventListener("click", togglePlayback);
+      $(`#${prefix}-prev`)?.addEventListener("click", previousTrack);
+      $(`#${prefix}-next`)?.addEventListener("click", nextTrack);
+    });
+
+    setupSeek("seek-desktop");
+    setupSeek("seek-mobile");
+    initialRenderDone = true;
   }
 
-  $("#player").innerHTML = playerMarkup(currentTrack);
+  loadTrack(false);
 
-  ["desktop", "mobile"].forEach(prefix => {
-    $(`#${prefix}-play`)?.addEventListener("click", togglePlayback);
-    $(`#${prefix}-prev`)?.addEventListener("click", previousTrack);
-    $(`#${prefix}-next`)?.addEventListener("click", nextTrack);
-  });
-
-  setupSeek("seek-desktop");
-  setupSeek("seek-mobile");
-  renderTrackList();
-
-  playerReady = false;
-  isPlaying = false;
-
-  if (apiReady) createYouTubePlayer();
+  if (apiReady && !ytPlayer) {
+    createYouTubePlayer();
+  }
 }
 
 function renderTrackList() {
@@ -211,7 +226,7 @@ function renderTrackList() {
 
 window.selectTrack = function(index) {
   trackIndex = index;
-  renderPlayer();
+  loadTrack(true);
 };
 
 function setupSeek(id) {
@@ -219,13 +234,15 @@ function setupSeek(id) {
   if (!seek) return;
 
   seek.addEventListener("pointerdown", event => {
-    if (!ytPlayer || !playerReady || !currentTrack) return;
+    if (!ytPlayer || !currentTrack) return;
 
     const rect = seek.getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
-    const duration = ytPlayer.getDuration() || currentTrack.duration;
+    const duration = (typeof ytPlayer.getDuration === "function" && ytPlayer.getDuration()) || currentTrack.duration;
 
-    ytPlayer.seekTo(ratio * duration, true);
+    if (typeof ytPlayer.seekTo === "function") {
+      ytPlayer.seekTo(ratio * duration, true);
+    }
     updateProgress(ratio * duration, duration);
   });
 }
@@ -235,7 +252,6 @@ function setPlayIcon() {
     const button = $(`#${prefix}-play`);
     if (!button) return;
 
-    button.disabled = !playerReady;
     button.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
 
     const play = button.querySelector(".play-icon");
@@ -271,7 +287,7 @@ function startProgressTimer() {
   clearInterval(progressTimer);
 
   progressTimer = setInterval(() => {
-    if (!ytPlayer || !playerReady) return;
+    if (!ytPlayer || typeof ytPlayer.getCurrentTime !== "function") return;
 
     try {
       const current = ytPlayer.getCurrentTime();
@@ -284,39 +300,25 @@ function startProgressTimer() {
 function createYouTubePlayer() {
   if (!window.YT || !window.YT.Player || !currentTrack) return;
 
-  if (ytPlayer) {
-    try { ytPlayer.destroy(); } catch {}
-    ytPlayer = null;
-  }
-
   const desktopHost = document.getElementById("yt-desktop");
   const mobileHost = document.getElementById("yt-mobile");
-
   const host = window.matchMedia("(max-width: 639px)").matches ? mobileHost : desktopHost;
+
   if (!host) return;
 
   ytPlayer = new YT.Player(host, {
     videoId: currentTrack.videoId,
     playerVars: {
-      autoplay: autoPlayNext ? 1 : 0, // <-- Dynamic autoplay
-      controls: 1,
+      autoplay: 0,
+      controls: 0,
       rel: 0,
       modestbranding: 1,
       playsinline: 1
     },
     events: {
-      onReady: event => {
-        playerReady = true;
-        const actualDuration = event.target.getDuration();
-        updateProgress(0, actualDuration || currentTrack.duration);
+      onReady: () => {
         setPlayIcon();
         startProgressTimer();
-
-        // If transitioning from next/prev/select, play automatically
-        if (autoPlayNext) {
-          event.target.playVideo();
-          autoPlayNext = false; // Reset flag after trigger
-        }
       },
 
       onStateChange: event => {
@@ -329,16 +331,13 @@ function createYouTubePlayer() {
         } else if (event.data === YT.PlayerState.ENDED) {
           isPlaying = false;
           setPlayIcon();
-          nextTrack(); // Will now seamlessly trigger auto-play on the next track!
+          nextTrack();
         }
       },
 
-      onError: event => {
-        analytics("youtube_track_error", {
-          code: event.data,
-          videoId: currentTrack.videoId,
-          trackId: currentTrack.id
-        });
+      onError: () => {
+        isPlaying = false;
+        setPlayIcon();
         nextTrack();
       }
     }
@@ -346,39 +345,42 @@ function createYouTubePlayer() {
 }
 
 function togglePlayback() {
-  if (!ytPlayer || !playerReady) return;
+  if (!ytPlayer) return;
 
-  if (isPlaying) ytPlayer.pauseVideo();
-  else ytPlayer.playVideo();
+  if (isPlaying) {
+    if (typeof ytPlayer.pauseVideo === "function") ytPlayer.pauseVideo();
+  } else {
+    if (typeof ytPlayer.playVideo === "function") ytPlayer.playVideo();
+  }
 }
 
 function nextTrack() {
   const tracks = playlists[playlistName] || [];
   if (!tracks.length) return;
 
-  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
   trackIndex = (trackIndex + 1) % tracks.length;
-  renderPlayer();
+  loadTrack(true);
 }
 
 function previousTrack() {
   const tracks = playlists[playlistName] || [];
   if (!tracks.length) return;
 
-  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
   trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
-  renderPlayer();
+  loadTrack(true);
 }
 
-window.selectTrack = function(index) {
-  autoPlayNext = true; // <-- SET TO TRUE BEFORE SWITCHING
-  trackIndex = index;
-  renderPlayer();
+function switchPlaylist(name) {
+  playlistName = name;
+  trackIndex = 0;
+
+  renderTabs();
+  loadTrack(false);
 }
 
 window.onYouTubeIframeAPIReady = function () {
   apiReady = true;
-  createYouTubePlayer();
+  if (initialRenderDone) createYouTubePlayer();
 };
 
 updateClock();
