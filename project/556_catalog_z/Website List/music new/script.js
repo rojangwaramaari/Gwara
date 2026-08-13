@@ -39,7 +39,7 @@ function analytics(name, payload) {
 
 function updateClock() {
   const parts = new Intl.DateTimeFormat("en-IN", {
-    timeZone: "Asia/Kolkata",
+    timeZone: "Asia/Kathmandu",
     hour: "numeric",
     minute: "2-digit",
     hour12: true
