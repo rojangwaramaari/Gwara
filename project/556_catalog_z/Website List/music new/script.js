@@ -298,7 +298,7 @@ function createYouTubePlayer() {
   ytPlayer = new YT.Player(host, {
     videoId: currentTrack.videoId,
     playerVars: {
-      autoplay: 0,
+      autoplay: autoPlayNext ? 1 : 0, // <-- Dynamic autoplay
       controls: 1,
       rel: 0,
       modestbranding: 1,
@@ -311,6 +311,12 @@ function createYouTubePlayer() {
         updateProgress(0, actualDuration || currentTrack.duration);
         setPlayIcon();
         startProgressTimer();
+
+        // If transitioning from next/prev/select, play automatically
+        if (autoPlayNext) {
+          event.target.playVideo();
+          autoPlayNext = false; // Reset flag after trigger
+        }
       },
 
       onStateChange: event => {
@@ -323,7 +329,7 @@ function createYouTubePlayer() {
         } else if (event.data === YT.PlayerState.ENDED) {
           isPlaying = false;
           setPlayIcon();
-          nextTrack();
+          nextTrack(); // Will now seamlessly trigger auto-play on the next track!
         }
       },
 
