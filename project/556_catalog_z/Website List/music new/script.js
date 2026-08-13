@@ -1,5 +1,4 @@
 const playlists = {
- const playlists = {
   "Golden Memories": [
     {
       id: "gm-01",
@@ -79,12 +78,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-  const hour = parts.find(p => p.type === "hour")?.value || "12";
-  const minute = parts.find(p => p.type === "minute")?.value || "00";
-  const period = parts.find(p => p.type === "dayPeriod")?.value || "AM";
-
-  $("#clock").innerHTML = `${hour}<span class="colon">:</span>${minute} ${period}`;
-}
 
 function renderTabs() {
   const tabs = $("#playlist-tabs");
