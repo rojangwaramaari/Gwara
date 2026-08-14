@@ -100,3 +100,8 @@
   }
   .ig-banner svg{ flex-shrink:0; }
   .ig-banner span.handle{ color:var(--amber); }
+
+  @media (max-width:480px){
+    body{ padding-top:48px; }
+    .ig-banner{ bottom:12px; font-size:11px; }
+  }
