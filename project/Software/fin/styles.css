@@ -1,0 +1,303 @@
+/* ============================================================
+   GwaraFin — Hospitality Finance Suite
+   Palette (5): midnight #101418, panel #1A2027, ivory #EDEAE2,
+   brass #C9A24B, muted slate #8A94A0
+   Type: Fraunces (display) + Inter (body)
+   ============================================================ */
+
+:root {
+  --bg: #101418;
+  --panel: #1a2027;
+  --panel-raised: #212933;
+  --ink: #edeae2;
+  --muted: #8a94a0;
+  --brass: #c9a24b;
+  --brass-soft: rgba(201, 162, 75, 0.14);
+  --line: rgba(237, 234, 226, 0.08);
+  --radius: 10px;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--bg); scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.55;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
+
+/* ---------- Header ---------- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: rgba(16, 20, 24, 0.92);
+  backdrop-filter: blur(10px);
+  z-index: 50;
+}
+
+.brand { display: flex; align-items: center; gap: 0.75rem; }
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--brass);
+  border-radius: var(--radius);
+}
+
+.brand-text { display: flex; flex-direction: column; }
+.brand-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; letter-spacing: 0.01em; }
+.brand-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+
+.site-nav { display: flex; gap: 1.5rem; }
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.site-nav a:hover, .site-nav a:focus-visible { color: var(--brass); }
+
+.header-live { display: flex; align-items: center; gap: 1.25rem; }
+
+.clock-widget { display: flex; flex-direction: column; align-items: flex-end; }
+.clock-time {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--brass);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.clock-meta { font-size: 0.7rem; color: var(--muted); }
+
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.85rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.weather-icon { font-size: 1.4rem; line-height: 1; }
+.weather-text { display: flex; flex-direction: column; }
+.weather-temp { font-weight: 600; font-size: 0.95rem; line-height: 1.2; }
+.weather-desc { font-size: 0.7rem; color: var(--muted); }
+
+/* ---------- Hero ---------- */
+.hero {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 3.5rem;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--brass);
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 500;
+  line-height: 1.08;
+  margin-bottom: 1.5rem;
+}
+.hero h1 em { font-style: italic; color: var(--brass); }
+.hero-sub {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* ---------- Sections ---------- */
+.section { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.section-head { margin-bottom: 1.5rem; }
+.section-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+.section-head p { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- KPI grid ---------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.kpi-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.kpi-card h3 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.35rem;
+}
+.kpi-note { font-size: 0.75rem; color: var(--muted); }
+.kpi-up { color: #7fb98a; }
+.kpi-down { color: #c97a6b; }
+
+.kpi-feature {
+  background: var(--brass-soft);
+  border-color: rgba(201, 162, 75, 0.35);
+}
+.kpi-feature .kpi-value { color: var(--brass); }
+
+/* ---------- Chart ---------- */
+.chart-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.chart-card canvas { width: 100%; height: auto; display: block; }
+
+/* ---------- Calculators ---------- */
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.calc-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.calc-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+.field label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.field input {
+  background: var(--panel-raised);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  width: 100%;
+}
+.field input:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.calc-results {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+.calc-results > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.calc-results dt { font-size: 0.8rem; color: var(--muted); }
+.calc-results dd {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+}
+.result-feature dd {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--brass);
+}
+.calc-hint { font-size: 0.78rem; color: var(--muted); font-style: italic; }
+
+/* ---------- Forecast strip ---------- */
+.forecast-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+.forecast-loading { color: var(--muted); font-size: 0.9rem; }
+.forecast-day {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  text-align: center;
+}
+.forecast-day .fc-name { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+.forecast-day .fc-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.forecast-day .fc-temps { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 0.95rem; }
+.forecast-day .fc-temps span { color: var(--muted); font-weight: 400; }
+.forecast-day .fc-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 3rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.site-footer .footer-fine { font-size: 0.72rem; margin-top: 0.4rem; opacity: 0.7; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .site-header { justify-content: center; text-align: center; }
+  .header-live { width: 100%; justify-content: center; }
+  .clock-widget { align-items: center; }
+  .hero { padding-top: 3rem; }
+  .site-nav { display: none; }
+}
