@@ -34,7 +34,7 @@
     background-color:var(--bg-base);
     background-image:
       linear-gradient(180deg, rgba(10,7,4,0.55) 0%, rgba(10,7,4,0.72) 55%, rgba(10,7,4,0.9) 100%),
-      url("https://drive.google.com/file/d/19CPrtC6XFSPPR1QnhBvrFrnD1lYSUkXe/view?usp=sharing");
+      url("https://drive.google.com/file/d/1x7ro1MjynUUhrtIVAZiZ65MTDI9nsW7m/view?usp=sharing");
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
@@ -440,8 +440,9 @@
 
   <script>
     // ---- config ----
-    var DEFAULT_VIDEO_ID = "wPef-bh2-kQ";
-    
+    var DEFAULT_PLAYLIST_ID = "UUWNrYbaAOJflzUkL_vNUoeQ"; // uploads playlist for the given channel
+    var STORAGE_KEY = "gwaramaari_playlist_id";
+
     // fall back to a plain wood-tone background if the drive photo won't load
     (function(){
       var testImg = new Image();
@@ -476,12 +477,12 @@
       player = new YT.Player('yt-player-slot', {
         height: '2', width: '2',
         playerVars: {
-  videoId: DEFAULT_VIDEO_ID,
-  autoplay: 0,
-  controls: 0,
-  disablekb: 1,
-  rel: 0
-},
+          listType: 'playlist',
+          list: currentPlaylistId,
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1
+        },
         events: {
           onReady: onPlayerReady,
           onStateChange: onPlayerStateChange,
