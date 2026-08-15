@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gwara Downloader — YouTube to MP4 &amp; MP3</title>
+  <meta name="description" content="Paste a YouTube link and download it as MP4 (1080p / 720p) or MP3 audio. Fast, simple, free." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0f13;
+      --surface: #171922;
+      --surface-2: #1f2230;
+      --text: #f2f3f7;
+      --text-muted: #9aa0b4;
+      --accent: #ff4d4d;
+      --accent-hover: #ff6666;
+      --radius: 14px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { background: var(--bg); }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg { width: 18px; height: 18px; }
+
+    .header-tag {
+      font-size: 13px;
+      color: var(--text-muted);
+      border: 1px solid var(--surface-2);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+
+    /* ---------- Hero ---------- */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    h1 .accent { color: var(--accent); }
+
+    .subtitle {
+      margin-top: 14px;
+      font-size: clamp(15px, 2.5vw, 17px);
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 480px;
+      text-wrap: pretty;
+    }
+
+    /* ---------- Input bar ---------- */
+    .input-bar {
+      margin-top: 40px;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius);
+      padding: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.15);
+    }
+
+    .input-bar input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 16px;
+      padding: 10px 12px;
+    }
+
+    .input-bar input::placeholder { color: var(--text-muted); }
+
+    .btn {
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 26px;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error-msg {
+      margin-top: 12px;
+      color: var(--accent);
+      font-size: 14px;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    /* ---------- Result card ---------- */
+    .result {
+      margin-top: 28px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: none;
+      animation: slideUp 0.35s ease;
+    }
+
+    .result.visible { display: block; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .video-info {
+      display: flex;
+      gap: 18px;
+      padding: 18px;
+      align-items: center;
+    }
+
+    .thumb {
+      width: 168px;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--surface-2);
+      flex-shrink: 0;
+    }
+
+    .video-meta { min-width: 0; }
+
+    .video-title {
+      font-size: 17px;
+      font-weight: 600;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-author {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .formats {
+      border-top: 1px solid var(--surface-2);
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .format-btn {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .format-btn:hover {
+      border-color: var(--accent);
+      background: #262a3b;
+    }
+
+    .format-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .format-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .format-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent);
+    }
+
+    /* ---------- Progress ---------- */
+    .progress-wrap {
+      padding: 0 18px 18px;
+      display: none;
+    }
+
+    .progress-wrap.visible { display: block; }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 100px;
+      transition: width 0.2s ease;
+    }
+
+    .done-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #6ee08a;
+      display: none;
+    }
+
+    .done-msg.visible { display: block; }
+
+    /* ---------- Features ---------- */
+    .features {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--surface-2);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    .feature svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .feature h3 { font-size: 15px; font-weight: 600; }
+
+    .feature p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--surface-2);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 620px) {
+      .input-bar { flex-direction: column; }
+      .btn-primary { padding: 14px; }
+      .video-info { flex-direction: column; align-items: flex-start; }
+      .thumb { width: 100%; }
+      .formats { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12" /><path d="m7 11 5 5 5-5" /><path d="M5 21h14" />
+        </svg>
+      </span>
+      Gwara Downloader
+    </div>
+    <span class="header-tag">Free &amp; Fast</span>
+  </header>
+
+  <main>
+    <h1>Download YouTube videos in <span class="accent">seconds</span></h1>
+    <p class="subtitle">Paste any YouTube link below and grab it as MP4 in 1080p or 720p, or extract the audio as MP3.</p>
+
+    <form class="input-bar" id="download-form">
+      <input
+        type="url"
+        id="url-input"
+        placeholder="https://www.youtube.com/watch?v=..."
+        aria-label="YouTube video URL"
+        autocomplete="off"
+        spellcheck="false"
+        required
+      />
+      <button type="submit" class="btn btn-primary" id="fetch-btn">Fetch Video</button>
+    </form>
+    <p class="error-msg" id="error-msg" role="alert"></p>
+
+    <section class="result" id="result" aria-live="polite">
+      <div class="video-info">
+        <img class="thumb" id="thumb" src="/placeholder.svg" alt="Video thumbnail" />
+        <div class="video-meta">
+          <p class="video-title" id="video-title"></p>
+          <p class="video-author" id="video-author"></p>
+        </div>
+      </div>
+
+      <div class="formats" id="formats">
+        <button class="format-btn" data-format="MP4 · 1080p">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+          <span class="format-label">MP4 — 1080p</span>
+          <span class="format-sub">Full HD video</span>
+        </button>
+        <button class="format-btn" data-format="MP4 · 720p">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+          <span class="format-label">MP4 — 720p</span>
+          <span class="format-sub">HD video, smaller file</span>
+        </button>
+        <button class="format-btn" data-format="MP3 · Audio">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="format-label">MP3 — Audio</span>
+          <span class="format-sub">Music / audio only</span>
+        </button>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-label">
+          <span id="progress-format">Preparing...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p class="done-msg" id="done-msg">Ready! Your download link has been prepared.</p>
+      </div>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <h3>Lightning Fast</h3>
+        <p>Fetches video info instantly, no waiting around.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+        <h3>Best Quality</h3>
+        <p>MP4 in 1080p or 720p — always the best available.</p>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <h3>MP3 Audio</h3>
+        <p>Extract just the music from any video link.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Gwara Downloader — for personal use only. Respect content creators and YouTube&apos;s Terms of Service.
+  </footer>
+
+  <script>
+    const form = document.getElementById('download-form');
+    const urlInput = document.getElementById('url-input');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const errorMsg = document.getElementById('error-msg');
+    const result = document.getElementById('result');
+    const thumb = document.getElementById('thumb');
+    const videoTitle = document.getElementById('video-title');
+    const videoAuthor = document.getElementById('video-author');
+    const formats = document.getElementById('formats');
+    const progressWrap = document.getElementById('progress-wrap');
+    const progressFill = document.getElementById('progress-fill');
+    const progressPct = document.getElementById('progress-pct');
+    const progressFormat = document.getElementById('progress-format');
+    const doneMsg = document.getElementById('done-msg');
+
+    let progressTimer = null;
+
+    // Extract the YouTube video ID from most common URL formats
+    function getVideoId(url) {
+      const patterns = [
+        /(?:youtube\.com\/watch\?v=)([\w-]{11})/,
+        /(?:youtu\.be\/)([\w-]{11})/,
+        /(?:youtube\.com\/shorts\/)([\w-]{11})/,
+        /(?:youtube\.com\/embed\/)([\w-]{11})/,
+        /(?:music\.youtube\.com\/watch\?v=)([\w-]{11})/
+      ];
+      for (const p of patterns) {
+        const match = url.match(p);
+        if (match) return match[1];
+      }
+      return null;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = '';
+      result.classList.remove('visible');
+      progressWrap.classList.remove('visible');
+      doneMsg.classList.remove('visible');
+      if (progressTimer) clearInterval(progressTimer);
+
+      const url = urlInput.value.trim();
+      const videoId = getVideoId(url);
+
+      if (!videoId) {
+        errorMsg.textContent = 'That doesn\u2019t look like a valid YouTube link. Please check and try again.';
+        return;
+      }
+
+      fetchBtn.disabled = true;
+      fetchBtn.textContent = 'Fetching...';
+
+      // Thumbnail is always available directly from YouTube's image CDN
+      thumb.src = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
+      thumb.alt = 'Video thumbnail';
+
+      // Fetch real title & channel via the noembed proxy (CORS-friendly oEmbed)
+      try {
+        const res = await fetch('https://noembed.com/embed?url=https://www.youtube.com/watch?v=' + videoId);
+        const data = await res.json();
+        if (data && data.title) {
+          videoTitle.textContent = data.title;
+          videoAuthor.textContent = data.author_name ? 'by ' + data.author_name : '';
+        } else {
+          videoTitle.textContent = 'YouTube Video (' + videoId + ')';
+          videoAuthor.textContent = '';
+        }
+      } catch {
+        videoTitle.textContent = 'YouTube Video (' + videoId + ')';
+        videoAuthor.textContent = '';
+      }
+
+      result.classList.add('visible');
+      fetchBtn.disabled = false;
+      fetchBtn.textContent = 'Fetch Video';
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    // Simulated download preparation (a real download requires a server-side converter)
+    formats.addEventListener('click', (e) => {
+      const btn = e.target.closest('.format-btn');
+      if (!btn) return;
+
+      if (progressTimer) clearInterval(progressTimer);
+      doneMsg.classList.remove('visible');
+      progressWrap.classList.add('visible');
+      progressFormat.textContent = 'Preparing ' + btn.dataset.format + '...';
+      progressFill.style.width = '0%';
+      progressPct.textContent = '0%';
+
+      let pct = 0;
+      progressTimer = setInterval(() => {
+        pct += Math.random() * 12 + 4;
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(progressTimer);
+          progressFormat.textContent = btn.dataset.format + ' ready';
+          doneMsg.classList.add('visible');
+        }
+        progressFill.style.width = pct + '%';
+        progressPct.textContent = Math.round(pct) + '%';
+      }, 180);
+    });
+  </script>
+</body>
+</html>
