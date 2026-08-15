@@ -440,9 +440,8 @@
 
   <script>
     // ---- config ----
-    var DEFAULT_PLAYLIST_ID = "JNtZj3NaUFw&si"; // uploads playlist for the given channel
-    var STORAGE_KEY = "gwaramaari_playlist_id";
-
+    var DEFAULT_VIDEO_ID = "wPef-bh2-kQ";
+    
     // fall back to a plain wood-tone background if the drive photo won't load
     (function(){
       var testImg = new Image();
@@ -477,12 +476,12 @@
       player = new YT.Player('yt-player-slot', {
         height: '2', width: '2',
         playerVars: {
-          listType: 'playlist',
-          list: currentPlaylistId,
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1
-        },
+  videoId: DEFAULT_VIDEO_ID,
+  autoplay: 0,
+  controls: 0,
+  disablekb: 1,
+  rel: 0
+},
         events: {
           onReady: onPlayerReady,
           onStateChange: onPlayerStateChange,
