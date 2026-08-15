@@ -1,12 +1,2247 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arena Web Dev App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gwara Fin — Hotel Accounting Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --forest: #0a5c52;
+      --forest-dark: #074d45;
+      --forest-dim: #0b574e;
+      --gold: #d09b46;
+      --gold-light: #e2b86f;
+      --bg: #f3f6f5;
+      --white: #ffffff;
+      --border: #dfe6e3;
+      --text: #172521;
+      --text-mid: #43534e;
+      --text-muted: #7b8985;
+      --sidebar-bg: #0b2925;
+      --sidebar-text: #d9e7e3;
+      --sidebar-muted: #64867f;
+      --green-profit: #0a7769;
+      --red-loss: #b5544e;
+      --teal-profit: #0a695e;
+      --ar-current: #0a5c52;
+      --ar-30: #5f958e;
+      --ar-60: #d09b46;
+      --ar-90: #c66f50;
+      --ar-180: #a94d48;
+      --radius: 10px;
+      --shadow: 0 5px 24px rgba(17,49,42,.028);
+    }
+    body {
+      font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+    button { cursor: pointer; font: inherit; }
+    button:focus-visible { outline: 3px solid rgba(208,155,70,.35); outline-offset: 2px; }
+    input, select { font: inherit; }
+    input:focus, select:focus { outline: 2px solid rgba(10,92,82,.12); outline-offset: 1px; }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: 242px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 24px 15px 18px;
+      position: fixed;
+      inset: 0 auto 0 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 30;
+      overflow-y: auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 8px 23px;
+    }
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      background: var(--gold);
+      color: #102c27;
+      display: grid;
+      place-items: center;
+      transform: rotate(45deg);
+      border-radius: 9px 9px 9px 2px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      flex: 0 0 auto;
+    }
+    .brand-mark span {
+      font-family: "Manrope", sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      transform: rotate(-45deg);
+    }
+    .brand-name {
+      font-family: "Manrope", sans-serif;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.35px;
+    }
+    .brand-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #88aaa3;
+      margin-top: 1px;
+    }
+    .prop-switch {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 9px;
+      margin: 0 1px 24px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.045);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+    .prop-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: rgba(208,155,70,.13);
+      color: var(--gold-light);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .prop-switch p { color: #7f9e98; font-size: 9px; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 1px; }
+    .prop-switch strong { color: #edf5f2; font-size: 12px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .side-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--sidebar-muted);
+      margin: 0 10px 8px;
+    }
+    .side-nav { display: flex; flex-direction: column; gap: 4px; }
+    .side-nav button {
+      border: 0;
+      background: transparent;
+      color: #9cb7b1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 11px;
+      border-radius: 7px;
+      font-size: 13px;
+      text-align: left;
+      transition: background .18s, color .18s, transform .18s;
+    }
+    .side-nav button:hover { color: white; background: rgba(255,255,255,.055); transform: translateX(2px); }
+    .side-nav button.active { color: #fff; background: #144139; box-shadow: inset 2px 0 var(--gold); }
+    .side-nav button.active svg { color: var(--gold-light); }
+    .nav-count {
+      margin-left: auto;
+      min-width: 20px;
+      height: 18px;
+      padding: 0 5px;
+      background: var(--gold);
+      color: #17332e;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 3px; }
+    .sidebar-bottom button {
+      border: 0;
+      background: transparent;
+      color: #9cb7b1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 11px;
+      border-radius: 7px;
+      font-size: 13px;
+      text-align: left;
+      transition: background .18s, color .18s;
+    }
+    .sidebar-bottom button:hover { color: white; background: rgba(255,255,255,.055); }
+    .standard-badge {
+      margin-top: 13px;
+      padding: 11px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #dcb366;
+    }
+    .standard-badge strong { color: #e8f0ed; font-size: 11px; display: block; }
+    .standard-badge span { color: #76968f; font-size: 9px; display: block; margin-top: 1px; }
+
+    /* ─── MAIN ─── */
+    .main { margin-left: 242px; min-width: 0; width: calc(100% - 242px); }
+
+    /* TOPBAR */
+    .topbar {
+      height: 68px;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      position: sticky;
+      top: 0;
+      z-index: 24;
+      backdrop-filter: blur(10px);
+    }
+    .mobile-brand { display: none; align-items: center; gap: 10px; color: #163c35; font: 700 14px "Manrope"; margin-right: 24px; }
+    .mobile-brand .brand-mark { width: 29px; height: 29px; font-size: 14px; box-shadow: none; }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #83908d;
+      width: min(370px, 34vw);
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      transition: border-color .15s;
+    }
+    .search-box:focus-within { border-color: #7eaaa3; }
+    .search-box input { border: 0; background: transparent; width: 100%; color: #31413d; font-size: 12px; outline: none; }
+    .search-box input::placeholder { color: #a3afac; }
+    .search-box kbd {
+      font: 10px "DM Sans";
+      white-space: nowrap;
+      color: #8b9693;
+      border: 1px solid #dfe5e3;
+      background: #f8faf9;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 13px; }
+    .ktm-clock {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-right: 1px solid #e3e9e7;
+      padding-right: 17px;
+      color: var(--forest);
+    }
+    .ktm-clock strong { display: block; font: 600 12px "Manrope"; color: #21312d; }
+    .ktm-clock span { display: block; color: #8b9794; font-size: 9px; margin-top: 1px; }
+    .notif-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid #e0e6e4;
+      background: white;
+      display: grid;
+      place-items: center;
+      color: #5d6b67;
+      position: relative;
+      transition: background .15s, color .15s;
+    }
+    .notif-btn:hover { background: #f5f8f7; color: var(--forest); }
+    .notif-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 1px solid white;
+      top: 7px;
+      right: 7px;
+    }
+    .notif-menu {
+      position: absolute;
+      z-index: 50;
+      right: 0;
+      top: 43px;
+      width: 270px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 50px rgba(15,39,34,.15);
+      padding: 15px;
+      animation: menuIn .16s ease-out;
+    }
+    .notif-menu strong { font: 700 12px "Manrope"; }
+    .notif-menu p { margin: 11px 0 0; font-size: 11px; color: #5b6c67; display: flex; align-items: center; gap: 8px; }
+    .alert-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--forest); flex: 0 0 auto; }
+    .alert-dot.gold { background: var(--gold); }
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: #173d36;
+      color: #f5e5c9;
+      display: grid;
+      place-items: center;
+      font: 700 10px "Manrope";
+    }
+
+    /* CONTENT */
+    .content { width: min(1440px, 100%); margin: 0 auto; padding: 31px 32px 60px; }
+
+    /* PAGE INTRO */
+    .page-intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 22px;
+      margin-bottom: 24px;
+      animation: riseIn .45s ease-out both;
+    }
+    .eyebrow { color: #0a685c; font-size: 9px; font-weight: 700; letter-spacing: 1.45px; text-transform: uppercase; margin: 0 0 7px; }
+    .page-intro h1 { font: 700 clamp(25px, 3vw, 34px)/1.1 "Manrope"; letter-spacing: -1.2px; color: #14231f; margin: 0; }
+    .page-intro > div > p:last-of-type { margin: 8px 0 0; color: #788682; font-size: 13px; }
+    .intro-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .period-select {
+      height: 37px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 1px solid #dce3e1;
+      background: white;
+      border-radius: 7px;
+      color: #5e6d69;
+    }
+    .period-select select { border: 0; outline: 0; appearance: none; background: transparent; color: #33443f; font-size: 11px; font-weight: 600; }
+    .btn-primary, .btn-secondary, .btn-text {
+      border-radius: 7px;
+      height: 37px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background .16s, border-color .16s, transform .16s;
+    }
+    .btn-primary { border: 1px solid var(--forest-dim); color: white; background: var(--forest); box-shadow: 0 5px 14px rgba(10,92,82,.14); padding: 0 14px; }
+    .btn-primary:hover { background: var(--forest-dark); transform: translateY(-1px); }
+    .btn-secondary { border: 1px solid var(--border); color: #40504b; background: white; padding: 0 13px; }
+    .btn-secondary:hover { border-color: #b9c7c3; background: #f9fbfa; }
+    .btn-text { height: 32px; padding: 0 10px; border: 1px solid #dce4e1; background: #fff; color: #47605a; font-size: 10px; }
+    .btn-text:hover { color: var(--forest); border-color: #a9c2bc; }
+
+    /* METRIC GRID */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      animation: riseIn .5s .05s ease-out both;
+    }
+    .metric-card {
+      min-width: 0;
+      padding: 19px 18px;
+      display: grid;
+      grid-template-columns: 35px 1fr;
+      gap: 12px;
+      position: relative;
+    }
+    .metric-card::after { content: ""; position: absolute; right: 0; top: 19px; bottom: 19px; width: 1px; background: #e7ecea; }
+    .metric-card:last-child::after { display: none; }
+    .metric-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--forest);
+      background: #e7f1ef;
+      transition: transform .2s;
+    }
+    .metric-card:hover .metric-icon { transform: translateY(-2px); }
+    .metric-icon.gold { color: #93651e; background: #f7eddc; }
+    .metric-label { margin: 0 0 4px; font-size: 10px; color: #778681; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .metric-value { margin: 0; font: 700 clamp(17px, 1.7vw, 22px) "Manrope"; color: #172722; letter-spacing: -.55px; }
+    .change-positive, .change-negative { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; }
+    .change-positive { color: #0a7567; }
+    .change-negative { color: #b6534e; }
+    .metric-detail { font-size: 9px; color: #9ba8a3; margin-top: 2px; }
+
+    /* DASHBOARD GRID */
+    .dashboard-grid { display: grid; gap: 15px; }
+    .grid-top { grid-template-columns: minmax(0, 1.55fr) minmax(310px, .75fr); margin-top: 15px; animation: riseIn .55s .1s ease-out both; }
+
+    /* PANELS */
+    .panel { background: white; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .panel-header {
+      min-height: 63px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 17px 18px 8px;
+    }
+    .panel-header h3 { margin: 0; color: #1e2e29; font: 700 14px "Manrope"; letter-spacing: -.25px; }
+    .panel-header .eyebrow { margin-bottom: 4px; }
+    .chart-legend { display: flex; align-items: center; gap: 12px; color: #71807c; font-size: 9px; padding-top: 5px; }
+    .chart-legend span { display: flex; align-items: center; gap: 5px; }
+    .chart-legend i { width: 13px; height: 2px; display: inline-block; }
+    .legend-revenue { background: var(--forest); }
+    .legend-gop { background: var(--gold); }
+    .legend-budget { border-top: 1px dashed #9da9a6; }
+    .chart-wrap { height: 236px; padding: 1px 15px 15px; }
+    .earnings-panel { padding-bottom: 15px; }
+    .status-tag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #eaf4f1;
+      color: #0b6e62;
+      padding: 5px 7px;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .earnings-amount { display: flex; justify-content: space-between; align-items: flex-end; margin: 8px 18px 19px; }
+    .earnings-amount > div > span { display: block; font-size: 9px; color: #7f8d89; margin-bottom: 4px; }
+    .earnings-amount strong { font: 700 22px "Manrope"; letter-spacing: -.5px; }
+    .profit-bridge { padding: 0 18px; display: grid; gap: 14px; }
+    .profit-bridge > div > span {
+      display: block;
+      height: 6px;
+      background: var(--forest);
+      border-radius: 10px;
+      min-width: 4px;
+      animation: growBar .7s ease-out both;
+      transform-origin: left;
+    }
+    .profit-bridge .bar-expenses { background: #c8d1ce; }
+    .profit-bridge .bar-profit { background: var(--gold); }
+    .profit-bridge label { margin-top: 6px; color: #778681; font-size: 9px; display: flex; justify-content: space-between; }
+    .profit-bridge label b { color: #3d4c48; font-weight: 600; }
+    .profit-footer { display: grid; grid-template-columns: 1fr 1fr; margin: 18px 18px 0; border-top: 1px solid #edf0ef; padding-top: 13px; }
+    .profit-footer span { color: #899591; font-size: 9px; }
+    .profit-footer span + span { padding-left: 14px; border-left: 1px solid #e7ecea; }
+    .profit-footer strong { display: block; color: #263a34; font: 700 13px "Manrope"; margin-top: 2px; }
+
+    /* CONTENT SECTION */
+    .content-section { margin-top: 43px; }
+    .scroll-section { scroll-margin-top: 88px; }
+    .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 14px; }
+    .section-heading h2 { margin: 0; color: #172722; font: 700 20px "Manrope"; letter-spacing: -.55px; }
+    .section-description { margin: 5px 0 0; color: #7b8985; font-size: 11px; }
+
+    /* TABLES */
+    .table-panel { overflow: hidden; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    thead th {
+      background: #f7f9f8;
+      border-bottom: 1px solid #e3e9e7;
+      color: #83908d;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: .85px;
+      text-align: left;
+      padding: 11px 16px;
+      font-weight: 700;
+    }
+    tbody td { border-bottom: 1px solid #edf1ef; color: var(--text-mid); font-size: 11px; padding: 13px 16px; }
+    tbody td strong { color: #263833; font-weight: 700; }
+    tbody td > span { display: block; color: #98a39f; font-size: 9px; margin-top: 2px; }
+    tbody tr { transition: background .15s; }
+    tbody tr:hover { background: #fafcfb; }
+    .profit-cell { color: var(--teal-profit); font-weight: 700; }
+    .mix-bar { width: 74px; height: 5px; border-radius: 5px; overflow: hidden; background: #edf1ef; }
+    .mix-bar span { display: block; height: 100%; border-radius: inherit; background: #2d776e; }
+    tfoot td { border: 0; background: #eef5f3; color: #153e36; font-weight: 700; padding: 13px 16px; }
+
+    /* RATIO STRIP */
+    .ratio-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid var(--border);
+      border-top: 0;
+      background: #fafcfb;
+      border-radius: 0 0 var(--radius) var(--radius);
+      overflow: hidden;
+    }
+    .ratio-strip > div { padding: 14px 16px; }
+    .ratio-strip > div + div { border-left: 1px solid #e4e9e7; }
+    .ratio-strip span { display: block; color: #7f8e89; font-size: 9px; }
+    .ratio-strip strong { display: block; color: #18332c; font: 700 14px "Manrope"; margin: 3px 0; }
+    .ratio-strip small { display: block; color: #a1aba8; font-size: 7.5px; }
+
+    /* PACKAGE */
+    .package-grid { grid-template-columns: minmax(300px, .75fr) minmax(450px, 1.25fr); }
+    .package-visual {
+      min-height: 282px;
+      display: grid;
+      grid-template-columns: 1fr .8fr;
+      align-items: center;
+      padding: 20px;
+    }
+    .donut-wrap { height: 210px; min-width: 210px; position: relative; margin: 0 auto; }
+    .donut-label {
+      pointer-events: none;
+      text-align: center;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .donut-label span { font-size: 8px; color: #8c9894; }
+    .donut-label strong { font: 700 15px "Manrope"; color: #18332c; margin: 3px 0 1px; }
+    .donut-label small { color: #0d796b; font-size: 8px; }
+    .package-legend { display: grid; gap: 13px; }
+    .package-legend > div { display: flex; justify-content: space-between; color: #5c6d68; font-size: 10px; }
+    .package-legend span { display: flex; align-items: center; gap: 7px; }
+    .package-legend i, .alloc-row i { width: 7px; height: 7px; border-radius: 2px; display: inline-block; flex: 0 0 auto; }
+    .package-legend strong { color: #2b403a; }
+    .alloc-table { padding: 9px 17px 13px; }
+    .alloc-head, .alloc-row { display: grid; grid-template-columns: 1.1fr .72fr .95fr; align-items: center; }
+    .alloc-head { padding: 8px 7px 10px; color: #8a9692; font-size: 8px; text-transform: uppercase; letter-spacing: .75px; }
+    .alloc-row {
+      min-height: 49px;
+      border-top: 1px solid #ebefee;
+      padding: 6px 7px;
+      font-size: 10px;
+    }
+    .alloc-row > span {
+      color: #344741;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+    .alloc-row > span small { color: #99a49f; font-size: 8px; font-weight: 400; margin-left: auto; }
+    .alloc-row > strong { color: #213932; font: 700 11px "Manrope"; }
+    .alloc-row > em { color: #6e7e79; font-size: 9px; font-style: normal; }
+    .alloc-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #0b6a5f;
+      padding: 11px 7px 0;
+      border-top: 1px solid #dfe7e4;
+      font-size: 9px;
+    }
+    .alloc-total span { display: flex; gap: 5px; align-items: center; }
+    .alloc-total strong { font-size: 10px; }
+
+    /* EXPENSES */
+    .expenses-grid { grid-template-columns: minmax(0, 1.45fr) minmax(290px, .65fr); }
+    .expense-table { min-width: 650px; }
+    .expense-table td { padding-top: 10px; padding-bottom: 10px; }
+    .favorable { color: var(--green-profit); font-weight: 700; }
+    .unfavorable { color: var(--red-loss); font-weight: 700; }
+    .favorable small, .unfavorable small { display: block; font-size: 7px; font-weight: 600; margin-top: 1px; }
+    .cost-col { display: grid; gap: 10px; }
+    .cost-card { padding: 15px; }
+    .cost-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .cost-card p { margin: 0 0 2px; color: #73827e; font-size: 9px; }
+    .cost-card strong { font: 700 22px "Manrope"; color: #19332c; }
+    .target-ok, .target-watch {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      font-size: 8px;
+      font-weight: 700;
+    }
+    .target-ok { background: #e9f4f1; color: #0b7668; }
+    .target-watch { background: #fbf2e2; color: #a76721; }
+    .target-line {
+      height: 6px;
+      border-radius: 5px;
+      margin: 14px 0 7px;
+      background: #ebefee;
+      position: relative;
+    }
+    .target-line span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: #0a665b;
+      animation: growBar .7s ease-out both;
+      transform-origin: left;
+    }
+    .beverage-cost .target-line span { background: var(--gold); }
+    .target-line i { position: absolute; top: -3px; width: 2px; height: 12px; background: #344641; border-radius: 2px; }
+    .cost-details { display: flex; justify-content: space-between; font-size: 8px; color: #8c9894; }
+    .guest-spend { display: flex; align-items: center; padding: 13px 14px; gap: 10px; }
+    .guest-icon {
+      width: 33px;
+      height: 33px;
+      border-radius: 8px;
+      background: #eef3f1;
+      color: var(--forest);
+      display: grid;
+      place-items: center;
+    }
+    .guest-spend p { margin: 0; font-size: 8px; color: #7e8c88; }
+    .guest-spend strong { font: 700 14px "Manrope"; color: #233a34; }
+    .guest-spend > span { margin-left: auto; }
+
+    /* AR */
+    .ar-overview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #163b34;
+      border: 1px solid #234c44;
+      border-radius: var(--radius) var(--radius) 0 0;
+      color: white;
+    }
+    .ar-overview > div { padding: 17px 19px; position: relative; }
+    .ar-overview > div + div::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 16px; width: 1px; background: rgba(255,255,255,.1); }
+    .ar-overview span { display: block; color: #9eb9b3; font-size: 9px; }
+    .ar-overview strong { display: block; color: #f4f8f7; font: 700 17px "Manrope"; margin: 3px 0; }
+    .ar-overview .risk-text { color: #f0c990; }
+    .ar-overview small { display: block; color: #70978e; font-size: 8px; }
+    .ar-grid { grid-template-columns: .85fr 1.15fr; gap: 0; }
+    .ar-grid .panel { border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
+    .ar-grid .panel + .panel { border-left: 0; border-bottom-left-radius: 0; }
+    .ar-grid .panel:first-child { border-bottom-right-radius: 0; }
+    .aging-chart { height: 236px; padding: 2px 10px 18px; }
+    .plain-link { border: 0; background: transparent; color: #0b6d61; font-size: 9px; font-weight: 700; padding: 5px; cursor: pointer; }
+    .invoice-panel { padding-bottom: 9px; }
+    .invoice-list { padding: 2px 18px; }
+    .invoice-row {
+      display: grid;
+      grid-template-columns: 33px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 0;
+      border-top: 1px solid #edf0ef;
+    }
+    .account-initial {
+      width: 31px;
+      height: 31px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background: #edf3f1;
+      color: #34675f;
+      font-size: 8px;
+      font-weight: 700;
+    }
+    .invoice-name strong { display: block; font-size: 10px; color: #31433d; }
+    .invoice-name span { display: block; color: #929e9a; font-size: 8px; margin-top: 2px; }
+    .invoice-amount { text-align: right; }
+    .invoice-amount strong { display: block; font-size: 10px; color: #31433d; }
+    .invoice-status {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #eaf4f1;
+      color: #0d7467;
+      font-size: 7px;
+      font-weight: 700;
+    }
+    .invoice-status.follow-up { background: #fbf2e3; color: #9c672b; }
+    .invoice-status.at-risk { background: #f9e9e7; color: #a8514c; }
+
+    /* STANDARDS BAND */
+    .standards-band {
+      border: 1px solid #315b52;
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      background: #0f342e;
+      color: white;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .standards-band::after { content: "12"; position: absolute; right: -4px; bottom: -48px; font: 700 130px "Manrope"; color: rgba(255,255,255,.025); }
+    .standards-copy { display: flex; gap: 14px; position: relative; z-index: 1; }
+    .standards-icon {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(224,177,98,.35);
+      background: rgba(208,155,70,.1);
+      color: #e0b162;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .standards-copy .eyebrow { color: #d8a958; }
+    .standards-copy h2 { color: white; }
+    .standards-copy p:last-of-type { margin: 6px 0 0; color: #92b0aa; font-size: 10px; line-height: 1.6; }
+    .standards-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; z-index: 1; }
+    .standards-list span { display: flex; gap: 6px; align-items: center; color: #c1d3cf; font-size: 9px; }
+    .standards-list svg { color: #d9aa5a; flex: 0 0 auto; }
+
+    /* REPORTS */
+    .report-list { border: 1px solid var(--border); background: white; border-radius: var(--radius); overflow: hidden; }
+    .report-row {
+      min-height: 59px;
+      padding: 9px 12px;
+      display: grid;
+      grid-template-columns: 36px 1fr auto 36px;
+      align-items: center;
+      gap: 11px;
+      border-bottom: 1px solid #e9eeec;
+      transition: background .15s;
+    }
+    .report-row:last-child { border: 0; }
+    .report-row:hover { background: #fafcfb; }
+    .report-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: #edf4f2;
+      color: #0a6257;
+      display: grid;
+      place-items: center;
+    }
+    .report-row > div > strong { display: block; color: #2b3e38; font-size: 11px; }
+    .report-row > div > span { display: block; color: #919d99; font-size: 8px; margin-top: 2px; }
+    .report-period { color: #84918d; background: #f3f6f5; padding: 4px 7px; border-radius: 5px; font-size: 8px; }
+    .report-row button {
+      width: 31px;
+      height: 31px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: white;
+      color: #53645f;
+      display: grid;
+      place-items: center;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .report-row button:hover { color: white; border-color: var(--forest); background: var(--forest); }
+    .download-band {
+      background: #edf4f2;
+      border: 1px solid #d6e3df;
+      border-radius: 9px;
+      margin-top: 10px;
+      padding: 14px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .download-band > div { display: flex; align-items: center; gap: 11px; color: var(--forest); }
+    .download-band strong { display: block; color: #203b34; font-size: 11px; }
+    .download-band span { display: block; color: #7a8e88; font-size: 8px; margin-top: 2px; }
+
+    /* FOOTER */
+    footer { display: flex; justify-content: space-between; gap: 15px; color: #99a49f; border-top: 1px solid #dfe5e3; padding-top: 18px; margin-top: 42px; font-size: 8px; }
+
+    /* EDITOR OVERLAY */
+    .editor-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
+      background: rgba(6,26,22,.42);
+      backdrop-filter: blur(3px);
+      animation: fadeIn .2s;
+    }
+    .overlay-close { position: absolute; inset: 0; border: 0; background: transparent; cursor: default; }
+    .editor-panel {
+      position: relative;
+      width: min(620px, 94vw);
+      height: 100%;
+      background: #f7f9f8;
+      box-shadow: -20px 0 60px rgba(5,26,22,.16);
+      display: flex;
+      flex-direction: column;
+      animation: slideIn .25s ease-out;
+      overflow-y: auto;
+    }
+    .editor-header {
+      padding: 23px 25px 18px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .editor-header h2 { margin: 0; font: 700 20px "Manrope"; color: #172722; }
+    .editor-header > div > span { display: block; color: #81908b; font-size: 10px; margin-top: 4px; }
+    .editor-body { padding: 18px 24px 28px; flex: 1; }
+    .editor-body fieldset { border: 0; margin: 0 0 20px; padding: 0; }
+    .editor-body legend {
+      width: 100%;
+      padding: 0 0 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--forest);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 10px; }
+    .editor-grid label span { display: block; color: #65746f; font-size: 9px; margin: 0 0 4px 2px; }
+    .editor-grid input {
+      width: 100%;
+      height: 36px;
+      border: 1px solid #d9e1de;
+      border-radius: 7px;
+      background: white;
+      color: #243a34;
+      padding: 0 10px;
+      font-size: 11px;
+      transition: border-color .15s;
+    }
+    .editor-grid input:focus { border-color: #7eaaa3; }
+    .editor-footer {
+      padding: 13px 24px;
+      border-top: 1px solid var(--border);
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      z-index: 150;
+      right: 24px;
+      bottom: 24px;
+      background: #123a33;
+      color: white;
+      box-shadow: 0 14px 40px rgba(7,39,33,.2);
+      border: 1px solid #31584f;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 15px;
+      font-size: 10px;
+      animation: toastIn .25s ease-out;
+    }
+    .toast svg { color: #dfb064; flex: 0 0 auto; }
+
+    /* MOBILE NAV */
+    .mobile-nav { display: none; }
+
+    /* ANIMATIONS */
+    @keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes growBar { from { transform: scaleX(.05); } to { transform: scaleX(1); } }
+    @keyframes menuIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: .6; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 1180px) {
+      .content { padding-left: 22px; padding-right: 22px; }
+      .grid-top { grid-template-columns: 1.35fr .85fr; }
+      .metric-card { padding-left: 13px; padding-right: 13px; grid-template-columns: 31px 1fr; gap: 9px; }
+      .metric-icon { width: 31px; height: 31px; }
+      .package-visual { grid-template-columns: 1fr; }
+      .donut-wrap { margin: 0 auto; }
+      .package-legend { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 1023px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; width: 100%; }
+      .mobile-brand { display: flex; }
+      .mobile-nav {
+        position: fixed;
+        z-index: 60;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(255,255,255,.96);
+        border-top: 1px solid #dce4e1;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        backdrop-filter: blur(12px);
+      }
+      .mobile-nav button {
+        border: 0;
+        background: transparent;
+        color: #7d8b87;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 8px;
+      }
+      .mobile-nav button.active { color: var(--forest); }
+      .content { padding-bottom: 86px; }
+    }
+    @media (max-width: 820px) {
+      .topbar { padding: 0 18px; }
+      .search-box { display: none; }
+      .page-intro { align-items: flex-start; flex-direction: column; }
+      .intro-actions { width: 100%; flex-wrap: wrap; }
+      .intro-actions .btn-primary, .intro-actions .btn-secondary { flex: 1; }
+      .period-select { flex: 1 1 100%; justify-content: center; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .metric-card:nth-child(2)::after { display: none; }
+      .metric-card:nth-child(-n+2) { border-bottom: 1px solid #e7ecea; }
+      .grid-top, .package-grid, .expenses-grid { grid-template-columns: 1fr; }
+      .package-visual { grid-template-columns: 1fr 1fr; }
+      .ar-overview { grid-template-columns: 1fr 1fr; }
+      .ar-overview > div:nth-child(3)::before { display: none; }
+      .ar-overview > div:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.1); }
+      .ar-grid { grid-template-columns: 1fr; }
+      .ar-grid .panel + .panel { border-left: 1px solid var(--border); border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
+      .ar-grid .panel:first-child { border-radius: 0; }
+      .ratio-strip { grid-template-columns: repeat(3, 1fr); }
+      .ratio-strip > div:nth-child(4) { border-left: 0; border-top: 1px solid #e4e9e7; }
+      .ratio-strip > div:nth-child(5) { border-top: 1px solid #e4e9e7; }
+      .standards-band { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .content { padding: 22px 13px 78px; }
+      .topbar { height: 61px; padding: 0 13px; }
+      .mobile-brand { margin-right: 8px; }
+      .ktm-clock { border: 0; padding-right: 3px; }
+      .ktm-clock svg { display: none; }
+      .ktm-clock span { display: none; }
+      .topbar-right { gap: 7px; }
+      .avatar { display: none; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric-card:not(:last-child)::after { display: none; }
+      .metric-card { border-bottom: 1px solid #e7ecea; }
+      .metric-card:last-child { border: 0; }
+      .chart-legend { display: none; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .package-visual { grid-template-columns: 1fr; }
+      .alloc-head, .alloc-row { grid-template-columns: 1.1fr .8fr; }
+      .alloc-head span:last-child, .alloc-row em { display: none; }
+      .ratio-strip { grid-template-columns: 1fr 1fr; }
+      .ratio-strip > div { border-top: 1px solid #e4e9e7; }
+      .ratio-strip > div:nth-child(odd) { border-left: 0; }
+      .ar-overview { grid-template-columns: 1fr; }
+      .ar-overview > div + div::before { display: none; }
+      .ar-overview > div { border-bottom: 1px solid rgba(255,255,255,.09); }
+      .standards-band { padding: 20px 16px; }
+      .standards-copy { flex-direction: column; }
+      .standards-list { grid-template-columns: 1fr; }
+      .report-row { grid-template-columns: 36px 1fr 34px; }
+      .report-period { display: none; }
+      .download-band { align-items: flex-start; flex-direction: column; gap: 12px; }
+      .download-band .btn-primary { width: 100%; }
+      footer { flex-direction: column; }
+      .editor-grid { grid-template-columns: 1fr; }
+      .editor-header, .editor-body, .editor-footer { padding-left: 16px; padding-right: 16px; }
+      .editor-footer { gap: 8px; }
+      .editor-footer button { flex: 1; }
+      .toast { right: 13px; bottom: 72px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark"><span>G</span></div>
+    <div>
+      <div class="brand-name">Gwara Fin</div>
+      <div class="brand-sub">Hotel accounting</div>
+    </div>
+  </div>
+
+  <div class="prop-switch">
+    <div class="prop-icon">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <div style="min-width:0;flex:1">
+      <p>Active property</p>
+      <strong>Gwara Heritage</strong>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+
+  <p class="side-label">Workspace</p>
+  <nav class="side-nav">
+    <button class="active" data-target="overview">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Overview</span>
+    </button>
+    <button data-target="grr">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>GRR & KPIs</span>
+    </button>
+    <button data-target="expenses">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Expenses</span>
+    </button>
+    <button data-target="receivables">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span>Receivables</span>
+      <span class="nav-count">4</span>
+    </button>
+    <button data-target="reports">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Reports</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button data-target="standards">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      USALI mapping
+    </button>
+    <button id="open-editor">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Report settings
+    </button>
+    <div class="standard-badge">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div><strong>12th Edition</strong><span>Reporting structure active</span></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <header class="topbar">
+    <div class="mobile-brand">
+      <div class="brand-mark"><span>G</span></div>
+      <strong>Gwara Fin</strong>
+    </div>
+
+    <div class="search-box">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search reports, invoices..." />
+      <kbd>Cmd K</kbd>
+    </div>
+
+    <div class="topbar-right">
+      <div class="ktm-clock">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><strong id="ktm-time">--:--:--</strong><span id="ktm-date">-- --- ---- | Kathmandu</span></div>
+      </div>
+
+      <div style="position:relative">
+        <button class="notif-btn" id="notif-btn" aria-label="Notifications">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <div class="notif-menu" id="notif-menu" style="display:none">
+          <strong>Finance alerts</strong>
+          <p><span class="alert-dot gold"></span>2 AR accounts require follow up</p>
+          <p><span class="alert-dot"></span>December GRR is reconciled</p>
+        </div>
+      </div>
+
+      <div class="avatar">AS</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- PAGE INTRO -->
+    <section id="overview" class="page-intro scroll-section">
+      <div>
+        <p class="eyebrow">Financial command centre</p>
+        <h1>Executive overview</h1>
+        <p>One clear view of revenue, profitability, cost controls and collections.</p>
+      </div>
+      <div class="intro-actions">
+        <label class="period-select">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <select id="period-select">
+            <option>December 2025</option>
+            <option>November 2025</option>
+            <option>FY 2025</option>
+          </select>
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </label>
+        <button class="btn-secondary" id="open-editor-2">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Update inputs
+        </button>
+        <button class="btn-primary" id="export-all">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export all
+        </button>
+      </div>
+    </section>
+
+    <!-- METRIC CARDS -->
+    <section class="metric-grid" aria-label="Executive metrics">
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+          <p class="metric-label">Gross operating revenue</p>
+          <p class="metric-value" id="m-gor">NPR 0</p>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:4px">
+            <span class="change-positive">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              5.2%
+            </span>
+            <span class="metric-detail">vs budget</span>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <div>
+          <p class="metric-label">Gross operating profit</p>
+          <p class="metric-value" id="m-gop">NPR 0</p>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:4px">
+            <span class="change-positive">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              8.4%
+            </span>
+            <span class="metric-detail" id="m-gop-margin">0.0% margin</span>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon gold">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <div>
+          <p class="metric-label">Occupancy</p>
+          <p class="metric-value" id="m-occ">0.0%</p>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:4px">
+            <span class="change-positive">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              2.8%
+            </span>
+            <span class="metric-detail">vs last month</span>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <p class="metric-label">RevPAR</p>
+          <p class="metric-value" id="m-revpar">NPR 0</p>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:4px">
+            <span class="change-positive">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              6.1%
+            </span>
+            <span class="metric-detail" id="m-adr">ADR NPR 0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARTS ROW -->
+    <section class="dashboard-grid grid-top">
+      <div class="panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Performance</p><h3>Revenue and GOP trend</h3></div>
+          <div class="chart-legend">
+            <span><i class="legend-revenue"></i> Revenue</span>
+            <span><i class="legend-gop"></i> GOP</span>
+            <span><i class="legend-budget"></i> Budget</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="trend-chart" style="width:100%;height:100%"></canvas>
+        </div>
+      </div>
+      <div class="panel earnings-panel">
+        <div class="panel-header">
+          <div><p class="eyebrow">Profitability</p><h3>Earnings vs expenses</h3></div>
+          <span class="status-tag">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Reconciled
+          </span>
+        </div>
+        <div class="earnings-amount">
+          <div><span>Adjusted operating result</span><strong id="aor-value">NPR 0</strong></div>
+          <span class="change-positive">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            9.2%
+          </span>
+        </div>
+        <div class="profit-bridge">
+          <div><span style="width:100%"></span><label>Gross revenue <b id="pb-gor">NPR 0</b></label></div>
+          <div><span class="bar-expenses" id="pb-exp"></span><label>Total expenses <b id="pb-exp-val">NPR 0</b></label></div>
+          <div><span class="bar-profit" id="pb-profit"></span><label>Operating result <b id="pb-aor">NPR 0</b></label></div>
+        </div>
+        <div class="profit-footer">
+          <span>Expense ratio <strong id="pf-exp-ratio">0.0%</strong></span>
+          <span>GOP margin <strong id="pf-gop-margin">0.0%</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRR TABLE -->
+    <section id="grr" class="content-section scroll-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Gross Revenue Report</p>
+          <h2>GRR and departmental performance</h2>
+          <p class="section-description">Revenue and direct expenses mapped to USALI operating schedules.</p>
+        </div>
+        <button class="btn-text" id="export-dept">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Export department P&L
+        </button>
+      </div>
+      <div class="panel table-panel">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Department</th><th>Revenue</th><th>Dept. expenses</th><th>Dept. profit</th><th>Profit margin</th><th>Mix</th></tr></thead>
+            <tbody id="dept-tbody"></tbody>
+            <tfoot id="dept-tfoot"></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="ratio-strip" id="ratio-strip">
+        <div><span>ADR</span><strong id="r-adr">NPR 0</strong><small>Room rev / rooms sold</small></div>
+        <div><span>TRevPAR</span><strong id="r-trevpar">NPR 0</strong><small>Total rev / rooms avail</small></div>
+        <div><span>GOPPAR</span><strong id="r-goppar">NPR 0</strong><small>GOP / rooms avail</small></div>
+        <div><span>CPOR</span><strong id="r-cpor">NPR 0</strong><small>Rooms exp / rooms sold</small></div>
+        <div><span>Guests / room</span><strong id="r-gpr">0.00</strong><small>Total guests / rooms sold</small></div>
+      </div>
+    </section>
+
+    <!-- PACKAGE SEGREGATION -->
+    <section class="content-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">All-inclusive reporting</p>
+          <h2>Package segregation</h2>
+          <p class="section-description">Package consideration allocated by relative stand-alone selling value before departmental recognition.</p>
+        </div>
+      </div>
+      <div class="dashboard-grid package-grid">
+        <div class="panel package-visual">
+          <div class="donut-wrap">
+            <canvas id="package-chart" width="210" height="210" style="display:block;margin:0 auto"></canvas>
+            <div class="donut-label">
+              <span>Package revenue</span>
+              <strong id="pkg-total">NPR 0</strong>
+              <small>100% allocated</small>
+            </div>
+          </div>
+          <div class="package-legend" id="pkg-legend"></div>
+        </div>
+        <div class="panel alloc-table">
+          <div class="alloc-head"><span>Component</span><span>Allocation</span><span>Basis</span></div>
+          <div id="alloc-rows"></div>
+          <div class="alloc-total">
+            <span>
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Allocation check
+            </span>
+            <strong>NPR 0 variance</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section id="expenses" class="content-section scroll-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Cost control</p>
+          <h2>Expenses and operating costs</h2>
+          <p class="section-description">Departmental, undistributed and below-GOP expense visibility against budget.</p>
+        </div>
+        <button class="btn-text" id="export-expense">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Expense schedule
+        </button>
+      </div>
+      <div class="dashboard-grid expenses-grid">
+        <div class="panel table-panel">
+          <div class="table-scroll">
+            <table class="expense-table">
+              <thead><tr><th>Expense schedule</th><th>Actual</th><th>Budget</th><th>Variance</th></tr></thead>
+              <tbody id="expense-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="cost-col">
+          <div class="panel cost-card">
+            <div class="cost-card-top">
+              <div><p>Food cost</p><strong id="food-cost-pct">0.0%</strong></div>
+              <span class="target-ok" id="food-status">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Within target
+              </span>
+            </div>
+            <div class="target-line"><span id="food-bar"></span><i style="left:80%"></i></div>
+            <div class="cost-details"><span id="food-cogs">COGS NPR 0</span><span>Target &lt;= 32.0%</span></div>
+          </div>
+          <div class="panel cost-card beverage-cost">
+            <div class="cost-card-top">
+              <div><p>Beverage cost</p><strong id="bev-cost-pct">0.0%</strong></div>
+              <span class="target-watch" id="bev-status">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                1.0% over
+              </span>
+            </div>
+            <div class="target-line"><span id="bev-bar"></span><i style="left:75%"></i></div>
+            <div class="cost-details"><span id="bev-cogs">COGS NPR 0</span><span>Target &lt;= 27.0%</span></div>
+          </div>
+          <div class="panel guest-spend">
+            <div class="guest-icon">
+              <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <p>Average F&amp;B spend / guest</p>
+              <strong id="avg-spend">NPR 0</strong>
+            </div>
+            <span class="change-positive">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+              4.6%
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECEIVABLES -->
+    <section id="receivables" class="content-section scroll-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Accounts receivable</p>
+          <h2>AR aging and collections</h2>
+          <p class="section-description">Corporate and travel-agent balances prioritized by collection risk.</p>
+        </div>
+        <button class="btn-text" id="export-ar">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          AR aging report
+        </button>
+      </div>
+      <div class="ar-overview">
+        <div><span>Total receivables</span><strong id="ar-total">NPR 0</strong><small id="ar-total-pct">0.0% of gross revenue</small></div>
+        <div><span>Current</span><strong id="ar-current">NPR 0</strong><small id="ar-current-pct">0.0% of total AR</small></div>
+        <div><span>Over 60 days</span><strong class="risk-text" id="ar-over60">NPR 0</strong><small>11.4% requires action</small></div>
+        <div><span>Collection rate</span><strong>86.4%</strong><small>+3.2% vs last month</small></div>
+      </div>
+      <div class="dashboard-grid ar-grid">
+        <div class="panel">
+          <div class="panel-header"><div><p class="eyebrow">Outstanding balance</p><h3>AR aging distribution</h3></div></div>
+          <div class="aging-chart"><canvas id="ar-chart" style="width:100%;height:100%"></canvas></div>
+        </div>
+        <div class="panel invoice-panel">
+          <div class="panel-header">
+            <div><p class="eyebrow">Collection queue</p><h3>Priority accounts</h3></div>
+            <button class="plain-link" id="review-all">Review all</button>
+          </div>
+          <div class="invoice-list" id="invoice-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USALI STANDARDS -->
+    <section id="standards" class="content-section scroll-section">
+      <div class="standards-band">
+        <div class="standards-copy">
+          <div class="standards-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div>
+            <p class="eyebrow">Controls and classification</p>
+            <h2>USALI 12th Edition mapping</h2>
+            <p>Management presentation includes current departmental schedules and new operating disclosures effective 1 January 2026.</p>
+          </div>
+        </div>
+        <div class="standards-list">
+          <span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Executive lounge costs
+          </span>
+          <span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Energy, water &amp; waste
+          </span>
+          <span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Payroll FTE schedule
+          </span>
+          <span>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            All-inclusive allocation
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="content-section scroll-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Reporting centre</p>
+          <h2>Download-ready finance reports</h2>
+          <p class="section-description">Each workbook is formatted as a separate reporting schedule for review and reconciliation.</p>
+        </div>
+      </div>
+      <div class="report-list" id="report-list">
+        <div class="report-row" data-report="GRR Summary">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div><strong>GRR Summary</strong><span>Gross revenue, GOP and adjusted operating result</span></div>
+          <span class="report-period" id="report-period">December 2025</span>
+          <button aria-label="Download GRR Summary">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+        <div class="report-row" data-report="USALI Metrics">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div><strong>USALI Metrics</strong><span>Occupancy, ADR, RevPAR, TRevPAR, GOPPAR and CPOR</span></div>
+          <span class="report-period">December 2025</span>
+          <button aria-label="Download USALI Metrics">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+        <div class="report-row" data-report="Department P&L">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <div><strong>Department P&amp;L</strong><span>Schedules 1 to 4 departmental profitability</span></div>
+          <span class="report-period">December 2025</span>
+          <button aria-label="Download Department P&L">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+        <div class="report-row" data-report="Package Allocation">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div><strong>Package Allocation</strong><span>Rooms, food, beverage and experience segregation</span></div>
+          <span class="report-period">December 2025</span>
+          <button aria-label="Download Package Allocation">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+        <div class="report-row" data-report="Expense Schedule">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div><strong>Expense Schedule</strong><span>Actual, budget and favorable variance by schedule</span></div>
+          <span class="report-period">December 2025</span>
+          <button aria-label="Download Expense Schedule">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+        <div class="report-row" data-report="AR Aging">
+          <div class="report-icon">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <div><strong>AR Aging</strong><span>Aging summary and open customer invoice detail</span></div>
+          <span class="report-period">December 2025</span>
+          <button aria-label="Download AR Aging">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="download-band">
+        <div>
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <div><strong>Complete Gwara Fin finance workbook</strong><span>All six schedules in one reconciled Excel file</span></div>
+        </div>
+        <button class="btn-primary" id="download-full">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .xlsx
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      <span>Gwara Fin | Hotel Finance Intelligence</span>
+      <span>Management reporting only. Final statutory treatment should be reviewed by a qualified accountant.</span>
+    </footer>
+  </div>
+</main>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+  <button data-target="overview" class="active">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <span>Overview</span>
+  </button>
+  <button data-target="grr">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <span>GRR</span>
+  </button>
+  <button data-target="expenses">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <span>Expenses</span>
+  </button>
+  <button data-target="receivables">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    <span>AR</span>
+  </button>
+  <button data-target="reports">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <span>Reports</span>
+  </button>
+</nav>
+
+<!-- EDITOR OVERLAY -->
+<div class="editor-overlay" id="editor-overlay" style="display:none">
+  <button class="overlay-close" id="editor-close"></button>
+  <div class="editor-panel">
+    <div class="editor-header">
+      <div>
+        <p class="eyebrow">Live calculator</p>
+        <h2>Update operating inputs</h2>
+        <span>All KPIs and reports recalculate automatically.</span>
+      </div>
+      <button class="notif-btn" id="editor-close-btn" aria-label="Close">
+        <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="editor-body" id="editor-body"></div>
+    <div class="editor-footer">
+      <button class="btn-secondary" id="reset-data">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.56"/></svg>
+        Reset demo
+      </button>
+      <button class="btn-primary" id="save-data">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Save and recalculate
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" style="display:none">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const DEFAULT_DATA = {
+  roomsAvailable: 2160,
+  roomsSold: 1652,
+  guests: 2348,
+  roomRevenue: 16842500,
+  foodRevenue: 6480000,
+  beverageRevenue: 2260000,
+  otherRevenue: 1765000,
+  miscIncome: 425000,
+  roomsDeptExpense: 4210625,
+  foodCost: 1944000,
+  beverageCost: 632800,
+  fbPayroll: 1520000,
+  fbOtherExpense: 780000,
+  otherDeptExpense: 820000,
+  adminGeneral: 1540000,
+  salesMarketing: 1110000,
+  informationSystems: 540000,
+  propertyOperations: 1240000,
+  utilities: 940000,
+  managementFees: 535000,
+  nonOperating: 1225000,
+};
+
+const INPUT_FIELDS = [
+  { key: "roomsAvailable", label: "Available room nights", group: "Operating volume" },
+  { key: "roomsSold", label: "Occupied room nights", group: "Operating volume" },
+  { key: "guests", label: "Guests in house", group: "Operating volume" },
+  { key: "roomRevenue", label: "Rooms revenue", group: "Revenue (NPR)" },
+  { key: "foodRevenue", label: "Food revenue", group: "Revenue (NPR)" },
+  { key: "beverageRevenue", label: "Beverage revenue", group: "Revenue (NPR)" },
+  { key: "otherRevenue", label: "Other operated revenue", group: "Revenue (NPR)" },
+  { key: "miscIncome", label: "Miscellaneous income", group: "Revenue (NPR)" },
+  { key: "roomsDeptExpense", label: "Rooms department expense", group: "Department expenses (NPR)" },
+  { key: "foodCost", label: "Cost of food sales", group: "Department expenses (NPR)" },
+  { key: "beverageCost", label: "Cost of beverage sales", group: "Department expenses (NPR)" },
+  { key: "fbPayroll", label: "F&B payroll", group: "Department expenses (NPR)" },
+  { key: "fbOtherExpense", label: "F&B other expense", group: "Department expenses (NPR)" },
+  { key: "otherDeptExpense", label: "Other department expense", group: "Department expenses (NPR)" },
+  { key: "adminGeneral", label: "Administrative & General", group: "Undistributed expenses (NPR)" },
+  { key: "salesMarketing", label: "Sales & Marketing", group: "Undistributed expenses (NPR)" },
+  { key: "informationSystems", label: "Information systems", group: "Undistributed expenses (NPR)" },
+  { key: "propertyOperations", label: "Property operations", group: "Undistributed expenses (NPR)" },
+  { key: "utilities", label: "Energy, water & waste", group: "Undistributed expenses (NPR)" },
+  { key: "managementFees", label: "Management fees", group: "Below GOP (NPR)" },
+  { key: "nonOperating", label: "Non-operating expenses", group: "Below GOP (NPR)" },
+];
+
+const EXPENSE_BUDGETS = {
+  "Departmental expenses": 10420000,
+  "Administrative & General": 1480000,
+  "Information systems": 560000,
+  "Sales & Marketing": 1180000,
+  "Property operations": 1260000,
+  "Energy, water & waste": 980000,
+  "Management fees": 540000,
+  "Non-operating": 1190000,
+};
+
+const PACKAGE_DATA = [
+  { name: "Rooms", value: 5320000, share: 66.7, method: "Stand-alone selling price", color: "#0a5c52" },
+  { name: "Food", value: 1780000, share: 22.3, method: "Menu fair value", color: "#d09b46" },
+  { name: "Beverage", value: 620000, share: 7.8, method: "Menu fair value", color: "#588f88" },
+  { name: "Experiences", value: 260000, share: 3.2, method: "Direct allocation", color: "#a7b3b0" },
+];
+
+const INVOICES = [
+  { account: "Himalayan Travels", reference: "INV-25124", due: "08 Jan 2026", amount: 820000, bucket: "Current", status: "On track" },
+  { account: "Summit Airlines", reference: "INV-25118", due: "28 Dec 2025", amount: 645000, bucket: "1-30", status: "Follow up" },
+  { account: "Embassy Events", reference: "INV-25096", due: "12 Dec 2025", amount: 480000, bucket: "1-30", status: "Follow up" },
+  { account: "MICE Nepal", reference: "INV-25072", due: "21 Nov 2025", amount: 365000, bucket: "31-60", status: "At risk" },
+];
+
+const TREND_DATA = [
+  { month: "Jul", revenue: 21.2, gop: 7.4, budget: 20.4 },
+  { month: "Aug", revenue: 22.8, gop: 8.1, budget: 21.1 },
+  { month: "Sep", revenue: 24.1, gop: 8.8, budget: 22.6 },
+  { month: "Oct", revenue: 26.7, gop: 10.2, budget: 24.8 },
+  { month: "Nov", revenue: 25.5, gop: 9.6, budget: 25.1 },
+  { month: "Dec", revenue: 27.8, gop: 10.7, budget: 26.4 },
+];
+
+const AR_DATA = [
+  { label: "Current", value: 1960000, color: "#0a5c52" },
+  { label: "1-30 days", value: 1180000, color: "#5f958e" },
+  { label: "31-60 days", value: 650000, color: "#d09b46" },
+  { label: "61-90 days", value: 310000, color: "#c66f50" },
+  { label: "90+ days", value: 180000, color: "#a94d48" },
+];
+
+let hotelData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let period = "December 2025";
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function fmtNPR(v, compact = true) {
+  if (compact && Math.abs(v) >= 10000000) return "NPR " + (v / 10000000).toFixed(2) + " Cr";
+  if (compact && Math.abs(v) >= 100000) return "NPR " + (v / 100000).toFixed(2) + " L";
+  return "NPR " + Math.round(v).toLocaleString("en-IN");
+}
+function fmtPct(v) { return v.toFixed(1) + "%"; }
+
+function calcMetrics() {
+  const d = hotelData;
+  const grossRevenue = d.roomRevenue + d.foodRevenue + d.beverageRevenue + d.otherRevenue + d.miscIncome;
+  const fbExpense = d.foodCost + d.beverageCost + d.fbPayroll + d.fbOtherExpense;
+  const departmentalExpenses = d.roomsDeptExpense + fbExpense + d.otherDeptExpense;
+  const undistributedExpenses = d.adminGeneral + d.salesMarketing + d.informationSystems + d.propertyOperations + d.utilities;
+  const gop = grossRevenue - departmentalExpenses - undistributedExpenses;
+  const adjustedOperatingProfit = gop - d.managementFees - d.nonOperating;
+  const totalExpenses = departmentalExpenses + undistributedExpenses + d.managementFees + d.nonOperating;
+  const occupancy = d.roomsAvailable ? (d.roomsSold / d.roomsAvailable) * 100 : 0;
+  const adr = d.roomsSold ? d.roomRevenue / d.roomsSold : 0;
+  const revpar = d.roomsAvailable ? d.roomRevenue / d.roomsAvailable : 0;
+  const trevpar = d.roomsAvailable ? grossRevenue / d.roomsAvailable : 0;
+  const goppar = d.roomsAvailable ? gop / d.roomsAvailable : 0;
+  const cpor = d.roomsSold ? d.roomsDeptExpense / d.roomsSold : 0;
+  const gopMargin = grossRevenue ? (gop / grossRevenue) * 100 : 0;
+  const expenseRatio = grossRevenue ? (totalExpenses / grossRevenue) * 100 : 0;
+  const foodCostPct = d.foodRevenue ? (d.foodCost / d.foodRevenue) * 100 : 0;
+  const bevCostPct = d.beverageRevenue ? (d.beverageCost / d.beverageRevenue) * 100 : 0;
+  const avgSpend = d.guests ? (d.foodRevenue + d.beverageRevenue) / d.guests : 0;
+  const guestsPerRoom = d.roomsSold ? d.guests / d.roomsSold : 0;
+  return {
+    grossRevenue, fbExpense, departmentalExpenses, undistributedExpenses,
+    gop, adjustedOperatingProfit, totalExpenses, occupancy, adr, revpar,
+    trevpar, goppar, cpor, gopMargin, expenseRatio, foodCostPct, bevCostPct,
+    avgSpend, guestsPerRoom, fbExpense,
+  };
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  document.getElementById("toast-msg").textContent = msg;
+  toast.style.display = "flex";
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.style.display = "none"; }, 2600);
+}
+
+// ═══════════════════════════════════════════════════════
+// KATHMANDU CLOCK
+// ═══════════════════════════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const ktmDate = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kathmandu", weekday: "short", day: "2-digit", month: "short", year: "numeric" }).format(now);
+  const ktmTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kathmandu", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(now);
+  document.getElementById("ktm-time").textContent = ktmTime;
+  document.getElementById("ktm-date").textContent = ktmDate + " | Kathmandu";
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+document.querySelectorAll("[data-target]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+    document.querySelectorAll("[data-target]").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(`[data-target="${target}"]`).forEach(b => b.classList.add("active"));
+    document.getElementById(target).scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════
+const SEARCH_MAP = {
+  grr: "grr revenue room occupancy adr revpar trevpar goppar package",
+  expenses: "expense food beverage cost payroll utilities energy waste",
+  receivables: "ar receivable aging invoice collection account",
+  reports: "report download excel export workbook",
+  standards: "usali standard mapping compliance schedule",
+};
+
+document.getElementById("search-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const q = e.target.value.trim().toLowerCase();
+    if (!q) return;
+    const dest = Object.entries(SEARCH_MAP).find(([k, v]) => v.includes(q));
+    if (dest) {
+      document.querySelectorAll("[data-target]").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(`[data-target="${dest[0]}"]`).forEach(b => b.classList.add("active"));
+      document.getElementById(dest[0]).scrollIntoView({ behavior: "smooth", block: "start" });
+      showToast("Showing results for " + e.target.value);
+    } else {
+      showToast("No report matched " + e.target.value);
+    }
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    document.getElementById("search-input").focus();
+  }
+});
+
+// NOTIFICATIONS
+document.getElementById("notif-btn").addEventListener("click", () => {
+  const menu = document.getElementById("notif-menu");
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".notif-btn") && !e.target.closest(".notif-menu")) {
+    document.getElementById("notif-menu").style.display = "none";
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// CHART: TREND (CANVAS)
+// ═══════════════════════════════════════════════════════
+function drawTrendChart() {
+  const canvas = document.getElementById("trend-chart");
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + "px";
+  canvas.style.height = rect.height + "px";
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+  const pad = { top: 16, right: 24, bottom: 36, left: 48 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+  const data = TREND_DATA;
+  const maxV = 32;
+
+  // Grid lines
+  ctx.strokeStyle = "#e7ecea";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 5]);
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ch / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+    ctx.fillStyle = "#7b8a86"; ctx.font = "11px DM Sans";
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    ctx.fillText((maxV - maxV * i / 4).toFixed(0) + "M", pad.left - 6, y);
+  }
+  ctx.setLineDash([]);
+
+  // X axis labels
+  ctx.fillStyle = "#7b8a86"; ctx.font = "12px DM Sans";
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  data.forEach((d, i) => {
+    const x = pad.left + (cw / (data.length - 1)) * i;
+    ctx.fillText(d.month, x, pad.top + ch + 10);
+  });
+
+  function drawLine(key, color, dashed, dotColor) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = dashed ? 1.5 : 2.5;
+    if (dashed) ctx.setLineDash([5, 5]);
+    data.forEach((d, i) => {
+      const x = pad.left + (cw / (data.length - 1)) * i;
+      const y = pad.top + ch - (d[key] / maxV) * ch;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Dots
+    if (!dashed) {
+      data.forEach((d, i) => {
+        const x = pad.left + (cw / (data.length - 1)) * i;
+        const y = pad.top + ch - (d[key] / maxV) * ch;
+        ctx.beginPath();
+        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor || color;
+        ctx.fill();
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+  }
+
+  // Fill under revenue
+  const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+  grad.addColorStop(0, "rgba(10,92,82,0.18)");
+  grad.addColorStop(1, "rgba(10,92,82,0)");
+  ctx.beginPath();
+  data.forEach((d, i) => {
+    const x = pad.left + (cw / (data.length - 1)) * i;
+    const y = pad.top + ch - (d.revenue / maxV) * ch;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.lineTo(pad.left, pad.top + ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  drawLine("budget", "#9da9a6", true);
+  drawLine("gop", "#d09b46", false, "#d09b46");
+  drawLine("revenue", "#0a5c52", false);
+}
+
+// ═══════════════════════════════════════════════════════
+// CHART: PACKAGE DONUT (CANVAS)
+// ═══════════════════════════════════════════════════════
+function drawPackageDonut() {
+  const canvas = document.getElementById("package-chart");
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 210 * dpr; canvas.height = 210 * dpr;
+  ctx.scale(dpr, dpr);
+  const cx = 105, cy = 105, outerR = 91, innerR = 68;
+  const total = PACKAGE_DATA.reduce((s, d) => s + d.value, 0);
+  let startAngle = -Math.PI / 2;
+
+  PACKAGE_DATA.forEach((d) => {
+    const slice = (d.value / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(startAngle) * outerR, cy + Math.sin(startAngle) * outerR);
+    ctx.arc(cx, cy, outerR, startAngle, startAngle + slice);
+    ctx.arc(cx, cy, innerR, startAngle + slice, startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    startAngle += slice;
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// CHART: AR AGING (CANVAS)
+// ═══════════════════════════════════════════════════════
+function drawARChart() {
+  const canvas = document.getElementById("ar-chart");
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + "px";
+  canvas.style.height = rect.height + "px";
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+  const pad = { top: 10, right: 24, bottom: 10, left: 90 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+  const maxV = Math.max(...AR_DATA.map(d => d.value)) * 1.1;
+
+  const labels = AR_DATA.map(d => d.label);
+  const barH = Math.min(28, ch / AR_DATA.length - 8);
+
+  AR_DATA.forEach((d, i) => {
+    const y = pad.top + (ch / AR_DATA.length) * i + (ch / AR_DATA.length - barH) / 2;
+    const barW = (d.value / maxV) * cw;
+
+    // Label
+    ctx.fillStyle = "#53635f"; ctx.font = "11px DM Sans";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(d.label, 0, y + barH / 2);
+
+    // Bar
+    ctx.beginPath();
+    ctx.roundRect(pad.left, y, barW, barH, [0, 5, 5, 0]);
+    ctx.fillStyle = d.color;
+    ctx.fill();
+
+    // Value label
+    ctx.fillStyle = "#53635f"; ctx.font = "10px DM Sans";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(fmtNPR(d.value), pad.left + barW + 6, y + barH / 2);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// UPDATE UI
+// ═══════════════════════════════════════════════════════
+function updateUI() {
+  const m = calcMetrics();
+
+  // Metric cards
+  document.getElementById("m-gor").textContent = fmtNPR(m.grossRevenue);
+  document.getElementById("m-gop").textContent = fmtNPR(m.gop);
+  document.getElementById("m-gop-margin").textContent = fmtPct(m.gopMargin) + " margin";
+  document.getElementById("m-occ").textContent = fmtPct(m.occupancy);
+  document.getElementById("m-revpar").textContent = fmtNPR(m.revpar, false);
+  document.getElementById("m-adr").textContent = "ADR " + fmtNPR(m.adr, false);
+
+  // Earnings panel
+  document.getElementById("aor-value").textContent = fmtNPR(m.adjustedOperatingProfit);
+  document.getElementById("pb-gor").textContent = fmtNPR(m.grossRevenue);
+  document.getElementById("pb-exp").style.width = Math.min((m.totalExpenses / m.grossRevenue) * 100, 100) + "%";
+  document.getElementById("pb-exp-val").textContent = fmtNPR(m.totalExpenses);
+  document.getElementById("pb-profit").style.width = Math.max((m.adjustedOperatingProfit / m.grossRevenue) * 100, 0) + "%";
+  document.getElementById("pb-aor").textContent = fmtNPR(m.adjustedOperatingProfit);
+  document.getElementById("pf-exp-ratio").textContent = fmtPct(m.expenseRatio);
+  document.getElementById("pf-gop-margin").textContent = fmtPct(m.gopMargin);
+
+  // Department table
+  const rows = [
+    { dept: "Rooms", sched: "Schedule 1", rev: hotelData.roomRevenue, exp: hotelData.roomsDeptExpense },
+    { dept: "Food & Beverage", sched: "Schedule 2", rev: hotelData.foodRevenue + hotelData.beverageRevenue, exp: m.fbExpense },
+    { dept: "Other Operated", sched: "Schedule 3", rev: hotelData.otherRevenue, exp: hotelData.otherDeptExpense },
+    { dept: "Miscellaneous Income", sched: "Schedule 4", rev: hotelData.miscIncome, exp: 0 },
+  ];
+  const tbody = document.getElementById("dept-tbody");
+  tbody.innerHTML = rows.map(r => {
+    const profit = r.rev - r.exp;
+    const margin = r.rev ? (profit / r.rev) * 100 : 100;
+    const mixPct = (r.rev / m.grossRevenue) * 100;
+    return `<tr>
+      <td><strong>${r.dept}</strong><span>${r.sched}</span></td>
+      <td>${fmtNPR(r.rev)}</td>
+      <td>${fmtNPR(r.exp)}</td>
+      <td class="profit-cell">${fmtNPR(profit)}</td>
+      <td><strong>${fmtPct(margin)}</strong></td>
+      <td><div class="mix-bar"><span style="width:${mixPct}%"></span></div></td>
+    </tr>`;
+  }).join("");
+  document.getElementById("dept-tfoot").innerHTML = `<tr>
+    <td>Gross operating revenue</td>
+    <td>${fmtNPR(m.grossRevenue)}</td>
+    <td>${fmtNPR(m.departmentalExpenses)}</td>
+    <td>${fmtNPR(m.grossRevenue - m.departmentalExpenses)}</td>
+    <td>${fmtPct(((m.grossRevenue - m.departmentalExpenses) / m.grossRevenue) * 100)}</td>
+    <td></td>
+  </tr>`;
+
+  // Ratio strip
+  document.getElementById("r-adr").textContent = fmtNPR(m.adr, false);
+  document.getElementById("r-trevpar").textContent = fmtNPR(m.trevpar, false);
+  document.getElementById("r-goppar").textContent = fmtNPR(m.goppar, false);
+  document.getElementById("r-cpor").textContent = fmtNPR(m.cpor, false);
+  document.getElementById("r-gpr").textContent = m.guestsPerRoom.toFixed(2);
+
+  // Package
+  document.getElementById("pkg-total").textContent = fmtNPR(PACKAGE_DATA.reduce((s, d) => s + d.value, 0));
+  document.getElementById("pkg-legend").innerHTML = PACKAGE_DATA.map(d => `<div><span><i style="background:${d.color}"></i>${d.name}</span><strong>${d.share}%</strong></div>`).join("");
+  document.getElementById("alloc-rows").innerHTML = PACKAGE_DATA.map(d => `<div class="alloc-row">
+    <span><i style="background:${d.color}"></i>${d.name}<small>${d.share}% of package</small></span>
+    <strong>${fmtNPR(d.value)}</strong><em>${d.method}</em>
+  </div>`).join("");
+
+  // Expenses
+  const expenseRows = [
+    { name: "Departmental expenses", sched: "Schedules 1-3", actual: m.departmentalExpenses },
+    { name: "Administrative & General", sched: "Schedule 5", actual: hotelData.adminGeneral },
+    { name: "Information systems", sched: "Schedule 6", actual: hotelData.informationSystems },
+    { name: "Sales & Marketing", sched: "Schedule 7", actual: hotelData.salesMarketing },
+    { name: "Property operations", sched: "Schedule 8", actual: hotelData.propertyOperations },
+    { name: "Energy, water & waste", sched: "Schedule 9", actual: hotelData.utilities },
+    { name: "Management fees", sched: "Schedule 10", actual: hotelData.managementFees },
+    { name: "Non-operating", sched: "Schedule 11", actual: hotelData.nonOperating },
+  ];
+  document.getElementById("expense-tbody").innerHTML = expenseRows.map(r => {
+    const budget = EXPENSE_BUDGETS[r.name];
+    const variance = budget - r.actual;
+    const fav = variance >= 0;
+    return `<tr>
+      <td><strong>${r.name}</strong><span>${r.sched}</span></td>
+      <td>${fmtNPR(r.actual)}</td>
+      <td>${fmtNPR(budget)}</td>
+      <td class="${fav ? 'favorable' : 'unfavorable'}">${fav ? "+" : ""}${fmtNPR(variance)}<small>${fav ? "Favorable" : "Unfavorable"}</small></td>
+    </tr>`;
+  }).join("");
+
+  // Cost cards
+  document.getElementById("food-cost-pct").textContent = fmtPct(m.foodCostPct);
+  document.getElementById("food-bar").style.width = Math.min(m.foodCostPct * 2.5, 100) + "%";
+  document.getElementById("food-cogs").textContent = "COGS " + fmtNPR(hotelData.foodCost);
+  const foodOk = m.foodCostPct <= 32;
+  document.getElementById("food-status").innerHTML = foodOk
+    ? `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Within target`
+    : `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg> Over target`;
+  document.getElementById("food-status").className = foodOk ? "target-ok" : "target-watch";
+
+  document.getElementById("bev-cost-pct").textContent = fmtPct(m.bevCostPct);
+  document.getElementById("bev-bar").style.width = Math.min(m.bevCostPct * 2.8, 100) + "%";
+  document.getElementById("bev-cogs").textContent = "COGS " + fmtNPR(hotelData.beverageCost);
+  document.getElementById("avg-spend").textContent = fmtNPR(m.avgSpend, false);
+
+  // AR
+  const arTotal = AR_DATA.reduce((s, d) => s + d.value, 0);
+  document.getElementById("ar-total").textContent = fmtNPR(arTotal);
+  document.getElementById("ar-total-pct").textContent = fmtPct((arTotal / m.grossRevenue) * 100) + " of gross revenue";
+  document.getElementById("ar-current").textContent = fmtNPR(AR_DATA[0].value);
+  document.getElementById("ar-current-pct").textContent = fmtPct((AR_DATA[0].value / arTotal) * 100) + " of total AR";
+  const over60 = AR_DATA.slice(3).reduce((s, d) => s + d.value, 0);
+  document.getElementById("ar-over60").textContent = fmtNPR(over60);
+
+  // Invoices
+  document.getElementById("invoice-list").innerHTML = INVOICES.map(inv => `<div class="invoice-row">
+    <div class="account-initial">${inv.account.slice(0, 2).toUpperCase()}</div>
+    <div class="invoice-name"><strong>${inv.account}</strong><span>${inv.reference} | Due ${inv.due}</span></div>
+    <div class="invoice-amount"><strong>${fmtNPR(inv.amount)}</strong><span class="invoice-status${inv.status === "At risk" ? " at-risk" : inv.status === "Follow up" ? " follow-up" : ""}">${inv.status}</span></div>
+  </div>`).join("");
+
+  // Redraw charts
+  setTimeout(() => { drawTrendChart(); drawPackageDonut(); drawARChart(); }, 10);
+}
+
+// ═══════════════════════════════════════════════════════
+// EDITOR
+// ═══════════════════════════════════════════════════════
+function buildEditor() {
+  const body = document.getElementById("editor-body");
+  const groups = [...new Set(INPUT_FIELDS.map(f => f.group))];
+  body.innerHTML = groups.map(group => {
+    const fields = INPUT_FIELDS.filter(f => f.group === group);
+    return `<fieldset>
+      <legend>${group}</legend>
+      <div class="editor-grid">
+        ${fields.map(f => `<label>
+          <span>${f.label}</span>
+          <input type="number" min="0" data-key="${f.key}" value="${hotelData[f.key]}" />
+        </label>`).join("")}
+      </div>
+    </fieldset>`;
+  }).join("");
+}
+
+function openEditor() {
+  buildEditor();
+  document.getElementById("editor-overlay").style.display = "flex";
+}
+
+function saveEditor() {
+  document.querySelectorAll("#editor-body input[data-key]").forEach(input => {
+    hotelData[input.dataset.key] = parseFloat(input.value) || 0;
+  });
+  document.getElementById("editor-overlay").style.display = "none";
+  updateUI();
+  showToast("Operating report recalculated");
+}
+
+document.getElementById("open-editor").addEventListener("click", openEditor);
+document.getElementById("open-editor-2").addEventListener("click", openEditor);
+document.getElementById("editor-close").addEventListener("click", () => { document.getElementById("editor-overlay").style.display = "none"; });
+document.getElementById("editor-close-btn").addEventListener("click", () => { document.getElementById("editor-overlay").style.display = "none"; });
+document.getElementById("save-data").addEventListener("click", saveEditor);
+document.getElementById("reset-data").addEventListener("click", () => {
+  hotelData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  buildEditor();
+  updateUI();
+  showToast("Reset to demo data");
+});
+
+// ═══════════════════════════════════════════════════════
+// EXCEL EXPORT
+// ═══════════════════════════════════════════════════════
+function getWorkbook() {
+  const m = calcMetrics();
+  const ktmNow = new Date();
+  const ktmDate = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kathmandu", day: "2-digit", month: "short", year: "numeric" }).format(ktmNow);
+  const ktmTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kathmandu", hour: "2-digit", minute: "2-digit", hour12: true }).format(ktmNow);
+
+  const summary = [
+    ["GWARA FIN - GROSS REVENUE REPORT"],
+    ["Property", "Gwara Heritage Hotel, Kathmandu"],
+    ["Reporting period", period],
+    ["Standard", "USALI 12th Revised Edition management presentation"],
+    ["Generated", ktmDate + " " + ktmTime + " NPT"],
+    [],
+    ["Measure", "Value"],
+    ["Gross Operating Revenue", m.grossRevenue],
+    ["Departmental Expenses", m.departmentalExpenses],
+    ["Undistributed Operating Expenses", m.undistributedExpenses],
+    ["Gross Operating Profit (GOP)", m.gop],
+    ["Management Fees", hotelData.managementFees],
+    ["Non-operating Expenses", hotelData.nonOperating],
+    ["Adjusted Operating Result", m.adjustedOperatingProfit],
+  ];
+
+  const kpis = [
+    ["USALI / Operating Metric", "Value"],
+    ["Available Room Nights", hotelData.roomsAvailable],
+    ["Occupied Room Nights", hotelData.roomsSold],
+    ["Guests in House", hotelData.guests],
+    ["Occupancy %", m.occupancy],
+    ["ADR", m.adr],
+    ["RevPAR", m.revpar],
+    ["TRevPAR", m.trevpar],
+    ["GOPPAR", m.goppar],
+    ["CPOR", m.cpor],
+    ["GOP Margin %", m.gopMargin],
+    ["Food Cost %", m.foodCostPct],
+    ["Beverage Cost %", m.bevCostPct],
+    ["Average F&B Spend / Guest", m.avgSpend],
+  ];
+
+  const depts = [
+    ["Department", "USALI Schedule", "Revenue", "Expense", "Dept Profit", "Margin %"],
+    ["Rooms", "Schedule 1", hotelData.roomRevenue, hotelData.roomsDeptExpense, hotelData.roomRevenue - hotelData.roomsDeptExpense, hotelData.roomRevenue ? ((hotelData.roomRevenue - hotelData.roomsDeptExpense) / hotelData.roomRevenue) * 100 : 0],
+    ["Food & Beverage", "Schedule 2", hotelData.foodRevenue + hotelData.beverageRevenue, m.fbExpense, hotelData.foodRevenue + hotelData.beverageRevenue - m.fbExpense, (hotelData.foodRevenue + hotelData.beverageRevenue) ? ((hotelData.foodRevenue + hotelData.beverageRevenue - m.fbExpense) / (hotelData.foodRevenue + hotelData.beverageRevenue)) * 100 : 0],
+    ["Other Operated", "Schedule 3", hotelData.otherRevenue, hotelData.otherDeptExpense, hotelData.otherRevenue - hotelData.otherDeptExpense, hotelData.otherRevenue ? ((hotelData.otherRevenue - hotelData.otherDeptExpense) / hotelData.otherRevenue) * 100 : 0],
+    ["Miscellaneous Income", "Schedule 4", hotelData.miscIncome, 0, hotelData.miscIncome, 100],
+  ];
+
+  const packages = [
+    ["Package Component", "Allocation", "Share %", "Allocation Basis"],
+    ...PACKAGE_DATA.map(d => [d.name, d.value, d.share, d.method]),
+    ["Total", PACKAGE_DATA.reduce((s, d) => s + d.value, 0), 100, ""],
+  ];
+
+  const expenses = [
+    ["Expense Category", "USALI Schedule", "Actual", "Budget", "Variance"],
+    ...Object.entries(EXPENSE_BUDGETS).map(([name, budget]) => {
+      const actuals = { "Departmental expenses": m.departmentalExpenses, "Administrative & General": hotelData.adminGeneral, "Information systems": hotelData.informationSystems, "Sales & Marketing": hotelData.salesMarketing, "Property operations": hotelData.propertyOperations, "Energy, water & waste": hotelData.utilities, "Management fees": hotelData.managementFees, "Non-operating": hotelData.nonOperating };
+      const actual = actuals[name] || 0;
+      return [name, name.includes("Departmental") ? "Schedules 1-3" : "Schedule " + (name === "Administrative & General" ? 5 : name === "Information systems" ? 6 : name === "Sales & Marketing" ? 7 : name === "Property operations" ? 8 : name === "Energy, water & waste" ? 9 : name === "Management fees" ? 10 : 11), actual, budget, budget - actual];
+    }),
+  ];
+
+  const arSheet = [
+    ["AR Aging Bucket", "Outstanding"],
+    ...AR_DATA.map(d => [d.label, d.value]),
+    ["Total Accounts Receivable", AR_DATA.reduce((s, d) => s + d.value, 0)],
+    [],
+    ["Account", "Invoice", "Due Date", "Outstanding", "Aging", "Status"],
+    ...INVOICES.map(inv => [inv.account, inv.reference, inv.due, inv.amount, inv.bucket, inv.status]),
+  ];
+
+  return { summary, kpis, depts, packages, expenses, arSheet };
+}
+
+function downloadSheet(name, rows) {
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = rows[0].map((_, i) => ({ wch: i === 0 ? 31 : 22 }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, name);
+  XLSX.writeFile(wb, `Gwara-Fin-${name.replace(/ /g, "-")}-${period.replace(/ /g, "-")}.xlsx`);
+  showToast(name + " downloaded");
+}
+
+function downloadFull() {
+  const wb = XLSX.utils.book_new();
+  const { summary, kpis, depts, packages, expenses, arSheet } = getWorkbook();
+  const sheets = [
+    ["GRR Summary", summary],
+    ["USALI Metrics", kpis],
+    ["Department P&L", depts],
+    ["Package Allocation", packages],
+    ["Expense Schedule", expenses],
+    ["AR Aging", arSheet],
+  ];
+  sheets.forEach(([name, rows]) => {
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = rows[0].map((_, i) => ({ wch: i === 0 ? 31 : 22 }));
+    XLSX.utils.book_append_sheet(wb, ws, name);
+  });
+  XLSX.writeFile(wb, `Gwara-Fin-GRR-${period.replace(/ /g, "-")}.xlsx`);
+  showToast("Excel workbook downloaded");
+}
+
+document.getElementById("export-all").addEventListener("click", downloadFull);
+document.getElementById("export-dept").addEventListener("click", () => {
+  const { depts } = getWorkbook();
+  downloadSheet("Department P&L", depts);
+});
+document.getElementById("export-expense").addEventListener("click", () => {
+  const { expenses } = getWorkbook();
+  downloadSheet("Expense Schedule", expenses);
+});
+document.getElementById("export-ar").addEventListener("click", () => {
+  const { arSheet } = getWorkbook();
+  downloadSheet("AR Aging", arSheet);
+});
+document.getElementById("download-full").addEventListener("click", downloadFull);
+document.getElementById("review-all").addEventListener("click", () => showToast("Collection queue is up to date"));
+
+document.querySelectorAll(".report-row button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const row = btn.closest(".report-row");
+    const name = row.dataset.report;
+    const { summary, kpis, depts, packages, expenses, arSheet } = getWorkbook();
+    const map = { "GRR Summary": summary, "USALI Metrics": kpis, "Department P&L": depts, "Package Allocation": packages, "Expense Schedule": expenses, "AR Aging": arSheet };
+    if (map[name]) downloadSheet(name, map[name]);
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+// PERIOD SELECT
+// ═══════════════════════════════════════════════════════
+document.getElementById("period-select").addEventListener("change", (e) => {
+  period = e.target.value;
+  document.querySelectorAll(".report-period").forEach(el => el.textContent = period);
+  showToast("Reporting period: " + period);
+});
+
+// ═══════════════════════════════════════════════════════
+// RESIZE CHARTS
+// ═══════════════════════════════════════════════════════
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { drawTrendChart(); drawARChart(); }, 200);
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+updateUI();
+</script>
+</body>
 </html>
