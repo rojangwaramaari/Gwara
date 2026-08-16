@@ -1,588 +1,886 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gwarainfo - Hotel Accounting & AI Executive System</title>
-  <style>
-    :root {
-      --bg-color: #070b12;
-      --panel-bg: rgba(13, 22, 38, 0.75);
-      --panel-border: #00f0ff33;
-      --accent-cyan: #00f0ff;
-      --accent-blue: #0072ff;
-      --accent-gold: #ffb700;
-      --text-main: #e2f1ff;
-      --text-muted: #8ab4f8;
-      --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: var(--font-family);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.15), transparent 70%),
-        radial-gradient(circle at 80% 80%, rgba(0, 114, 255, 0.1), transparent 50%);
-    }
-
-    /* Header & Futuristic Dashboard Banner */
-    header {
-      padding: 1rem 2rem;
-      background: rgba(7, 11, 18, 0.9);
-      border-bottom: 1px solid var(--panel-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--accent-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-cyan);
-      animation: pulse 2s infinite alternate;
-    }
-
-    .brand-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--accent-cyan);
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
-    }
-
-    .system-status {
-      display: flex;
-      gap: 2rem;
-      font-size: 0.9rem;
-    }
-
-    .status-item {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    .status-label {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .status-val {
-      color: var(--accent-cyan);
-      font-weight: 600;
-    }
-
-    /* Main Grid Layout */
-    .dashboard-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 20px;
-      padding: 20px;
-      flex: 1;
-    }
-
-    @media (max-width: 1024px) {
-      .dashboard-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 8px;
-      padding: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
-    .panel-header {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--accent-cyan);
-      border-bottom: 1px solid var(--panel-border);
-      padding-bottom: 8px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Financial Input & KPI Grid */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .kpi-card {
-      background: rgba(0, 240, 255, 0.05);
-      border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .kpi-card .val {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--accent-gold);
-    }
-
-    .kpi-card .lbl {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 8px 12px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--panel-border);
-      border-radius: 4px;
-      color: #fff;
-      font-family: inherit;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
-    }
-
-    button {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      border: none;
-      color: #000;
-      font-weight: bold;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    button:hover {
-      opacity: 0.9;
-      box-shadow: 0 0 12px var(--accent-cyan);
-    }
-
-    /* AI Interface Section */
-    .ai-chat-box {
-      display: flex;
-      flex-direction: column;
-      height: 350px;
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      border: 1px solid var(--panel-border);
-      background: rgba(0,0,0,0.3);
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .msg {
-      max-width: 85%;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .msg.user {
-      align-self: flex-end;
-      background: rgba(0, 114, 255, 0.3);
-      border: 1px solid var(--accent-blue);
-    }
-
-    .msg.jarvis {
-      align-self: flex-start;
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--panel-border);
-    }
-
-    .msg-link {
-      display: block;
-      margin-top: 6px;
-      font-size: 0.8rem;
-      color: var(--accent-cyan);
-      text-decoration: underline;
-    }
-
-    .chat-input-group {
-      display: flex;
-      gap: 10px;
-    }
-
-    /* Chart / COA Table Section */
-    .coa-table-wrapper {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid var(--panel-border);
-      border-radius: 4px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    th, td {
-      padding: 8px 10px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    th {
-      background: rgba(0, 240, 255, 0.1);
-      color: var(--accent-cyan);
-      position: sticky;
-      top: 0;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 5px var(--accent-cyan); }
-      100% { box-shadow: 0 0 15px var(--accent-cyan); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GwaraInfo | Hotel Finance AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040810; --panel:rgba(10,20,35,0.75); --border:rgba(0,229,255,0.25);
+  --accent:#00e5ff; --accent2:#7dffb3; --accent3:#ffb703; --danger:#ff4d6d;
+  --text:#dff6ff; --muted:#7f97ab; --glow:0 0 12px rgba(0,229,255,.45);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  background:radial-gradient(circle at 20% 20%,#071427 0%,#030509 55%,#000 100%);
+  color:var(--text); font-family:'Rajdhani',sans-serif; min-height:100vh;
+  background-attachment:fixed; overflow-x:hidden;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background-image:linear-gradient(rgba(0,229,255,0.04) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(0,229,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px; pointer-events:none; z-index:0;
+}
+#app{position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:18px 22px 60px;}
+header.top{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  padding:14px 20px; border:1px solid var(--border); border-radius:14px;
+  background:var(--panel); backdrop-filter:blur(10px); box-shadow:var(--glow); margin-bottom:18px;
+}
+.brand{display:flex; align-items:center; gap:14px;}
+.orb{width:52px;height:52px;border-radius:50%;border:2px solid var(--accent);position:relative;
+  box-shadow:0 0 20px var(--accent), inset 0 0 15px rgba(0,229,255,.5); animation:spin 6s linear infinite;}
+.orb::before,.orb::after{content:'';position:absolute;border-radius:50%;border:1px solid rgba(0,229,255,.5);}
+.orb::before{inset:8px;} .orb::after{inset:16px;background:var(--accent);box-shadow:0 0 15px var(--accent);border:none;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.brand h1{margin:0;font-family:'Orbitron',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent);text-shadow:0 0 10px rgba(0,229,255,.7);}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+.clockbox{text-align:right;}
+.clockbox .time{font-family:'Orbitron',sans-serif;font-size:24px;color:var(--accent2);text-shadow:0 0 10px rgba(125,255,179,.6);}
+.clockbox .date{color:var(--muted);font-size:13px;}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+nav.tabs button{background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:10px 16px;border-radius:10px;cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-size:14px;letter-spacing:1px;transition:.25s;}
+nav.tabs button:hover{box-shadow:var(--glow);}
+nav.tabs button.active{background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(0,229,255,.05));
+  border-color:var(--accent);color:var(--accent);box-shadow:var(--glow);}
+.tab-content{display:none;animation:fadeIn .4s ease;}
+.tab-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;
+  backdrop-filter:blur(10px);margin-bottom:18px;}
+.panel h2{margin-top:0;font-family:'Orbitron',sans-serif;font-size:16px;color:var(--accent);
+  letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:10px;}
+.grid{display:grid;gap:16px;}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:900px){.grid.cols-4,.grid.cols-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr;}}
+.card{background:rgba(0,229,255,0.05);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.card .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px;}
+.card .value{font-family:'Orbitron',sans-serif;font-size:20px;color:var(--accent2);margin-top:6px;}
+input,select,textarea{width:100%;background:#02070f;border:1px solid var(--border);color:var(--text);
+  padding:9px 10px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:14px;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--glow);}
+label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px;}
+.btn{background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(0,229,255,.08));
+  border:1px solid var(--accent);color:var(--accent);padding:10px 18px;border-radius:8px;cursor:pointer;
+  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:.2s;}
+.btn:hover{box-shadow:var(--glow);background:rgba(0,229,255,.3);}
+.btn.danger{border-color:var(--danger);color:var(--danger);}
+.btn.small{padding:6px 10px;font-size:11px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;}
+th{color:var(--accent);text-transform:uppercase;font-size:11px;letter-spacing:1px;}
+tr:hover td{background:rgba(0,229,255,.05);}
+.pos{color:var(--accent2);} .neg{color:var(--danger);}
+.chat-wrap{display:flex;flex-direction:column;height:520px;}
+.chat-window{flex:1;overflow-y:auto;padding:10px;border:1px solid var(--border);border-radius:12px;
+  background:rgba(0,10,20,.5);margin-bottom:12px;}
+.msg{max-width:82%;margin-bottom:12px;padding:10px 14px;border-radius:12px;line-height:1.5;font-size:14px;}
+.msg.user{margin-left:auto;background:rgba(0,229,255,.15);border:1px solid var(--accent);}
+.msg.ai{margin-right:auto;background:rgba(125,255,179,.08);border:1px solid rgba(125,255,179,.4);}
+.msg a{color:var(--accent2);}
+.chat-input{display:flex;gap:10px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.chip{background:rgba(0,229,255,.1);border:1px solid var(--border);padding:6px 12px;border-radius:20px;
+  font-size:12px;cursor:pointer;color:var(--text);}
+.chip:hover{border-color:var(--accent);color:var(--accent);}
+.ai-avatar{width:70px;height:70px;border-radius:50%;border:2px solid var(--accent2);margin:0 auto 10px;
+  box-shadow:0 0 25px rgba(125,255,179,.5);display:flex;align-items:center;justify-content:center;}
+.ai-avatar span{width:14px;height:14px;background:var(--accent2);border-radius:50%;
+  box-shadow:0 0 10px var(--accent2);animation:pulse 1.4s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:.5;}100%{transform:scale(1);opacity:1;}}
+.accordion-item{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.accordion-head{padding:12px 14px;cursor:pointer;background:rgba(0,229,255,.06);display:flex;
+  justify-content:space-between;align-items:center;font-family:'Orbitron',sans-serif;font-size:13px;color:var(--accent);}
+.accordion-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.accordion-body.open{padding:14px 16px;max-height:2000px;}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px;}
+</style>
 </head>
 <body>
+<div id="app">
 
-  <!-- Top System Header -->
-  <header>
+  <header class="top">
     <div class="brand">
-      <div class="brand-logo"></div>
-      <div class="brand-title">GWARAINFO AI</div>
+      <div class="orb"></div>
+      <div>
+        <h1>GWARAINFO</h1>
+        <p id="bootMsg">Hotel Finance Intelligence System</p>
+      </div>
     </div>
-    <div class="system-status">
-      <div class="status-item">
-        <span class="status-label">Location / Weather</span>
-        <span class="status-val" id="weather-display">Kathmandu: 22°C, Light Rain</span>
-      </div>
-      <div class="status-item">
-        <span class="status-label">Time (Kathmandu)</span>
-        <span class="status-val" id="clock-display">--:--:--</span>
-      </div>
-      <div class="status-item">
-        <span class="status-label">Date</span>
-        <span class="status-val" id="date-display">----/--/--</span>
-      </div>
+    <div class="clockbox">
+      <div class="time" id="bigClock">--:--:--</div>
+      <div class="date" id="bigDate">Loading...</div>
     </div>
   </header>
 
-  <div class="dashboard-container">
-    
-    <!-- Panel 1: Operations & Financial Reporting -->
-    <div class="panel">
-      <div class="panel-header">
-        <span>Financial Tracking & Forecast</span>
-        <span style="font-size: 0.75rem; color: var(--accent-gold);">USALI Compliant</span>
-      </div>
+  <nav class="tabs">
+    <button class="active" data-tab="tab-dashboard">🏠 Dashboard</button>
+    <button data-tab="tab-ai">🤖 AI Assistant</button>
+    <button data-tab="tab-kpi">🧮 KPI Calculator</button>
+    <button data-tab="tab-budget">📅 Budget & Forecast</button>
+    <button data-tab="tab-coa">📚 Chart of Accounts</button>
+    <button data-tab="tab-usali">📘 USALI Reference</button>
+    <button data-tab="tab-dof">🗂 DOF Playbook</button>
+  </nav>
 
-      <!-- KPI Summary Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="lbl">Today Revenue</div>
-          <div class="val" id="kpi-today">$0</div>
-        </div>
-        <div class="kpi-card">
-          <div class="lbl">MTD Revenue</div>
-          <div class="val" id="kpi-mtd">$0</div>
-        </div>
-        <div class="kpi-card">
-          <div class="lbl">YTD Revenue</div>
-          <div class="val" id="kpi-ytd">$0</div>
-        </div>
-        <div class="kpi-card">
-          <div class="lbl">30-Day Forecast</div>
-          <div class="val" id="kpi-forecast">$0</div>
+  <!-- DASHBOARD -->
+  <section id="tab-dashboard" class="tab-content active">
+    <div class="grid cols-3">
+      <div class="panel">
+        <h2>⏱ Kathmandu Time</h2>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">Timezone: Asia/Kathmandu (UTC+5:45)</div>
         </div>
       </div>
-
-      <!-- Entry Form -->
-      <form id="financial-form" onsubmit="calculateFinancials(event)">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Today Revenue ($)</label>
-            <input type="number" id="today-rev" value="4500" required>
-          </div>
-          <div class="form-group">
-            <label>Today Budget ($)</label>
-            <input type="number" id="today-budget" value="4000" required>
-          </div>
-          <div class="form-group">
-            <label>Rooms Sold</label>
-            <input type="number" id="rooms-sold" value="45" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Total Rooms Available</label>
-            <input type="number" id="total-rooms" value="50" required>
-          </div>
-          <div class="form-group">
-            <label>MTD Prior Revenue ($)</label>
-            <input type="number" id="mtd-prior" value="62000" required>
-          </div>
-          <div class="form-group">
-            <label>YTD Prior Revenue ($)</label>
-            <input type="number" id="ytd-prior" value="480000" required>
-          </div>
-        </div>
-
-        <button type="submit" style="width: 100%; margin-top: 10px;">Run Financial Analytics & Forecast</button>
-      </form>
-
-      <!-- Advanced Ratios Display -->
-      <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.85rem;">
-        <div><strong>ADR:</strong> <span id="calc-adr">$0.00</span></div>
-        <div><strong>RevPAR:</strong> <span id="calc-revpar">$0.00</span></div>
-        <div><strong>Occupancy:</strong> <span id="calc-occ">0%</span></div>
+      <div class="panel">
+        <h2>🌤 Weather — Kathmandu</h2>
+        <div id="weatherBox">Loading weather...</div>
+      </div>
+      <div class="panel">
+        <h2>⚡ System Status</h2>
+        <div id="systemStatus" style="font-size:13px;line-height:1.9;"></div>
+        <button class="btn danger small" id="resetAllBtn" style="margin-top:10px;">Reset All Data</button>
       </div>
     </div>
-
-    <!-- Panel 2: Jarvis AI Executive Interface -->
     <div class="panel">
-      <div class="panel-header">
-        <span>Jarvis AI - Hotel Accounting Assistant</span>
-        <span style="font-size: 0.75rem; color: var(--accent-cyan);">Live Model</span>
-      </div>
+      <h2>📊 Performance Snapshot</h2>
+      <div id="dashboardKPI" class="grid cols-4"></div>
+    </div>
+  </section>
 
-      <div class="ai-chat-box">
-        <div class="chat-messages" id="chat-messages">
-          <div class="msg jarvis">
-            Greetings. I am Gwarainfo's AI core. I am initialized with your USALI Chart of Accounts (COA) dictionary and APEC DOF reconciliation standards. How may I assist with your hotel's accounts or reconciliations today?
-          </div>
+  <!-- AI -->
+  <section id="tab-ai" class="tab-content">
+    <div class="panel">
+      <div class="ai-avatar"><span></span></div>
+      <h2 style="text-align:center;border:none;">GWARA — Hotel Finance AI</h2>
+      <p style="text-align:center;color:var(--muted);font-size:13px;">Ask about USALI, your COA, budgets/forecasts, hotel KPIs, or anything else.</p>
+      <div class="chips" id="chips"></div>
+      <div class="chat-wrap">
+        <div class="chat-window" id="chatWindow"></div>
+        <div class="chat-input">
+          <input id="chatInput" placeholder="e.g. 'What is GOPPAR?' or 'room revenue 5000000 rooms sold 300 rooms available 400 give kpi'"/>
+          <button class="btn" id="sendBtn">Send</button>
         </div>
-        <div class="chat-input-group">
-          <input type="text" id="user-input" placeholder="Ask about GRR, House Banks, Bad Debt reserves, or USALI standards..." onkeypress="handleKeyPress(event)">
-          <button onclick="sendMessage()">Ask</button>
+      </div>
+      <div class="accordion-item" style="margin-top:14px;">
+        <div class="accordion-head">⚙ Advanced AI Settings (Optional)</div>
+        <div class="accordion-body">
+          <label>OpenAI API Key (stored only in your browser)</label>
+          <input type="password" id="apiKeyInput" placeholder="sk-..."/>
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button class="btn small" id="saveKeyBtn">Save Key</button>
+            <button class="btn small danger" id="clearKeyBtn">Clear Key</button>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-top:8px;">Without a key, GWARA still answers all hotel-accounting/USALI/COA/budget questions via its built-in engine, and links to free AI tools for general questions.</p>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- Panel 3: Chart of Accounts (COA) Reference -->
-    <div class="panel" style="grid-column: span 2;">
-      <div class="panel-header">
-        <span>USALI & APEC Playbook COA Reference</span>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Loaded Accounts</span>
+  <!-- KPI -->
+  <section id="tab-kpi" class="tab-content">
+    <div class="panel">
+      <h2>🧮 Hotel KPI & USALI Calculator</h2>
+      <h3 style="color:var(--accent2);font-size:13px;">Revenue</h3>
+      <div class="grid cols-4">
+        <div><label>Room Revenue</label><input type="number" id="rRev"></div>
+        <div><label>F&B Revenue</label><input type="number" id="fbRev"></div>
+        <div><label>Other Operated Dept Revenue</label><input type="number" id="otherRev"></div>
+        <div><label>Miscellaneous Income</label><input type="number" id="miscInc"></div>
       </div>
-      
-      <div class="coa-table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Account No</th>
-              <th>Account Name</th>
-              <th>Purpose / Scope</th>
-              <th>Required Reconciliation Documents</th>
-            </tr>
-          </thead>
-          <tbody id="coa-body">
-            <!-- Dynamically populated -->
-          </tbody>
+      <h3 style="color:var(--accent2);font-size:13px;">Rooms Statistics</h3>
+      <div class="grid cols-4">
+        <div><label>Rooms Available</label><input type="number" id="roomsAvail"></div>
+        <div><label>Rooms Sold</label><input type="number" id="roomsSold"></div>
+        <div><label>Payroll & Related (Total)</label><input type="number" id="payroll"></div>
+        <div><label>F&B Cost of Sales</label><input type="number" id="fbCost"></div>
+      </div>
+      <h3 style="color:var(--accent2);font-size:13px;">Departmental Expenses</h3>
+      <div class="grid cols-4">
+        <div><label>Rooms Dept Expense</label><input type="number" id="roomsExp"></div>
+        <div><label>F&B Dept Expense</label><input type="number" id="fbExp"></div>
+        <div><label>Other Dept Expense</label><input type="number" id="otherExp"></div>
+        <div><label>Management Fees</label><input type="number" id="mgmtFee"></div>
+      </div>
+      <h3 style="color:var(--accent2);font-size:13px;">Undistributed Operating Expenses</h3>
+      <div class="grid cols-4">
+        <div><label>Admin & General</label><input type="number" id="ag"></div>
+        <div><label>Sales & Marketing</label><input type="number" id="sm"></div>
+        <div><label>Property Operation & Maintenance</label><input type="number" id="pom"></div>
+        <div><label>Utilities</label><input type="number" id="util"></div>
+      </div>
+      <h3 style="color:var(--accent2);font-size:13px;">Below GOP / Flow-Through (Optional)</h3>
+      <div class="grid cols-4">
+        <div><label>Fixed Charges (Tax/Ins/Rent/Depr.)</label><input type="number" id="fixedCharges"></div>
+        <div><label>Prior Period Total Revenue</label><input type="number" id="priorRev"></div>
+        <div><label>Prior Period GOP</label><input type="number" id="priorGop"></div>
+      </div>
+      <button class="btn" id="calcKpiBtn" style="margin-top:16px;">Calculate KPIs</button>
+    </div>
+    <div class="panel">
+      <h2>Results</h2>
+      <div class="grid cols-4" id="kpiResults"><p style="color:var(--muted);">No calculation yet.</p></div>
+    </div>
+  </section>
+
+  <!-- BUDGET -->
+  <section id="tab-budget" class="tab-content">
+    <div class="panel">
+      <h2>📅 Budget vs Actual — Today / MTD / YTD + Forecast</h2>
+      <div class="grid cols-4">
+        <div><label>Metric Name</label><input id="bMetric" placeholder="e.g. Total Revenue"/></div>
+        <div><label>Expense metric? (lower=better)</label>
+          <select id="bIsExpense"><option value="0">No</option><option value="1">Yes</option></select></div>
+        <div><label>Today Actual</label><input type="number" id="bTodayA"></div>
+        <div><label>Today Budget</label><input type="number" id="bTodayB"></div>
+        <div><label>MTD Actual</label><input type="number" id="bMtdA"></div>
+        <div><label>MTD Budget</label><input type="number" id="bMtdB"></div>
+        <div><label>YTD Actual</label><input type="number" id="bYtdA"></div>
+        <div><label>YTD Budget</label><input type="number" id="bYtdB"></div>
+        <div><label>Full Month Budget</label><input type="number" id="bMonthB"></div>
+        <div><label>Full Year Budget</label><input type="number" id="bYearB"></div>
+      </div>
+      <button class="btn" id="addBudgetRow" style="margin-top:14px;">Add / Update Metric</button>
+    </div>
+    <div class="panel">
+      <h2>📈 Budget, Actual & Forecast Table</h2>
+      <div style="overflow-x:auto;">
+        <table id="budgetTable">
+          <thead><tr>
+            <th>Metric</th><th>Today Act</th><th>Today Bud</th><th>Var</th>
+            <th>MTD Act</th><th>MTD Bud</th><th>Var</th>
+            <th>YTD Act</th><th>YTD Bud</th><th>Var</th>
+            <th>Fcst Month</th><th>Var vs Bud</th>
+            <th>Fcst Year</th><th>Var vs Bud</th><th></th>
+          </tr></thead>
+          <tbody></tbody>
         </table>
       </div>
     </div>
+  </section>
 
-  </div>
+  <!-- COA -->
+  <section id="tab-coa" class="tab-content">
+    <div class="panel">
+      <h2>📚 Chart of Accounts (USALI Aligned)</h2>
+      <p style="color:var(--muted);font-size:13px;">Upload CSV with columns: Account Code, Account Name, Department, USALI Schedule.</p>
+      <input type="file" id="coaFile" accept=".csv">
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" id="downloadSampleCoa">Download Sample Template</button>
+        <button class="btn danger" id="clearCoa">Clear COA</button>
+      </div>
+      <input style="margin-top:14px;" id="coaSearch" placeholder="Search account name/code/department...">
+    </div>
+    <div class="panel">
+      <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+        <table id="coaTable"><thead></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    // System Data: COA Accounts built directly from provided dictionary and APEC DOF Playbook
-    const coaData = [
-      { id: "101001", name: "House Bank & Petty Cash", purpose: "Total of all Hotel House Banks issued to cash handlers and CRM cash.", docs: "1. Summary of Cashier Floats 2. Main safe count sheet 3. Signed float contracts" },
-      { id: "110104", name: "FF&E Escrow Bank Account", purpose: "FF&E Bank account for escrow reserve & replacement fund.", docs: "1. Bank Reconciliation 2. Month-end Bank Statement 3. Reconciling item details" },
-      { id: "113001", name: "Cash Clearing", purpose: "Clearing account for PMS cash code mappings. Net zero daily balance.", docs: "None required if balance is zero" },
-      { id: "134110", name: "City Ledger – Non-Credit Card", purpose: "Accounts receivable from departed guests with approved credit.", docs: "1. Opera E100 Trial Balance 2. PMS L124 Detailed AR Aging" },
-      { id: "134121", name: "Hotel Guest Ledger", purpose: "Current receivables from guests currently registered in-house.", docs: "1. PMS E100 Trial Balance 2. PMS E102 Guest Ledger Detail" },
-      { id: "139001", name: "Allowance for Bad Debts", purpose: "Reserve maintained at 3% of average 12-month City Ledger balance.", docs: "1. Reserve Calculation Sheet 2. PMS L112 Aging Summary" },
-      { id: "212171", name: "FF&E Escrow Contributions", purpose: "Current year escrow contribution liability calculated on Gross Revenue %.", docs: "1. Reserve Reconciliation 2. Format 90 P&L 3. Management Contract Page" },
-      { id: "248010", name: "OFB Accrual - Programs & Service", purpose: "PSC payable based on property fixed rate, rooms, and Gross Room Revenue (GRR).", docs: "1. Transaction Summary 2. Marriott Bill 3. Format 90 P&L" }
-    ];
+  <!-- USALI -->
+  <section id="tab-usali" class="tab-content">
+    <div class="panel">
+      <h2>📘 USALI Reference (11th Revised Edition)</h2>
+      <div id="usaliAccordion"></div>
+    </div>
+  </section>
 
-    // Real-Time Clock & Date (Asia/Kathmandu)
-    function updateClock() {
-      const now = new Date();
-      const optionsTime = { timeZone: 'Asia/Kathmandu', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      const optionsDate = { timeZone: 'Asia/Kathmandu', year: 'numeric', month: '2-digit', day: '2-digit' };
-      
-      document.getElementById('clock-display').innerText = new Intl.DateTimeFormat([], optionsTime).format(now);
-      document.getElementById('date-display').innerText = new Intl.DateTimeFormat([], optionsDate).format(now);
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+  <!-- DOF -->
+  <section id="tab-dof" class="tab-content">
+    <div class="panel">
+      <h2>🗂 DOF Playbook</h2>
+      <div id="dofAccordion"></div>
+      <label style="margin-top:14px;">Upload Playbook (.txt for AI search)</label>
+      <input type="file" id="playbookFile" accept=".txt">
+      <label style="margin-top:14px;">My Custom Notes</label>
+      <textarea id="dofNotes" rows="6" placeholder="Add your own DOF playbook notes here..."></textarea>
+      <button class="btn" id="saveNotesBtn" style="margin-top:10px;">Save Notes</button>
+    </div>
+  </section>
 
-    // Populate COA Table
-    function renderCOATable() {
-      const tbody = document.getElementById('coa-body');
-      tbody.innerHTML = coaData.map(acc => `
-        <tr>
-          <td><strong>${acc.id}</strong></td>
-          <td>${acc.name}</td>
-          <td>${acc.purpose}</td>
-          <td>${acc.docs}</td>
-        </tr>
-      `).join('');
-    }
-    renderCOATable();
+  <footer>GwaraInfo © — Built for Hotel Finance Excellence • USALI Aligned • Data stored locally in your browser only.</footer>
+</div>
 
-    // Financial Calculation & Forecasting Logic
-    function calculateFinancials(event) {
-      if (event) event.preventDefault();
+<script>
+/* ---------- Helpers ---------- */
+function el(id){ return document.getElementById(id); }
+function safeDiv(a,b){ return (b && !isNaN(b) && b!==0) ? a/b : null; }
+function fmt(v,suffix){ suffix=suffix||''; return (v===null||v===undefined||isNaN(v)) ? 'N/A' : (Number(v).toLocaleString(undefined,{maximumFractionDigits:2})+suffix); }
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function matchesKey(q,key){ try{ return new RegExp('\\b'+key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i').test(q); }catch(e){ return q.includes(key); } }
+function card(label,value){ return '<div class="card"><div class="label">'+label+'</div><div class="value">'+value+'</div></div>'; }
 
-      const todayRev = parseFloat(document.getElementById('today-rev').value) || 0;
-      const todayBudget = parseFloat(document.getElementById('today-budget').value) || 0;
-      const roomsSold = parseFloat(document.getElementById('rooms-sold').value) || 0;
-      const totalRooms = parseFloat(document.getElementById('total-rooms').value) || 1;
-      const mtdPrior = parseFloat(document.getElementById('mtd-prior').value) || 0;
-      const ytdPrior = parseFloat(document.getElementById('ytd-prior').value) || 0;
+/* ---------- Tabs ---------- */
+document.querySelectorAll('nav.tabs button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('nav.tabs button').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    el(btn.dataset.tab).classList.add('active');
+  });
+});
 
-      const mtdTotal = mtdPrior + todayRev;
-      const ytdTotal = ytdPrior + todayRev;
+/* ---------- Clock ---------- */
+function updateClock(){
+  var now = new Date();
+  el('bigClock').textContent = now.toLocaleTimeString('en-US',{timeZone:'Asia/Kathmandu',hour12:true});
+  el('bigDate').textContent = now.toLocaleDateString('en-US',{timeZone:'Asia/Kathmandu',weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+setInterval(updateClock,1000); updateClock();
 
-      // Key Metrics
-      const adr = roomsSold > 0 ? (todayRev / roomsSold) : 0;
-      const revpar = todayRev / totalRooms;
-      const occupancy = (roomsSold / totalRooms) * 100;
-
-      // Simple Trend Forecast (Projecting 30-day run-rate based on daily budget vs actual variance)
-      const dailyVarianceRatio = todayRev / (todayBudget || 1);
-      const forecast30Days = (todayBudget * 30) * dailyVarianceRatio;
-
-      // Render KPIs
-      document.getElementById('kpi-today').innerText = `$${todayRev.toLocaleString()}`;
-      document.getElementById('kpi-mtd').innerText = `$${mtdTotal.toLocaleString()}`;
-      document.getElementById('kpi-ytd').innerText = `$${ytdTotal.toLocaleString()}`;
-      document.getElementById('kpi-forecast').innerText = `$${Math.round(forecast30Days).toLocaleString()}`;
-
-      document.getElementById('calc-adr').innerText = `$${adr.toFixed(2)}`;
-      document.getElementById('calc-revpar').innerText = `$${revpar.toFixed(2)}`;
-      document.getElementById('calc-occ').innerText = `${occupancy.toFixed(1)}%`;
-    }
-
-    // Jarvis AI System Integration
-    function handleKeyPress(e) {
-      if (e.key === 'Enter') sendMessage();
-    }
-
-    function sendMessage() {
-      const input = document.getElementById('user-input');
-      const text = input.value.trim();
-      if (!text) return;
-
-      appendMessage(text, 'user');
-      input.value = '';
-
-      // Processing Query
-      setTimeout(() => {
-        const response = generateJarvisResponse(text);
-        appendMessage(response.text, 'jarvis', response.link);
-      }, 500);
-    }
-
-    function appendMessage(text, sender, link = null) {
-      const container = document.getElementById('chat-messages');
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `msg ${sender}`;
-      msgDiv.innerText = text;
-
-      if (link) {
-        const linkEl = document.createElement('a');
-        linkEl.className = 'msg-link';
-        linkEl.href = link.url;
-        linkEl.target = '_blank';
-        linkEl.innerText = link.label;
-        msgDiv.appendChild(linkEl);
+/* ---------- Weather ---------- */
+function weatherDesc(code){
+  var map = {0:['Clear Sky','☀️'],1:['Mainly Clear','🌤️'],2:['Partly Cloudy','⛅'],3:['Overcast','☁️'],
+    45:['Fog','🌫️'],48:['Rime Fog','🌫️'],51:['Light Drizzle','🌦️'],53:['Drizzle','🌦️'],55:['Dense Drizzle','🌧️'],
+    56:['Freezing Drizzle','🌧️'],57:['Freezing Drizzle','🌧️'],61:['Light Rain','🌧️'],63:['Rain','🌧️'],65:['Heavy Rain','🌧️'],
+    66:['Freezing Rain','🌧️'],67:['Freezing Rain','🌧️'],71:['Light Snow','🌨️'],73:['Snow','🌨️'],75:['Heavy Snow','❄️'],
+    77:['Snow Grains','❄️'],80:['Rain Showers','🌦️'],81:['Rain Showers','🌦️'],82:['Violent Showers','⛈️'],
+    85:['Snow Showers','🌨️'],86:['Snow Showers','🌨️'],95:['Thunderstorm','⛈️'],96:['Thunderstorm w/ Hail','⛈️'],99:['Severe Thunderstorm','⛈️']};
+  var m = map[code] || ['Unknown','🌡️'];
+  return {text:m[0], icon:m[1]};
+}
+async function fetchWeather(){
+  try{
+    var res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=27.7172&longitude=85.324&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FKathmandu');
+    var data = await res.json();
+    var cw = data.current_weather;
+    var desc = weatherDesc(cw.weathercode);
+    var html = '<div style="display:flex;align-items:center;gap:14px;">'+
+      '<div style="font-size:44px;">'+desc.icon+'</div>'+
+      '<div><div style="font-family:Orbitron;font-size:24px;color:var(--accent2);">'+cw.temperature+'°C</div>'+
+      '<div style="color:var(--muted);font-size:13px;">'+desc.text+' • Wind '+cw.windspeed+' km/h</div></div></div>';
+    if(data.daily){
+      html += '<div style="display:flex;gap:8px;margin-top:12px;overflow-x:auto;">';
+      for(var i=0;i<Math.min(4,data.daily.time.length);i++){
+        var d = new Date(data.daily.time[i]);
+        var dd = weatherDesc(data.daily.weathercode[i]);
+        html += '<div style="text-align:center;min-width:64px;background:rgba(0,229,255,.05);padding:8px;border-radius:8px;border:1px solid var(--border);">'+
+          '<div style="font-size:11px;color:var(--muted);">'+d.toLocaleDateString('en-US',{weekday:'short'})+'</div>'+
+          '<div style="font-size:18px;">'+dd.icon+'</div>'+
+          '<div style="font-size:11px;">'+Math.round(data.daily.temperature_2m_max[i])+'°/'+Math.round(data.daily.temperature_2m_min[i])+'°</div></div>';
       }
-
-      container.appendChild(msgDiv);
-      container.scrollTop = container.scrollHeight;
+      html += '</div>';
     }
+    el('weatherBox').innerHTML = html;
+  }catch(e){
+    el('weatherBox').innerHTML = '<span style="color:var(--danger)">Weather unavailable (check internet connection).</span>';
+  }
+}
+fetchWeather(); setInterval(fetchWeather, 15*60*1000);
 
-    function generateJarvisResponse(query) {
-      const q = query.toLowerCase();
+/* ---------- KPI Calculator ---------- */
+function calculateKPI(){
+  var g = function(id){ return parseFloat(el(id).value) || 0; };
+  var roomRev=g('rRev'), fbRev=g('fbRev'), otherRev=g('otherRev'), miscInc=g('miscInc');
+  var roomsAvail=g('roomsAvail'), roomsSold=g('roomsSold');
+  var roomsExp=g('roomsExp'), fbExp=g('fbExp'), otherExp=g('otherExp');
+  var ag=g('ag'), sm=g('sm'), pom=g('pom'), util=g('util');
+  var mgmtFee=g('mgmtFee'), fixedCharges=g('fixedCharges');
+  var payroll=g('payroll'), fbCost=g('fbCost');
+  var priorRev=g('priorRev'), priorGop=g('priorGop');
 
-      if (q.includes('grr') || q.includes('gross room revenue')) {
-        return {
-          text: "Gross Room Revenue (GRR) includes total revenue generated from guest rooms before commissions or marketing fees. In USALI & APEC standards, GRR serves as the base for calculating Programs & Service Contributions (PSC) under Acct 248010.",
-          link: { label: "Learn more on USALI GRR Standards", url: "https://www.hftp.org/usali/" }
-        };
-      } else if (q.includes('bad debt') || q.includes('139001')) {
-        return {
-          text: "According to Acct 139001 (Allowance for Bad Debts), hotels maintain a reserve equal to 3% of the average 12-month City Ledger balance (excluding credit cards, Bonvoy reimbursements, and owning entity balances).",
-          link: { label: "View APEC Playbook Controls", url: "https://www.ahla.com" }
-        };
-      } else if (q.includes('house bank') || q.includes('cash') || q.includes('101001')) {
-        return {
-          text: "Acct 101001 (House Bank & Petty Cash) requires a summary listing of issued cashier floats, main safe count sheet signed on the last working day by the General Cashier & DOF, and CRM total balance statements.",
-          link: { label: "Review Internal Control Playbook", url: "https://www.hftp.org" }
-        };
-      } else if (q.includes('weather') || q.includes('kathmandu')) {
-        return {
-          text: "Current weather for Kathmandu is 22°C with light rain, high humidity (92%), and southwest winds.",
-          link: { label: "Google Weather Source", url: "https://support.google.com/websearch/answer/13687874" }
-        };
-      } else {
-        return {
-          text: "Under USALI standards, all revenues and expenses must be categorized by operating department. Reconciliations for asset and liability accounts should strictly match General Ledger (GL) ending balances with valid supporting subledgers.",
-          link: { label: "Explore HFTP Accounting Resources", url: "https://www.hftp.org" }
-        };
-      }
-    }
+  var totalRevenue = roomRev+fbRev+otherRev+miscInc;
+  var totalDeptExpense = roomsExp+fbExp+otherExp;
+  var deptProfit = totalRevenue - totalDeptExpense;
+  var totalUndistributed = ag+sm+pom+util;
+  var gop = deptProfit - totalUndistributed;
+  var ebitda = gop - mgmtFee;
+  var noi = ebitda - fixedCharges;
 
-    // Initial Calculation Run
-    calculateFinancials();
-  </script>
+  var adr = safeDiv(roomRev, roomsSold);
+  var occ = safeDiv(roomsSold, roomsAvail);
+  var revpar = safeDiv(roomRev, roomsAvail);
+  var trevpar = safeDiv(totalRevenue, roomsAvail);
+  var goppar = safeDiv(gop, roomsAvail);
+  var gopPct = safeDiv(gop, totalRevenue);
+  var grr = safeDiv(roomRev, totalRevenue);
+  var cpor = safeDiv(roomsExp, roomsSold);
+  var laborPct = safeDiv(payroll, totalRevenue);
+  var fbCostPct = safeDiv(fbCost, fbRev);
+  var flowThrough = (priorRev && (totalRevenue-priorRev)!==0) ? ((gop-priorGop)/(totalRevenue-priorRev)) : null;
+
+  var results = [
+    ['Total Revenue', fmt(totalRevenue)],
+    ['ADR', fmt(adr)],
+    ['Occupancy %', occ===null?'N/A':fmt(occ*100,'%')],
+    ['RevPAR', fmt(revpar)],
+    ['TRevPAR', fmt(trevpar)],
+    ['Departmental Profit', fmt(deptProfit)],
+    ['GOP', fmt(gop)],
+    ['GOP %', gopPct===null?'N/A':fmt(gopPct*100,'%')],
+    ['GOPPAR', fmt(goppar)],
+    ['EBITDA', fmt(ebitda)],
+    ['NOI', fmt(noi)],
+    ['GRR (Room Rev % of Total)', grr===null?'N/A':fmt(grr*100,'%')],
+    ['CPOR', fmt(cpor)],
+    ['Labor Cost %', laborPct===null?'N/A':fmt(laborPct*100,'%')],
+    ['F&B Cost %', fbCostPct===null?'N/A':fmt(fbCostPct*100,'%')],
+    ['Flow-Through %', flowThrough===null?'N/A':fmt(flowThrough*100,'%')]
+  ];
+  el('kpiResults').innerHTML = results.map(function(r){ return card(r[0], r[1]); }).join('');
+
+  localStorage.setItem('gwara_kpi', JSON.stringify({adr:adr,occ:occ,revpar:revpar,trevpar:trevpar,gop:gop,goppar:goppar,gopPct:gopPct,totalRevenue:totalRevenue,ts:Date.now()}));
+  updateDashboardKPI();
+}
+el('calcKpiBtn').addEventListener('click', calculateKPI);
+
+/* ---------- Budget / Forecast ---------- */
+function loadBudget(){ return JSON.parse(localStorage.getItem('gwara_budget')||'[]'); }
+function saveBudget(a){ localStorage.setItem('gwara_budget', JSON.stringify(a)); }
+
+function computeForecast(row){
+  var now = new Date();
+  var kStr = now.toLocaleString('en-US',{timeZone:'Asia/Kathmandu'});
+  var k = new Date(kStr);
+  var daysElapsedMonth = k.getDate();
+  var daysInMonthTotal = new Date(k.getFullYear(), k.getMonth()+1, 0).getDate();
+  var startOfYear = new Date(k.getFullYear(),0,1);
+  var dayOfYear = Math.floor((k-startOfYear)/86400000)+1;
+  var y = k.getFullYear();
+  var isLeap = (y%4===0 && (y%100!==0 || y%400===0));
+  var daysInYearTotal = isLeap?366:365;
+  var forecastMonth = daysElapsedMonth ? (row.mtdA/daysElapsedMonth*daysInMonthTotal) : 0;
+  var forecastYear = dayOfYear ? (row.ytdA/dayOfYear*daysInYearTotal) : 0;
+  return {forecastMonth:forecastMonth, forecastYear:forecastYear, daysElapsedMonth:daysElapsedMonth, daysInMonthTotal:daysInMonthTotal, dayOfYear:dayOfYear, daysInYearTotal:daysInYearTotal};
+}
+
+function addBudgetRow(){
+  var metric = el('bMetric').value.trim();
+  if(!metric){ alert('Enter a metric name'); return; }
+  var row = {
+    metric:metric, isExpense: el('bIsExpense').value==='1',
+    todayA: parseFloat(el('bTodayA').value)||0, todayB: parseFloat(el('bTodayB').value)||0,
+    mtdA: parseFloat(el('bMtdA').value)||0, mtdB: parseFloat(el('bMtdB').value)||0,
+    ytdA: parseFloat(el('bYtdA').value)||0, ytdB: parseFloat(el('bYtdB').value)||0,
+    monthB: parseFloat(el('bMonthB').value)||0, yearB: parseFloat(el('bYearB').value)||0
+  };
+  var arr = loadBudget();
+  var idx = arr.findIndex(function(r){ return r.metric.toLowerCase()===metric.toLowerCase(); });
+  if(idx>=0) arr[idx]=row; else arr.push(row);
+  saveBudget(arr); renderBudgetTable(); updateDashboardKPI(); updateSystemStatus();
+}
+el('addBudgetRow').addEventListener('click', addBudgetRow);
+
+function renderBudgetTable(){
+  var arr = loadBudget();
+  var tbody = document.querySelector('#budgetTable tbody');
+  tbody.innerHTML = '';
+  arr.forEach(function(row,i){
+    var f = computeForecast(row);
+    var varToday = row.todayA-row.todayB, varMtd = row.mtdA-row.mtdB, varYtd = row.ytdA-row.ytdB;
+    var varMonthF = f.forecastMonth-row.monthB, varYearF = f.forecastYear-row.yearB;
+    function cls(v){ if(row.isExpense) v=-v; return v>=0?'pos':'neg'; }
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+row.metric+'</td>'+
+      '<td>'+fmt(row.todayA)+'</td><td>'+fmt(row.todayB)+'</td><td class="'+cls(varToday)+'">'+fmt(varToday)+'</td>'+
+      '<td>'+fmt(row.mtdA)+'</td><td>'+fmt(row.mtdB)+'</td><td class="'+cls(varMtd)+'">'+fmt(varMtd)+'</td>'+
+      '<td>'+fmt(row.ytdA)+'</td><td>'+fmt(row.ytdB)+'</td><td class="'+cls(varYtd)+'">'+fmt(varYtd)+'</td>'+
+      '<td>'+fmt(f.forecastMonth)+'</td><td class="'+cls(varMonthF)+'">'+fmt(varMonthF)+'</td>'+
+      '<td>'+fmt(f.forecastYear)+'</td><td class="'+cls(varYearF)+'">'+fmt(varYearF)+'</td>'+
+      '<td><button class="btn small danger" data-i="'+i+'">✕</button></td>';
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('button[data-i]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var arr2 = loadBudget(); arr2.splice(parseInt(btn.dataset.i),1); saveBudget(arr2); renderBudgetTable(); updateDashboardKPI();
+    });
+  });
+}
+
+/* ---------- COA ---------- */
+function loadCOA(){ return JSON.parse(localStorage.getItem('gwara_coa')||'[]'); }
+function saveCOA(a){ localStorage.setItem('gwara_coa', JSON.stringify(a)); }
+function parseCSV(text){
+  var lines = text.trim().split(/\r?\n/).filter(function(l){ return l.trim().length; });
+  var headers = lines[0].split(',').map(function(h){ return h.trim(); });
+  return lines.slice(1).map(function(line){
+    var cols = line.split(',');
+    var obj = {};
+    headers.forEach(function(h,i){ obj[h] = (cols[i]||'').trim(); });
+    return obj;
+  });
+}
+function renderCOATable(rows){
+  var all = loadCOA();
+  rows = rows || all;
+  var thead = document.querySelector('#coaTable thead');
+  var tbody = document.querySelector('#coaTable tbody');
+  if(!all.length){
+    thead.innerHTML=''; tbody.innerHTML='<tr><td style="color:var(--muted)">No COA uploaded yet. Upload CSV or download the sample template above.</td></tr>';
+    return;
+  }
+  if(!rows.length){
+    thead.innerHTML=''; tbody.innerHTML='<tr><td style="color:var(--muted)">No matching accounts found.</td></tr>';
+    return;
+  }
+  var headers = Object.keys(rows[0]);
+  thead.innerHTML = '<tr>'+headers.map(function(h){ return '<th>'+h+'</th>'; }).join('')+'</tr>';
+  tbody.innerHTML = rows.map(function(r){ return '<tr>'+headers.map(function(h){ return '<td>'+(r[h]||'')+'</td>'; }).join('')+'</tr>'; }).join('');
+}
+el('coaFile').addEventListener('change', function(e){
+  var file = e.target.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var rows = parseCSV(ev.target.result);
+    saveCOA(rows); renderCOATable(rows); updateSystemStatus();
+    alert('COA uploaded: '+rows.length+' accounts loaded.');
+  };
+  reader.readAsText(file);
+});
+el('coaSearch').addEventListener('input', function(){
+  var q = this.value.toLowerCase();
+  var all = loadCOA();
+  var filtered = q ? all.filter(function(r){ return Object.values(r).some(function(v){ return String(v).toLowerCase().includes(q); }); }) : all;
+  renderCOATable(filtered);
+});
+el('downloadSampleCoa').addEventListener('click', function(){
+  var sample = "Account Code,Account Name,Department,USALI Schedule\n"+
+"1000,Room Revenue - Transient,Rooms,Schedule 1\n"+
+"1010,Room Revenue - Group,Rooms,Schedule 1\n"+
+"1020,Room Revenue - Contract,Rooms,Schedule 1\n"+
+"2000,Food Revenue,Food & Beverage,Schedule 2\n"+
+"2010,Beverage Revenue,Food & Beverage,Schedule 2\n"+
+"2500,Banquet Revenue,Food & Beverage,Schedule 2\n"+
+"3000,Spa Revenue,Other Operated Departments,Schedule 3\n"+
+"3100,Laundry Revenue,Other Operated Departments,Schedule 3\n"+
+"4000,Rental & Other Income,Miscellaneous Income,Schedule 4\n"+
+"5000,Payroll & Related Expense - Rooms,Rooms,Schedule 1\n"+
+"5100,Payroll & Related Expense - F&B,Food & Beverage,Schedule 2\n"+
+"6000,Administrative & General Expense,A&G,Schedule 5\n"+
+"6100,Sales & Marketing Expense,S&M,Schedule 6\n"+
+"6200,Property Operation & Maintenance,POM,Schedule 7\n"+
+"6300,Utilities,Utilities,Schedule 8\n"+
+"7000,Management Fees,Management Fees,Schedule 9\n"+
+"8000,Property & Other Taxes,Fixed Charges,Schedule 10\n"+
+"8100,Insurance,Fixed Charges,Schedule 10\n"+
+"8200,Rent,Fixed Charges,Schedule 10\n"+
+"8300,Depreciation & Amortization,Fixed Charges,Schedule 10\n";
+  var blob = new Blob([sample], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download='Sample_USALI_COA.csv'; a.click();
+  URL.revokeObjectURL(url);
+});
+el('clearCoa').addEventListener('click', function(){
+  if(confirm('Clear uploaded COA?')){ localStorage.removeItem('gwara_coa'); renderCOATable([]); updateSystemStatus(); }
+});
+
+/* ---------- DOF Playbook ---------- */
+function loadPlaybookText(){ return localStorage.getItem('gwara_playbook_text')||''; }
+el('playbookFile').addEventListener('change', function(e){
+  var f = e.target.files[0]; if(!f) return;
+  if(f.name.toLowerCase().endsWith('.txt')){
+    var reader = new FileReader();
+    reader.onload = function(ev){ localStorage.setItem('gwara_playbook_text', ev.target.result); updateSystemStatus(); alert('Playbook loaded and indexed for AI search.'); };
+    reader.readAsText(f);
+  } else {
+    alert('For AI-searchable content please upload a .txt version of your playbook.');
+  }
+});
+el('saveNotesBtn').addEventListener('click', function(){
+  localStorage.setItem('gwara_dof_notes', el('dofNotes').value);
+  updateSystemStatus();
+  alert('Notes saved.');
+});
+el('dofNotes').value = localStorage.getItem('gwara_dof_notes')||'';
+
+/* ---------- Accordion Content ---------- */
+function buildAccordion(containerId, items){
+  var c = el(containerId);
+  c.innerHTML = items.map(function(it,i){
+    return '<div class="accordion-item"><div class="accordion-head" data-idx="'+containerId+i+'">'+it.title+' <span>▾</span></div>'+
+      '<div class="accordion-body" id="'+containerId+i+'">'+it.body+'</div></div>';
+  }).join('');
+  c.querySelectorAll('.accordion-head').forEach(function(h){
+    h.addEventListener('click', function(){ el(h.dataset.idx).classList.toggle('open'); });
+  });
+}
+buildAccordion('usaliAccordion',[
+  {title:'📖 USALI Overview', body:'The <b>Uniform System of Accounts for the Lodging Industry (USALI)</b>, 11th Revised Edition, is the global standard (published by HFTP/AHLA) for classifying and reporting hotel revenue and expenses. It ensures consistency so owners, operators, and lenders can compare performance across properties.'},
+  {title:'📊 Summary Operating Statement Structure', body:'Total Revenue → Departmental Expenses → Total Departmental Profit → Undistributed Operating Expenses (A&G, Info & Telecom, S&M, POM, Utilities) → <b>Gross Operating Profit (GOP)</b> → Management Fees → <b>EBITDA</b> → Non-Operating Income/Expense → Fixed Charges (Rent, Property Tax, Insurance, Depreciation, FF&E Reserve) → <b>NOI / EBIT</b>.'},
+  {title:'🗂 Departmental Schedules (1–11)', body:'Schedule 1: Rooms · Schedule 2: Food & Beverage · Schedule 3: Other Operated Departments · Schedule 4: Miscellaneous Income · Schedule 5: A&G · Schedule 6: Information & Telecom Systems · Schedule 7: Sales & Marketing · Schedule 8: Property Operation & Maintenance · Schedule 9: Utilities · Schedule 10: Management Fees · Schedule 11: Non-Operating Income & Expense / Fixed Charges.'},
+  {title:'📐 Key Ratios & Formulas', body:'ADR = Room Revenue ÷ Rooms Sold<br>Occupancy % = Rooms Sold ÷ Rooms Available<br>RevPAR = Room Revenue ÷ Rooms Available<br>TRevPAR = Total Revenue ÷ Rooms Available<br>GOP % = GOP ÷ Total Revenue<br>GOPPAR = GOP ÷ Rooms Available<br>CPOR = Rooms Expense ÷ Rooms Sold<br>Flow-Through % = ΔGOP ÷ ΔRevenue'},
+  {title:'⚖ Core Principles', body:'<b>Responsibility Accounting</b>: costs/revenues are reported by the department manager who controls them.<br><b>Uniform Classification</b>: consistent account structure across all hotels.<br><b>Consistency</b>: same accounting policies period over period for valid comparison.'}
+]);
+buildAccordion('dofAccordion',[
+  {title:'☀ Daily DOF Checklist', body:'• Review daily revenue report & flash P&L<br>• Verify night audit & folio postings<br>• Reconcile cash drawers & credit card batches<br>• Review market segment mix vs budget<br>• Check AR aging & collections<br>• Approve/verify disbursements'},
+  {title:'📆 Weekly Checklist', body:'• Labor cost review vs productivity standards<br>• Update weekly flash forecast<br>• Review AP aging & vendor payments<br>• Review STR/competitive set performance<br>• Petty cash & house bank audit'},
+  {title:'📕 Month-End Close Checklist', body:'1. Cut off revenue & complete night audit for last day<br>2. Post accruals (payroll, utilities, unbilled group business)<br>3. Reconcile all balance sheet accounts (bank, city ledger, guest ledger, advance deposits)<br>4. Review prepaid expense amortization<br>5. Reconcile inventory (F&B, operating supplies)<br>6. Post depreciation & management fees<br>7. Run trial balance & review for anomalies<br>8. Prepare USALI Summary Operating Statement<br>9. Perform budget vs actual variance analysis<br>10. Update forecast/re-forecast<br>11. Prepare owner\'s report/board deck<br>13. File statutory tax returns<br>14. Archive supporting schedules'},
+  {title:'🔮 Forecasting Cadence', body:'• Daily: 3-day rolling pickup forecast<br>• Weekly: 4-6 week flash forecast by segment<br>• Monthly: full P&L re-forecast vs budget<br>• Quarterly: outlook review with ownership'},
+  {title:'🗓 Annual Budget Calendar (Sample)', body:'Aug: Kick-off & market/comp-set review<br>Sep: Revenue & rate strategy, departmental budgets<br>Oct: Expense budgets, staffing plans, capex plan<br>Nov: Consolidation, GOP/EBITDA targets, ownership review<br>Dec: Final approval & system load'},
+  {title:'🔐 Internal Controls Checklist', body:'• Segregation of duties (cash handling vs recording)<br>• Dual approval for disbursements above threshold<br>• Daily reconciliation of PMS to GL<br>• Restricted access to rate/discount overrides<br>• Regular surprise cash counts<br>• Vendor master file review'}
+]);
+
+/* ---------- System Status / Dashboard ---------- */
+function updateSystemStatus(){
+  var coa = loadCOA().length;
+  var budget = loadBudget().length;
+  var playbook = loadPlaybookText().length>0 || (localStorage.getItem('gwara_dof_notes')||'').length>0;
+  el('systemStatus').innerHTML =
+    '<div>🟢 AI Engine: <b style="color:var(--accent2)">Online</b></div>'+
+    '<div>🟢 Clock Sync: <b>Asia/Kathmandu</b></div>'+
+    '<div>'+(coa?'🟢':'🟡')+' COA Loaded: <b>'+coa+' accounts</b></div>'+
+    '<div>'+(budget?'🟢':'🟡')+' Budget Metrics Tracked: <b>'+budget+'</b></div>'+
+    '<div>'+(playbook?'🟢':'🟡')+' DOF Playbook: <b>'+(playbook?'Indexed':'Not uploaded')+'</b></div>';
+}
+function updateDashboardKPI(){
+  var box = el('dashboardKPI');
+  var kpi = JSON.parse(localStorage.getItem('gwara_kpi')||'null');
+  var html = '';
+  if(kpi){
+    html += card('ADR', fmt(kpi.adr));
+    html += card('Occupancy', kpi.occ!==null?fmt(kpi.occ*100,'%'):'N/A');
+    html += card('RevPAR', fmt(kpi.revpar));
+    html += card('GOP %', kpi.gopPct!==null?fmt(kpi.gopPct*100,'%'):'N/A');
+  } else {
+    html += '<div class="card"><div class="label">No KPI Data</div><div class="value" style="font-size:13px;color:var(--muted);">Go to KPI Calculator tab</div></div>';
+  }
+  var budget = loadBudget();
+  var tr = budget.find(function(r){ return r.metric.toLowerCase().indexOf('total revenue')>-1; });
+  if(tr){
+    var f = computeForecast(tr);
+    html += card('MTD Revenue', fmt(tr.mtdA));
+    html += card('YTD Revenue', fmt(tr.ytdA));
+    html += card('Forecast Month', fmt(f.forecastMonth));
+    html += card('Forecast Year', fmt(f.forecastYear));
+  }
+  box.innerHTML = html;
+}
+el('resetAllBtn').addEventListener('click', function(){
+  if(confirm('This clears all COA, Budget, KPI, Playbook and Settings data stored in this browser. Continue?')){
+    Object.keys(localStorage).filter(function(k){ return k.indexOf('gwara_')===0; }).forEach(function(k){ localStorage.removeItem(k); });
+    location.reload();
+  }
+});
+
+/* ---------- AI Knowledge Base ---------- */
+var KB = [
+{k:['revpar'], a:'<b>RevPAR</b> (Revenue per Available Room) = Total Room Revenue ÷ Rooms Available. It combines rate and occupancy: RevPAR = ADR × Occupancy %.'},
+{k:['adr','average daily rate'], a:'<b>ADR</b> (Average Daily Rate) = Room Revenue ÷ Rooms Sold. Measures average rate achieved per occupied room.'},
+{k:['occupancy'], a:'<b>Occupancy %</b> = Rooms Sold ÷ Rooms Available × 100. Measures how much of available inventory was sold.'},
+{k:['trevpar'], a:'<b>TRevPAR</b> (Total Revenue per Available Room) = Total Hotel Revenue ÷ Rooms Available. Captures all revenue streams, not just rooms.'},
+{k:['goppar'], a:'<b>GOPPAR</b> (Gross Operating Profit per Available Room) = GOP ÷ Rooms Available. A key profitability efficiency metric.'},
+{k:['gop','gross operating profit'], a:'<b>GOP</b> (Gross Operating Profit, per USALI) = Total Departmental Profit − Total Undistributed Operating Expenses (A&G, S&M, POM, Utilities, Info&Telecom). <b>GOP %</b> = GOP ÷ Total Revenue.'},
+{k:['ebitda'], a:'<b>EBITDA</b> in USALI = GOP − Management Fees (± non-operating items). It represents earnings before interest, tax, depreciation and amortization.'},
+{k:['noi','net operating income'], a:'<b>NOI</b> (Net Operating Income) = EBITDA − Fixed Charges (Rent, Property Tax, Insurance, Depreciation, FF&E Reserve). This is closest to the property\'s true bottom line before financing.'},
+{k:['grr'], a:'<b>GRR</b> in hotel finance usually refers to the <b>Gross Rooms Revenue Ratio</b> = Room Revenue ÷ Total Revenue × 100 — showing how dependent the hotel is on rooms vs other departments (F&B, Spa, etc). Some also use GRR loosely for "Gross Revenue Run-rate". Tell me your specific definition and I\'ll calculate it from your numbers.'},
+{k:['cpor'], a:'<b>CPOR</b> (Cost Per Occupied Room) = Rooms Department Expense ÷ Rooms Sold. Tracks direct cost efficiency of servicing each occupied room.'},
+{k:['flow-through','flow through','flowthrough'], a:'<b>Flow-Through %</b> = (Current GOP − Prior GOP) ÷ (Current Revenue − Prior Revenue) × 100. Shows how efficiently incremental revenue converts to profit. Healthy hotels target 40-55% flow-through.'},
+{k:['labor cost','payroll cost'], a:'<b>Labor Cost %</b> = Total Payroll & Related Expense ÷ Total Revenue × 100. Usually also tracked by department against USALI schedules.'},
+{k:['usali'], a:'<b>USALI</b> (Uniform System of Accounts for the Lodging Industry), 11th Revised Edition, is the industry-standard chart of accounts and reporting framework used globally for hotel financial statements, enabling comparability across properties.'},
+{k:['house profit'], a:'<b>House Profit</b> is an older/legacy term roughly equivalent to today\'s GOP under USALI — profit after departmental and undistributed operating expenses but before fixed charges and management fees.'},
+{k:['management fee'], a:'Hotel <b>Management Fees</b> typically include a <b>Base Fee</b> (% of Total Revenue) and an <b>Incentive Fee</b> (% of GOP or NOI above a threshold), as defined in the Hotel Management Agreement (HMA).'},
+{k:['undistributed operating expense','undistributed'], a:'<b>Undistributed Operating Expenses</b> (USALI Schedules 5-9) = Administrative & General + Information & Telecom Systems + Sales & Marketing + Property Operation & Maintenance + Utilities. These are costs not directly tied to a single revenue department.'},
+{k:['fixed charges'], a:'<b>Fixed Charges</b> = Rent, Property & Other Taxes, Insurance, Depreciation & Amortization, and Reserve for Replacement (FF&E). Deducted after EBITDA to arrive at NOI/EBIT.'},
+{k:['reserve for replacement','ff&e reserve'], a:'The <b>FF&E Reserve</b> (Reserve for Replacement) is typically 2-5% of Total Revenue, set aside for future furniture, fixtures & equipment replacement, per the management/franchise agreement.'},
+{k:['responsibility accounting'], a:'<b>Responsibility Accounting</b> is a core USALI principle: revenues and expenses are reported against the department/manager who has direct control over them, enabling accountability.'},
+{k:['departmental schedule','schedule 1','schedule 2'], a:'USALI Schedules: 1 Rooms · 2 Food & Beverage · 3 Other Operated Departments · 4 Miscellaneous Income · 5 A&G · 6 Info & Telecom · 7 Sales & Marketing · 8 Property Operation & Maintenance · 9 Utilities · 10 Management Fees · 11 Non-Operating Income/Expense.'},
+{k:['city ledger'], a:'<b>City Ledger</b> is the accounts receivable for non-guest (billed-to-company/agency) transactions — corporate accounts, travel agents, OTAs, etc. Reconciled monthly against AR aging.'},
+{k:['guest ledger'], a:'<b>Guest Ledger</b> represents balances owed by in-house guests currently staying at the hotel, tracked via the PMS and reconciled daily during night audit.'},
+{k:['advance deposit'], a:'<b>Advance Deposits</b> are recorded as a <b>liability</b> (unearned revenue) when received, and recognized as Room/F&B revenue only upon guest arrival/consumption or per cancellation policy.'},
+{k:['package allocation','package revenue'], a:'Package revenue (e.g., Room + Breakfast) must be <b>unbundled</b> and allocated to the respective departments (Rooms, F&B) based on standalone selling price or management-approved allocation rates, per USALI.'},
+{k:['complimentary room','comp room'], a:'<b>Complimentary Rooms</b> are typically recorded at zero or a nominal "house use" rate for statistical tracking, but included in occupancy/available room counts as management dictates; no real revenue recorded, just statistical rooms occupied.'},
+{k:['no show'], a:'<b>No-Show Revenue</b>: If guaranteed and non-cancellable, the room charge is recognized as Room Revenue on the no-show date (not counted as an occupied room in RevPAR/Occupancy stats).'},
+{k:['rebate','allowance'], a:'Rebates/Allowances are recorded as <b>contra-revenue</b> (deduction from Gross Revenue) in the period granted, not as an expense, to keep revenue reporting clean per USALI.'},
+{k:['f&b cost','food cost','beverage cost'], a:'<b>F&B Cost %</b> = Cost of Food/Beverage Sold ÷ F&B Revenue × 100. Typically targeted 28-35% for food and 18-24% for beverage depending on market.'},
+{k:['market segmentation','market segment'], a:'Revenue is typically segmented into: Transient (Retail, Corporate, Government), Group (Corporate, Association, Tour), and Contract/Wholesale — used for rate strategy and forecasting.'},
+{k:['star report','str report','revpar index','mpi','ari'], a:'<b>STR/Trend Reports</b> benchmark your hotel vs a competitive set: <b>MPI</b> (Market Penetration Index) = your Occ% ÷ comp-set Occ%; <b>ARI</b> (Average Rate Index) = your ADR ÷ comp-set ADR; <b>RGI</b> (RevPAR Generation Index) = your RevPAR ÷ comp-set RevPAR.'},
+{k:['month end close','month-end close','close checklist'], a:'See the <b>DOF Playbook</b> tab for the full Month-End Close Checklist (revenue cutoff, accruals, balance sheet reconciliations, USALI statement prep, variance analysis, re-forecast, owner reporting).'},
+{k:['forecast','reforecast'], a:'GwaraInfo forecasts using run-rate: Forecast Month = MTD Actual ÷ Days Elapsed × Days in Month; Forecast Year = YTD Actual ÷ Day of Year × Days in Year. Enter your figures in the <b>Budget & Forecast</b> tab and I\'ll calculate this automatically.'},
+{k:['budget process','annual budget'], a:'See DOF Playbook tab for a sample Annual Budget Calendar: kickoff, revenue/rate strategy, departmental & expense budgets, consolidation and ownership approval.'},
+{k:['bank reconciliation'], a:'<b>Bank Reconciliation</b>: match GL cash balance to bank statement, identify outstanding checks/deposits in transit, investigate unrecorded bank fees/interest, and resolve differences monthly.'},
+{k:['trial balance'], a:'A <b>Trial Balance</b> lists all GL accounts with debit/credit balances to confirm total debits = total credits before preparing financial statements.'},
+{k:['depreciation'], a:'Hotel assets (building, FF&E) are depreciated over their useful life (e.g., Building 30-40 yrs, FF&E 5-7 yrs) using straight-line method typically, per company policy.'},
+{k:['prepaid expense'], a:'<b>Prepaid Expenses</b> (e.g., insurance, licenses paid in advance) are recorded as an asset and amortized to expense over the periods benefited.'},
+{k:['accrued expense','accrual'], a:'<b>Accrued Expenses</b> are costs incurred but not yet invoiced/paid (e.g., utilities, payroll) — recorded as a liability and expense in the period incurred, per accrual accounting.'},
+{k:['ota commission','online travel agency'], a:'<b>OTA Commissions</b> are typically recorded as a distribution expense (Sales & Marketing) rather than netted against Room Revenue, per USALI, to preserve gross revenue visibility.'},
+{k:['service charge','gratuity','tips'], a:'<b>Service Charges</b> collected from guests are usually recorded as a <b>liability</b> and distributed to staff per policy (not hotel revenue), unless the hotel retains a management portion, which should be clearly disclosed.'},
+{k:['vat','tax on hotel'], a:'Hotels typically collect VAT/Service Tax on Room & F&B revenue, recorded as a liability until remitted to tax authorities — always follow your local Nepal tax regulations (e.g., 13% VAT).'},
+{k:['capex','opex','capital expenditure'], a:'<b>CapEx</b> (capital expenditure) creates a long-term asset (renovation, major equipment) and is depreciated over time; <b>OpEx</b> (operating expense) is expensed immediately in the P&L.'},
+{k:['owner statement','owners statement'], a:'The <b>Owner\'s Statement</b> presents the USALI Summary Operating Statement plus a variance analysis vs budget/prior year, forecast update, and commentary — usually delivered monthly to ownership.'},
+{k:['night audit'], a:'<b>Night Audit</b> is the daily process of balancing all revenue transactions (rooms, F&B, other) against the PMS, posting room & tax charges, and closing the business day.'},
+{k:['internal control'], a:'Key hotel internal controls: segregation of duties, dual-approval for disbursements, daily PMS-to-GL reconciliation, restricted rate-override access, surprise cash counts, and vendor master reviews.'},
+{k:['chart of accounts','coa structure'], a:'A hotel <b>Chart of Accounts</b> under USALI is organized by Revenue departments (Rooms, F&B, Other Operated), Undistributed Expenses (A&G, S&M, POM, Utilities), Management Fees, and Fixed Charges — upload yours in the <b>Chart of Accounts</b> tab and I can search it for you.'}
+];
+
+/* ---------- Numeric extraction & instant KPI from chat ---------- */
+function extractAll(text){
+  var patterns = {
+    roomRevenue:/room\s*rev(?:enue)?[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    fnbRevenue:/(?:f\s*&?\s*b|food\s*(?:and|&)?\s*beverage)\s*rev(?:enue)?[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    otherRevenue:/other\s*rev(?:enue)?[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    totalRevenue:/total\s*rev(?:enue)?[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    roomsSold:/rooms?\s*sold[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    roomsAvailable:/rooms?\s*(?:available|avail)[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    gop:/\bgop\b[^0-9]{0,10}([\d,]+\.?\d*)/i,
+    payroll:/payroll[^0-9]{0,10}([\d,]+\.?\d*)/i
+  };
+  var out = {};
+  for(var k in patterns){
+    var m = text.match(patterns[k]);
+    if(m) out[k] = parseFloat(m[1].replace(/,/g,''));
+  }
+  return out;
+}
+function buildKPIReport(d){
+  var lines = [];
+  if(d.roomRevenue && d.roomsSold) lines.push('ADR = '+fmt(d.roomRevenue/d.roomsSold));
+  if(d.roomsSold && d.roomsAvailable) lines.push('Occupancy = '+fmt(d.roomsSold/d.roomsAvailable*100,'%'));
+  if(d.roomRevenue && d.roomsAvailable) lines.push('RevPAR = '+fmt(d.roomRevenue/d.roomsAvailable));
+  if(d.totalRevenue && d.roomsAvailable) lines.push('TRevPAR = '+fmt(d.totalRevenue/d.roomsAvailable));
+  if(d.gop && d.roomsAvailable) lines.push('GOPPAR = '+fmt(d.gop/d.roomsAvailable));
+  if(d.gop && d.totalRevenue) lines.push('GOP % = '+fmt(d.gop/d.totalRevenue*100,'%'));
+  if(d.roomRevenue && d.totalRevenue) lines.push('GRR (Room Rev % of Total) = '+fmt(d.roomRevenue/d.totalRevenue*100,'%'));
+  if(d.payroll && d.totalRevenue) lines.push('Labor Cost % = '+fmt(d.payroll/d.totalRevenue*100,'%'));
+  return lines;
+}
+
+/* ---------- COA / Budget / Playbook search for chat ---------- */
+function searchCOA(q){
+  var rows = loadCOA();
+  if(!rows.length) return 'You haven\'t uploaded a Chart of Accounts yet. Go to the <b>Chart of Accounts</b> tab to upload your CSV, or download the sample USALI-aligned template (Rooms 1000s, F&B 2000s, Other Operated Depts 3000s, Misc Income 4000s, A&G/S&M/POM/Utilities 6000s, Management Fees 7000s, Fixed Charges 8000s).';
+  var words = q.replace(/coa|chart of account|account code|find|search|what is|the/gi,'').trim();
+  var matches = rows.filter(function(r){ return Object.values(r).some(function(v){ return String(v).toLowerCase().indexOf(words.toLowerCase())>-1; }); });
+  if(!words || !matches.length) return 'Found '+rows.length+' accounts in your COA. Try asking e.g. "coa room revenue" or "account code for utilities" to search specific items.';
+  var vals = matches.slice(0,8).map(function(m){ var v = Object.values(m); return '• <b>'+v[0]+'</b> — '+(v[1]||'')+' <span style="color:var(--muted)">('+(v[2]||'')+')</span>'; });
+  return 'Found '+matches.length+' matching account(s):<br>'+vals.join('<br>');
+}
+function budgetAnswer(q){
+  var arr = loadBudget();
+  if(!arr.length) return 'No budget/actual data yet. Add metrics in the <b>Budget & Forecast</b> tab (Today, MTD, YTD, Month Budget, Year Budget) and I\'ll track variance & forecast automatically.';
+  var found = arr.find(function(r){ return q.indexOf(r.metric.toLowerCase())>-1; });
+  var list = found ? [found] : arr;
+  return list.map(function(row){
+    var f = computeForecast(row);
+    return '<b>'+row.metric+'</b><br>Today: '+fmt(row.todayA)+' vs Budget '+fmt(row.todayB)+' (Var '+fmt(row.todayA-row.todayB)+')<br>'+
+      'MTD: '+fmt(row.mtdA)+' vs '+fmt(row.mtdB)+' (Var '+fmt(row.mtdA-row.mtdB)+')<br>'+
+      'YTD: '+fmt(row.ytdA)+' vs '+fmt(row.ytdB)+' (Var '+fmt(row.ytdA-row.ytdB)+')<br>'+
+      'Forecast Month: '+fmt(f.forecastMonth)+' (Budget '+fmt(row.monthB)+')<br>'+
+      'Forecast Year: '+fmt(f.forecastYear)+' (Budget '+fmt(row.yearB)+')';
+  }).join('<br><br>');
+}
+function searchPlaybook(q){
+  var text = loadPlaybookText();
+  var notes = localStorage.getItem('gwara_dof_notes')||'';
+  var combined = (text+'\n'+notes).trim();
+  if(!combined) return 'No DOF playbook uploaded yet. Go to the <b>DOF Playbook</b> tab to upload a .txt file or add custom notes. Meanwhile check the built-in Month-End Close Checklist and Daily/Weekly duties there.';
+  var keyword = q.replace(/playbook|dof|what does|say about|about/gi,'').trim();
+  var paragraphs = combined.split(/\n+/).filter(function(p){ return p.trim(); });
+  var matches = keyword ? paragraphs.filter(function(p){ return p.toLowerCase().indexOf(keyword.toLowerCase())>-1; }) : paragraphs.slice(0,5);
+  if(!matches.length) return 'I searched your uploaded playbook/notes but found nothing about "'+keyword+'". Try different wording, or check the built-in DOF Playbook tab.';
+  return 'From your DOF Playbook:<br>'+matches.slice(0,5).map(function(m){ return '• '+m; }).join('<br>');
+}
+function fallbackAnswer(){
+  return 'I don\'t have a specific built-in answer for that, but I can help with <b>USALI KPIs</b>, your <b>Chart of Accounts</b>, <b>Budget/MTD/YTD/Forecast</b>, or the <b>DOF Playbook</b>.<br><br>'+
+    'For general questions, try these <b>free AI assistants</b>:<br>'+
+    '🔗 <a href="https://chat.openai.com" target="_blank">ChatGPT (Free)</a><br>'+
+    '🔗 <a href="https://gemini.google.com" target="_blank">Google Gemini</a><br>'+
+    '🔗 <a href="https://www.perplexity.ai" target="_blank">Perplexity AI</a><br>'+
+    '🔗 <a href="https://claude.ai" target="_blank">Claude.ai</a>';
+}
+
+function aiRespondLocal(text){
+  var q = text.toLowerCase();
+  var nums = extractAll(q);
+  var lines = buildKPIReport(nums);
+  if(lines.length) return '📊 <b>Calculated KPI Report</b> (from figures you provided):<br>'+lines.join('<br>');
+  if(/coa|chart of account|account code/.test(q)) return searchCOA(q);
+  if(/playbook|\bdof\b/.test(q)) return searchPlaybook(q);
+  if(/forecast|mtd|ytd|variance|budget/.test(q)) return budgetAnswer(q);
+  for(var i=0;i<KB.length;i++){
+    if(KB[i].k.some(function(k){ return matchesKey(q,k); })) return KB[i].a;
+  }
+  return '__NOMATCH__';
+}
+async function callOpenAI(userText){
+  var key = localStorage.getItem('gwara_openai_key');
+  if(!key) return null;
+  try{
+    var res = await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        messages:[
+          {role:'system', content:'You are GWARA, an expert hotel accounting AI assistant specialized in USALI standards, hotel finance, budgeting and forecasting. Answer concisely and practically.'},
+          {role:'user', content:userText}
+        ],
+        temperature:0.4
+      })
+    });
+    var data = await res.json();
+    if(data.choices && data.choices[0]) return data.choices[0].message.content;
+    return null;
+  }catch(e){ return null; }
+}
+
+/* ---------- Chat UI ---------- */
+var msgCounter = 0;
+function appendMsg(sender, html){
+  var win = el('chatWindow');
+  var id = 'msg-'+(msgCounter++);
+  var div = document.createElement('div');
+  div.className = 'msg '+sender;
+  div.id = id;
+  div.innerHTML = html;
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+  return id;
+}
+function updateMsg(id, html){
+  var e = el(id); if(e) e.innerHTML = html;
+  el('chatWindow').scrollTop = el('chatWindow').scrollHeight;
+}
+async function sendMessage(){
+  var input = el('chatInput');
+  var text = input.value.trim();
+  if(!text) return;
+  appendMsg('user', escapeHtml(text));
+  input.value = '';
+  var thinkingId = appendMsg('ai', '<i>GWARA is thinking...</i>');
+  var local = aiRespondLocal(text);
+  var finalResp = local;
+  if(local === '__NOMATCH__'){
+    var apiResp = await callOpenAI(text);
+    finalResp = apiResp ? apiResp.replace(/\n/g,'<br>') : fallbackAnswer();
+  }
+  updateMsg(thinkingId, finalResp);
+}
+el('sendBtn').addEventListener('click', sendMessage);
+el('chatInput').addEventListener('keydown', function(e){ if(e.key==='Enter') sendMessage(); });
+
+var chipList = ['What is RevPAR?','Explain GOP vs EBITDA vs NOI','Month-end close checklist','Search my COA for room revenue','What\'s my Total Revenue forecast?','What is GRR?','Flow-through ratio formula','How to record advance deposits'];
+chipList.forEach(function(c){
+  var b = document.createElement('div'); b.className='chip'; b.textContent=c;
+  b.addEventListener('click', function(){ el('chatInput').value=c; sendMessage(); });
+  el('chips').appendChild(b);
+});
+appendMsg('ai', '👋 Hello, I\'m <b>GWARA</b>, your Hotel Finance AI. I know USALI standards, your Chart of Accounts, budgets & forecasts, and hotel KPIs. Ask me anything!');
+
+/* ---------- API Key Settings ---------- */
+el('apiKeyInput').value = localStorage.getItem('gwara_openai_key')||'';
+el('saveKeyBtn').addEventListener('click', function(){
+  var v = el('apiKeyInput').value.trim();
+  if(v){ localStorage.setItem('gwara_openai_key', v); alert('API key saved locally.'); }
+});
+el('clearKeyBtn').addEventListener('click', function(){
+  localStorage.removeItem('gwara_openai_key'); el('apiKeyInput').value=''; alert('API key cleared.');
+});
+
+/* ---------- Init ---------- */
+renderCOATable();
+renderBudgetTable();
+updateSystemStatus();
+updateDashboardKPI();
+</script>
 </body>
 </html>
