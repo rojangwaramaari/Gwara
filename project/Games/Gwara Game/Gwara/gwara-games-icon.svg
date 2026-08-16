@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512" role="img" aria-label="Gwara Games icon">
+  <defs>
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4fe3ec"/>
+      <stop offset="100%" stop-color="#9b6bff"/>
+    </linearGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bfeaff" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#4fe3ec" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#4fe3ec" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinkGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd3e0" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#ff5c8a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- badge -->
+  <rect x="0" y="0" width="100" height="100" rx="22" fill="#080b12"/>
+  <rect x="1" y="1" width="98" height="98" rx="21" fill="none" stroke="#1a2740" stroke-width="1"/>
+
+  <!-- outer core ring (rotated square = diamond) -->
+  <rect x="29" y="29" width="42" height="42" rx="6" fill="none" stroke="url(#coreGrad)" stroke-width="2.1"
+        transform="rotate(45 50 50)" opacity="0.9"/>
+
+  <!-- spokes to the six modules -->
+  <g stroke="url(#coreGrad)" stroke-width="1.1" opacity="0.5">
+    <line x1="50" y1="50" x2="50" y2="16"/>
+    <line x1="50" y1="50" x2="79.4" y2="33"/>
+    <line x1="50" y1="50" x2="79.4" y2="67"/>
+    <line x1="50" y1="50" x2="50" y2="84"/>
+    <line x1="50" y1="50" x2="20.6" y2="67"/>
+    <line x1="50" y1="50" x2="20.6" y2="33"/>
+  </g>
+
+  <!-- five module nodes -->
+  <circle cx="79.4" cy="33" r="3.4" fill="#4fe3ec"/>
+  <circle cx="79.4" cy="67" r="3.4" fill="#9b6bff"/>
+  <circle cx="50"   cy="84" r="3.4" fill="#4fe3ec"/>
+  <circle cx="20.6" cy="67" r="3.4" fill="#9b6bff"/>
+  <circle cx="20.6" cy="33" r="3.4" fill="#4fe3ec"/>
+
+  <!-- featured module: the love scan, top node -->
+  <circle cx="50" cy="16" r="9" fill="url(#pinkGlow)"/>
+  <circle cx="50" cy="16" r="4.1" fill="#ff5c8a"/>
+
+  <!-- the core -->
+  <circle cx="50" cy="50" r="15" fill="url(#coreGlow)"/>
+  <circle cx="50" cy="50" r="5.6" fill="url(#coreGrad)"/>
+  <circle cx="48" cy="48" r="1.4" fill="#ffffff" opacity="0.85"/>
+</svg>
