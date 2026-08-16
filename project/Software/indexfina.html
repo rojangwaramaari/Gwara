@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gwarainfo - Hotel Accounting & AI Executive System</title>
+  <style>
+    :root {
+      --bg-color: #070b12;
+      --panel-bg: rgba(13, 22, 38, 0.75);
+      --panel-border: #00f0ff33;
+      --accent-cyan: #00f0ff;
+      --accent-blue: #0072ff;
+      --accent-gold: #ffb700;
+      --text-main: #e2f1ff;
+      --text-muted: #8ab4f8;
+      --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.15), transparent 70%),
+        radial-gradient(circle at 80% 80%, rgba(0, 114, 255, 0.1), transparent 50%);
+    }
+
+    /* Header & Futuristic Dashboard Banner */
+    header {
+      padding: 1rem 2rem;
+      background: rgba(7, 11, 18, 0.9);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: pulse 2s infinite alternate;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    }
+
+    .system-status {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.9rem;
+    }
+
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .status-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-val {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    /* Main Grid Layout */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+      padding: 20px;
+      flex: 1;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .panel-header {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Financial Input & KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .kpi-card {
+      background: rgba(0, 240, 255, 0.05);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .kpi-card .val {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--accent-gold);
+    }
+
+    .kpi-card .lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    /* AI Interface Section */
+    .ai-chat-box {
+      display: flex;
+      flex-direction: column;
+      height: 350px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid var(--panel-border);
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: rgba(0, 114, 255, 0.3);
+      border: 1px solid var(--accent-blue);
+    }
+
+    .msg.jarvis {
+      align-self: flex-start;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--panel-border);
+    }
+
+    .msg-link {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      text-decoration: underline;
+    }
+
+    .chat-input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Chart / COA Table Section */
+    .coa-table-wrapper {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--panel-border);
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    th {
+      background: rgba(0, 240, 255, 0.1);
+      color: var(--accent-cyan);
+      position: sticky;
+      top: 0;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 5px var(--accent-cyan); }
+      100% { box-shadow: 0 0 15px var(--accent-cyan); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top System Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <div class="brand-title">GWARAINFO AI</div>
+    </div>
+    <div class="system-status">
+      <div class="status-item">
+        <span class="status-label">Location / Weather</span>
+        <span class="status-val" id="weather-display">Kathmandu: 22°C, Light Rain</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Time (Kathmandu)</span>
+        <span class="status-val" id="clock-display">--:--:--</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Date</span>
+        <span class="status-val" id="date-display">----/--/--</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    
+    <!-- Panel 1: Operations & Financial Reporting -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Financial Tracking & Forecast</span>
+        <span style="font-size: 0.75rem; color: var(--accent-gold);">USALI Compliant</span>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="lbl">Today Revenue</div>
+          <div class="val" id="kpi-today">$0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="lbl">MTD Revenue</div>
+          <div class="val" id="kpi-mtd">$0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="lbl">YTD Revenue</div>
+          <div class="val" id="kpi-ytd">$0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="lbl">30-Day Forecast</div>
+          <div class="val" id="kpi-forecast">$0</div>
+        </div>
+      </div>
+
+      <!-- Entry Form -->
+      <form id="financial-form" onsubmit="calculateFinancials(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Today Revenue ($)</label>
+            <input type="number" id="today-rev" value="4500" required>
+          </div>
+          <div class="form-group">
+            <label>Today Budget ($)</label>
+            <input type="number" id="today-budget" value="4000" required>
+          </div>
+          <div class="form-group">
+            <label>Rooms Sold</label>
+            <input type="number" id="rooms-sold" value="45" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total Rooms Available</label>
+            <input type="number" id="total-rooms" value="50" required>
+          </div>
+          <div class="form-group">
+            <label>MTD Prior Revenue ($)</label>
+            <input type="number" id="mtd-prior" value="62000" required>
+          </div>
+          <div class="form-group">
+            <label>YTD Prior Revenue ($)</label>
+            <input type="number" id="ytd-prior" value="480000" required>
+          </div>
+        </div>
+
+        <button type="submit" style="width: 100%; margin-top: 10px;">Run Financial Analytics & Forecast</button>
+      </form>
+
+      <!-- Advanced Ratios Display -->
+      <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.85rem;">
+        <div><strong>ADR:</strong> <span id="calc-adr">$0.00</span></div>
+        <div><strong>RevPAR:</strong> <span id="calc-revpar">$0.00</span></div>
+        <div><strong>Occupancy:</strong> <span id="calc-occ">0%</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Jarvis AI Executive Interface -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Jarvis AI - Hotel Accounting Assistant</span>
+        <span style="font-size: 0.75rem; color: var(--accent-cyan);">Live Model</span>
+      </div>
+
+      <div class="ai-chat-box">
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg jarvis">
+            Greetings. I am Gwarainfo's AI core. I am initialized with your USALI Chart of Accounts (COA) dictionary and APEC DOF reconciliation standards. How may I assist with your hotel's accounts or reconciliations today?
+          </div>
+        </div>
+        <div class="chat-input-group">
+          <input type="text" id="user-input" placeholder="Ask about GRR, House Banks, Bad Debt reserves, or USALI standards..." onkeypress="handleKeyPress(event)">
+          <button onclick="sendMessage()">Ask</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Chart of Accounts (COA) Reference -->
+    <div class="panel" style="grid-column: span 2;">
+      <div class="panel-header">
+        <span>USALI & APEC Playbook COA Reference</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Loaded Accounts</span>
+      </div>
+      
+      <div class="coa-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Account No</th>
+              <th>Account Name</th>
+              <th>Purpose / Scope</th>
+              <th>Required Reconciliation Documents</th>
+            </tr>
+          </thead>
+          <tbody id="coa-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // System Data: COA Accounts built directly from provided dictionary and APEC DOF Playbook
+    const coaData = [
+      { id: "101001", name: "House Bank & Petty Cash", purpose: "Total of all Hotel House Banks issued to cash handlers and CRM cash.", docs: "1. Summary of Cashier Floats 2. Main safe count sheet 3. Signed float contracts" },
+      { id: "110104", name: "FF&E Escrow Bank Account", purpose: "FF&E Bank account for escrow reserve & replacement fund.", docs: "1. Bank Reconciliation 2. Month-end Bank Statement 3. Reconciling item details" },
+      { id: "113001", name: "Cash Clearing", purpose: "Clearing account for PMS cash code mappings. Net zero daily balance.", docs: "None required if balance is zero" },
+      { id: "134110", name: "City Ledger – Non-Credit Card", purpose: "Accounts receivable from departed guests with approved credit.", docs: "1. Opera E100 Trial Balance 2. PMS L124 Detailed AR Aging" },
+      { id: "134121", name: "Hotel Guest Ledger", purpose: "Current receivables from guests currently registered in-house.", docs: "1. PMS E100 Trial Balance 2. PMS E102 Guest Ledger Detail" },
+      { id: "139001", name: "Allowance for Bad Debts", purpose: "Reserve maintained at 3% of average 12-month City Ledger balance.", docs: "1. Reserve Calculation Sheet 2. PMS L112 Aging Summary" },
+      { id: "212171", name: "FF&E Escrow Contributions", purpose: "Current year escrow contribution liability calculated on Gross Revenue %.", docs: "1. Reserve Reconciliation 2. Format 90 P&L 3. Management Contract Page" },
+      { id: "248010", name: "OFB Accrual - Programs & Service", purpose: "PSC payable based on property fixed rate, rooms, and Gross Room Revenue (GRR).", docs: "1. Transaction Summary 2. Marriott Bill 3. Format 90 P&L" }
+    ];
+
+    // Real-Time Clock & Date (Asia/Kathmandu)
+    function updateClock() {
+      const now = new Date();
+      const optionsTime = { timeZone: 'Asia/Kathmandu', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const optionsDate = { timeZone: 'Asia/Kathmandu', year: 'numeric', month: '2-digit', day: '2-digit' };
+      
+      document.getElementById('clock-display').innerText = new Intl.DateTimeFormat([], optionsTime).format(now);
+      document.getElementById('date-display').innerText = new Intl.DateTimeFormat([], optionsDate).format(now);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Populate COA Table
+    function renderCOATable() {
+      const tbody = document.getElementById('coa-body');
+      tbody.innerHTML = coaData.map(acc => `
+        <tr>
+          <td><strong>${acc.id}</strong></td>
+          <td>${acc.name}</td>
+          <td>${acc.purpose}</td>
+          <td>${acc.docs}</td>
+        </tr>
+      `).join('');
+    }
+    renderCOATable();
+
+    // Financial Calculation & Forecasting Logic
+    function calculateFinancials(event) {
+      if (event) event.preventDefault();
+
+      const todayRev = parseFloat(document.getElementById('today-rev').value) || 0;
+      const todayBudget = parseFloat(document.getElementById('today-budget').value) || 0;
+      const roomsSold = parseFloat(document.getElementById('rooms-sold').value) || 0;
+      const totalRooms = parseFloat(document.getElementById('total-rooms').value) || 1;
+      const mtdPrior = parseFloat(document.getElementById('mtd-prior').value) || 0;
+      const ytdPrior = parseFloat(document.getElementById('ytd-prior').value) || 0;
+
+      const mtdTotal = mtdPrior + todayRev;
+      const ytdTotal = ytdPrior + todayRev;
+
+      // Key Metrics
+      const adr = roomsSold > 0 ? (todayRev / roomsSold) : 0;
+      const revpar = todayRev / totalRooms;
+      const occupancy = (roomsSold / totalRooms) * 100;
+
+      // Simple Trend Forecast (Projecting 30-day run-rate based on daily budget vs actual variance)
+      const dailyVarianceRatio = todayRev / (todayBudget || 1);
+      const forecast30Days = (todayBudget * 30) * dailyVarianceRatio;
+
+      // Render KPIs
+      document.getElementById('kpi-today').innerText = `$${todayRev.toLocaleString()}`;
+      document.getElementById('kpi-mtd').innerText = `$${mtdTotal.toLocaleString()}`;
+      document.getElementById('kpi-ytd').innerText = `$${ytdTotal.toLocaleString()}`;
+      document.getElementById('kpi-forecast').innerText = `$${Math.round(forecast30Days).toLocaleString()}`;
+
+      document.getElementById('calc-adr').innerText = `$${adr.toFixed(2)}`;
+      document.getElementById('calc-revpar').innerText = `$${revpar.toFixed(2)}`;
+      document.getElementById('calc-occ').innerText = `${occupancy.toFixed(1)}%`;
+    }
+
+    // Jarvis AI System Integration
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('user-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMessage(text, 'user');
+      input.value = '';
+
+      // Processing Query
+      setTimeout(() => {
+        const response = generateJarvisResponse(text);
+        appendMessage(response.text, 'jarvis', response.link);
+      }, 500);
+    }
+
+    function appendMessage(text, sender, link = null) {
+      const container = document.getElementById('chat-messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${sender}`;
+      msgDiv.innerText = text;
+
+      if (link) {
+        const linkEl = document.createElement('a');
+        linkEl.className = 'msg-link';
+        linkEl.href = link.url;
+        linkEl.target = '_blank';
+        linkEl.innerText = link.label;
+        msgDiv.appendChild(linkEl);
+      }
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function generateJarvisResponse(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes('grr') || q.includes('gross room revenue')) {
+        return {
+          text: "Gross Room Revenue (GRR) includes total revenue generated from guest rooms before commissions or marketing fees. In USALI & APEC standards, GRR serves as the base for calculating Programs & Service Contributions (PSC) under Acct 248010.",
+          link: { label: "Learn more on USALI GRR Standards", url: "https://www.hftp.org/usali/" }
+        };
+      } else if (q.includes('bad debt') || q.includes('139001')) {
+        return {
+          text: "According to Acct 139001 (Allowance for Bad Debts), hotels maintain a reserve equal to 3% of the average 12-month City Ledger balance (excluding credit cards, Bonvoy reimbursements, and owning entity balances).",
+          link: { label: "View APEC Playbook Controls", url: "https://www.ahla.com" }
+        };
+      } else if (q.includes('house bank') || q.includes('cash') || q.includes('101001')) {
+        return {
+          text: "Acct 101001 (House Bank & Petty Cash) requires a summary listing of issued cashier floats, main safe count sheet signed on the last working day by the General Cashier & DOF, and CRM total balance statements.",
+          link: { label: "Review Internal Control Playbook", url: "https://www.hftp.org" }
+        };
+      } else if (q.includes('weather') || q.includes('kathmandu')) {
+        return {
+          text: "Current weather for Kathmandu is 22°C with light rain, high humidity (92%), and southwest winds.",
+          link: { label: "Google Weather Source", url: "https://support.google.com/websearch/answer/13687874" }
+        };
+      } else {
+        return {
+          text: "Under USALI standards, all revenues and expenses must be categorized by operating department. Reconciliations for asset and liability accounts should strictly match General Ledger (GL) ending balances with valid supporting subledgers.",
+          link: { label: "Explore HFTP Accounting Resources", url: "https://www.hftp.org" }
+        };
+      }
+    }
+
+    // Initial Calculation Run
+    calculateFinancials();
+  </script>
+</body>
+</html>
