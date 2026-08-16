@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gwara Games — an AI core, six simple games</title>
+<meta name="description" content="Gwara Games: rock-paper-scissors, tic-tac-toe, guess the number, memory match, reflex test, and a name-based love calculator — all running through one AI core.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="scanline-overlay"></div>
+<div class="vignette"></div>
+<div class="hearts-field" id="hearts-field"></div>
+
+<header class="topbar">
+  <div class="brand" tabindex="0">
+    <span class="brand-mark"></span> GWARA<span class="accent">GAMES</span>
+  </div>
+  <div class="hud-status">
+    <span class="dot"></span> AI CORE ONLINE <span id="clock">00:00:00</span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- ============ HOME ============ -->
+  <main id="view-home" class="view active">
+    <section class="hero">
+      <p class="eyebrow">// six modules loaded</p>
+      <h1>Simple games.<br>An advanced <span class="grad-text">AI</span> core.</h1>
+      <p class="hero-sub">Pick a module below. Every opponent, hint and scan runs through the same core — including one that reads names instead of moves.</p>
+    </section>
+
+    <section class="grid">
+
+      <article class="game-card featured" data-game="love" tabindex="0">
+        <div class="card-icon">♥</div>
+        <div class="card-body">
+          <p class="card-tag">Module 01 · Compatibility scan</p>
+          <h2 class="card-title">Love Calculator</h2>
+          <p class="card-desc">Enter two names. The core cancels shared letters, folds the leftovers into a percentage, and reads the result.</p>
+          <span class="card-cta">Run the scan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+        </div>
+      </article>
+
+      <article class="game-card" data-game="rps" tabindex="0">
+        <div class="card-icon">✊</div>
+        <p class="card-tag">Module 02 · Reflex duel</p>
+        <h3 class="card-title">Rock · Paper · Scissors</h3>
+        <p class="card-desc">Best of anything, against a core that never hesitates.</p>
+        <span class="card-cta">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </article>
+
+      <article class="game-card" data-game="ttt" tabindex="0">
+        <div class="card-icon">✕</div>
+        <p class="card-tag">Module 03 · Strategy</p>
+        <h3 class="card-title">Tic Tac Toe</h3>
+        <p class="card-desc">The AI plays perfectly. A draw is a genuine win.</p>
+        <span class="card-cta">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </article>
+
+      <article class="game-card" data-game="guess" tabindex="0">
+        <div class="card-icon">#</div>
+        <p class="card-tag">Module 04 · Deduction</p>
+        <h3 class="card-title">Guess the Number</h3>
+        <p class="card-desc">1–100. Higher, lower, and however many tries it takes.</p>
+        <span class="card-cta">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </article>
+
+      <article class="game-card" data-game="memory" tabindex="0">
+        <div class="card-icon">◆</div>
+        <p class="card-tag">Module 05 · Memory</p>
+        <h3 class="card-title">Memory Match</h3>
+        <p class="card-desc">Flip, remember, pair up all eight symbols.</p>
+        <span class="card-cta">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </article>
+
+      <article class="game-card" data-game="reaction" tabindex="0">
+        <div class="card-icon">⚡</div>
+        <p class="card-tag">Module 06 · Reflex</p>
+        <h3 class="card-title">Reflex Test</h3>
+        <p class="card-desc">Wait for green. Tap fast. Compare to your best.</p>
+        <span class="card-cta">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- ============ LOVE CALCULATOR ============ -->
+  <main id="view-love" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel love-panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 01 · Compatibility scan</p>
+          <h2>Love Calculator</h2>
+          <p class="panel-sub">A new take on the name-based classic — same real letter-folding math, an AI-core reveal.</p>
+        </div>
+      </div>
+
+      <form class="love-form" id="love-form">
+        <div class="field">
+          <label for="love-name-a">First name</label>
+          <input id="love-name-a" type="text" placeholder="e.g. Aarav" maxlength="30" required>
+        </div>
+        <span class="love-plus">+</span>
+        <div class="field">
+          <label for="love-name-b">Second name</label>
+          <input id="love-name-b" type="text" placeholder="e.g. Meera" maxlength="30" required>
+        </div>
+        <button type="submit" class="btn btn-love">Run compatibility scan</button>
+      </form>
+
+      <div class="love-scan" id="love-scan"></div>
+
+      <div class="love-result" id="love-result">
+        <div class="meter-wrap">
+          <svg viewBox="0 0 168 168">
+            <defs>
+              <linearGradient id="loveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff5c8a"/>
+                <stop offset="100%" stop-color="#ff8a5c"/>
+              </linearGradient>
+            </defs>
+            <circle class="meter-track" cx="84" cy="84" r="74"/>
+            <circle class="meter-fill" id="meter-fill" cx="84" cy="84" r="74"/>
+          </svg>
+          <div class="meter-center">
+            <span class="meter-pct" id="meter-pct">0%</span>
+            <span class="meter-label">match</span>
+          </div>
+        </div>
+        <div class="love-verdict">
+          <h3 id="love-verdict-title">—</h3>
+          <p id="love-verdict-text">—</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ RPS ============ -->
+  <main id="view-rps" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 02 · Reflex duel</p>
+          <h2>Rock · Paper · Scissors</h2>
+          <p class="panel-sub">Pick a move. The core picks blind, every time.</p>
+        </div>
+      </div>
+
+      <div class="rps-arena">
+        <div class="rps-side you">
+          <div class="rps-avatar" id="rps-you-avatar">?</div>
+          <span class="rps-tag">You</span>
+        </div>
+        <span class="rps-vs">VS</span>
+        <div class="rps-side ai">
+          <div class="rps-avatar" id="rps-ai-avatar">?</div>
+          <span class="rps-tag">AI Core</span>
+        </div>
+      </div>
+
+      <div class="rps-choices">
+        <button class="rps-choice" data-choice="rock">✊</button>
+        <button class="rps-choice" data-choice="paper">✋</button>
+        <button class="rps-choice" data-choice="scissors">✌️</button>
+      </div>
+
+      <p class="rps-result" id="rps-result">Make the first move.</p>
+
+      <div class="score-row">
+        <span class="stat-pill">You <b id="rps-score-you">0</b></span>
+        <span class="stat-pill">AI <b id="rps-score-ai">0</b></span>
+        <span class="stat-pill">Ties <b id="rps-score-tie">0</b></span>
+        <button class="btn btn-ghost" id="rps-reset">Reset score</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ TIC TAC TOE ============ -->
+  <main id="view-ttt" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 03 · Strategy</p>
+          <h2>Tic Tac Toe</h2>
+          <p class="panel-sub">You're X, the core is O. It never blunders — a draw is a genuine result.</p>
+        </div>
+        <button class="btn btn-ghost" id="ttt-reset">New round</button>
+      </div>
+
+      <div class="ttt-wrap">
+        <div class="ttt-board" id="ttt-board"></div>
+        <div class="ttt-status" id="ttt-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ GUESS THE NUMBER ============ -->
+  <main id="view-guess" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 04 · Deduction</p>
+          <h2>Guess the Number</h2>
+          <p class="panel-sub">The core has locked a number between 1 and 100. Find it in as few tries as you can.</p>
+        </div>
+        <span class="stat-pill" id="guess-best">Best: —</span>
+      </div>
+
+      <div class="guess-wrap">
+        <div class="guess-row">
+          <input type="number" id="guess-input" min="1" max="100" placeholder="Your guess">
+          <button class="btn btn-primary" id="guess-submit">Guess</button>
+        </div>
+        <p class="guess-hint" id="guess-hint"></p>
+        <div class="guess-history" id="guess-history"></div>
+        <button class="btn btn-ghost" id="guess-reset" style="margin-top:18px;">New number</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ MEMORY MATCH ============ -->
+  <main id="view-memory" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 05 · Memory</p>
+          <h2>Memory Match</h2>
+          <p class="panel-sub">Flip two at a time. Clear all eight pairs in the fewest moves.</p>
+        </div>
+        <span class="stat-pill" id="memory-best">Best: —</span>
+      </div>
+
+      <div class="score-row">
+        <span class="stat-pill" id="memory-moves">Moves: 0</span>
+        <span class="stat-pill" id="memory-time">Time: 0s</span>
+        <button class="btn btn-ghost" id="memory-reset">Shuffle</button>
+      </div>
+
+      <div class="memory-board" id="memory-board"></div>
+    </section>
+  </main>
+
+  <!-- ============ REFLEX TEST ============ -->
+  <main id="view-reaction" class="view">
+    <button class="back-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 5l-7 7 7 7"/></svg> Back to games</button>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="panel-eyebrow">Module 06 · Reflex</p>
+          <h2>Reflex Test</h2>
+          <p class="panel-sub">Wait for the pad to flip green, then tap. Tapping early resets the round.</p>
+        </div>
+      </div>
+
+      <div class="reflex-pad wait" id="reflex-pad">
+        <span class="big">Tap to start</span>
+        <span class="small">Wait for the pad to turn green, then tap as fast as you can.</span>
+      </div>
+
+      <div class="reflex-stats">
+        <span class="stat-pill" id="reflex-last">Last: —</span>
+        <span class="stat-pill" id="reflex-best">Best: —</span>
+        <span class="stat-pill" id="reflex-avg">Avg: —</span>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<footer>
+  <span>GWARA GAMES — six modules, one core.</span>
+  <span>built by <a href="https://www.instagram.com/gwaramaari" target="_blank" rel="noopener">gwaramaari</a></span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
