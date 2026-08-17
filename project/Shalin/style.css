@@ -576,7 +576,7 @@ button{
   display:grid;
 
   /* SERVICE | DESCRIPTION | PRICE */
-  grid-template-columns:30% 50% 20%;
+  grid-template-columns:30% 40% 30%;
 
   gap:0;
 
