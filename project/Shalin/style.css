@@ -1113,7 +1113,7 @@ textarea:focus-visible{
 }
 
 /* =========================================================
-   PHOTO LIGHTBOX
+   PHOTO LIGHTBOXs
    ========================================================= */
 
 .lightbox {
@@ -1255,7 +1255,7 @@ textarea:focus-visible{
 
 /* MOBILE */
 
-@media (max-width: 600px) {
+@media (max-width: 750px) {
 
   .lightbox {
     padding: 15px;
@@ -1275,7 +1275,6 @@ textarea:focus-visible{
     height: 52px;
 
     font-size: 25px;
-showNext()
   }
 
   .lightbox-prev {
