@@ -58,15 +58,16 @@ function renderWork() {
   if (!grid) return;
   grid.innerHTML = '';
 
-  WORKS.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'work-card';
-    card.innerHTML = `
-      <img src="${item.src}" alt="${item.alt || 'Makeup work by Shalin Studio'}" loading="lazy">
-      ${item.category ? `<div class="work-caption">${item.category}</div>` : ''}
-    `;
-    grid.appendChild(card);
-  });
+ WORKS.forEach((item, index) => {
+  const card = document.createElement('div');
+  card.className = 'work-card';
+  card.innerHTML = `
+    <img src="${item.src}" alt="${item.alt || 'Makeup work by Shalin Studio'}" loading="lazy">
+    ${item.category ? `<div class="work-caption">${item.category}</div>` : ''}
+  `;
+  card.addEventListener('click', () => openLightbox(index));
+  grid.appendChild(card);
+});
 
   const placeholdersNeeded = Math.max(0, MIN_GRID_SLOTS - WORKS.length);
   for (let i = 0; i < placeholdersNeeded; i++) {
@@ -89,6 +90,61 @@ function renderWork() {
 
 renderWork();
 
+/* ---------- Lightbox ---------- */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxClose = document.getElementById('lightboxClose');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+
+let currentIndex = 0;
+
+function openLightbox(index) {
+  currentIndex = index;
+  updateLightboxImage();
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden', 'false');
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden', 'true');
+}
+
+function updateLightboxImage() {
+  const item = WORKS[currentIndex];
+  lightboxImg.src = item.src;
+  lightboxImg.alt = item.alt || '';
+  lightboxCaption.textContent = item.category || '';
+}
+
+function showPrev() {
+  currentIndex = (currentIndex - 1 + WORKS.length) % WORKS.length;
+  updateLightboxImage();
+}
+
+function showNext() {
+  currentIndex = (currentIndex + 1) % WORKS.length;
+  updateLightboxImage();
+}
+
+lightboxClose.addEventListener('click', closeLightbox);
+lightboxPrev.addEventListener('click', showPrev);
+lightboxNext.addEventListener('click', showNext);
+
+// click outside the image closes it
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+// keyboard support
+document.addEventListener('keydown', (e) => {
+  if (!lightbox.classList.contains('is-open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') showPrev();
+  if (e.key === 'ArrowRight') showNext();
+});
 
 /* =========================================================
    CONTACT FORM
