@@ -572,19 +572,13 @@ button{
   margin:0 auto;
 }
 
-.service-row{
-  display:grid;
-
-  /* SERVICE | DESCRIPTION | PRICE */
-  grid-template-columns:10% 40% 50%;
-
-  gap:0;
-
-  padding:1.9rem 0;
-
-  border-top:1px solid rgba(42,23,18,0.14);
-
-  align-items:baseline;
+.service-row {
+    display: grid;
+    grid-template-columns: 30% 45% 25%;
+    gap: 0;
+    padding: 1.9rem 0;
+    border-top: 1px solid rgba(42,23,18,0.14);
+    align-items: baseline;
 }
 
 .services-list article:last-child{
