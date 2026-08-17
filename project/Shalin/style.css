@@ -1111,3 +1111,167 @@ textarea:focus-visible{
   }
 
 }
+
+/* =========================================================
+   PHOTO LIGHTBOX
+   ========================================================= */
+
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+
+  background:rgba(20,10,8,0.94);
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  padding:40px 70px;
+}
+
+.lightbox.is-open{
+  display:flex;
+}
+
+
+/* IMAGE */
+
+.lightbox-image{
+  max-width:90vw;
+  max-height:88vh;
+
+  width:auto;
+  height:auto;
+
+  object-fit:contain;
+
+  border-radius:2px;
+
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+
+
+/* CLOSE */
+
+.lightbox-close{
+  position:absolute;
+
+  top:20px;
+  right:25px;
+
+  width:45px;
+  height:45px;
+
+  border:0;
+  background:none;
+
+  color:#fff;
+
+  font-size:42px;
+  line-height:1;
+
+  cursor:pointer;
+
+  z-index:3;
+}
+
+
+/* PREVIOUS / NEXT */
+
+.lightbox-prev,
+.lightbox-next{
+  position:absolute;
+
+  top:50%;
+  transform:translateY(-50%);
+
+  width:55px;
+  height:70px;
+
+  border:0;
+
+  background:rgba(255,255,255,0.08);
+
+  color:#fff;
+
+  font-size:38px;
+
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lightbox-prev{
+  left:20px;
+}
+
+.lightbox-next{
+  right:20px;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover{
+  background:rgba(255,255,255,0.18);
+}
+
+
+/* COUNTER */
+
+.lightbox-counter{
+  position:absolute;
+
+  bottom:20px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  color:#fff;
+
+  font-size:0.85rem;
+
+  letter-spacing:0.08em;
+}
+
+
+/* MOBILE */
+
+@media (max-width:720px){
+
+  .lightbox{
+    padding:20px 45px;
+  }
+
+  .lightbox-image{
+    max-width:90vw;
+    max-height:82vh;
+  }
+
+  .lightbox-prev,
+  .lightbox-next{
+    width:40px;
+    height:55px;
+    font-size:28px;
+  }
+
+  .lightbox-prev{
+    left:5px;
+  }
+
+  .lightbox-next{
+    right:5px;
+  }
+
+  .lightbox-close{
+    top:10px;
+    right:10px;
+    font-size:35px;
+  }
+
+}

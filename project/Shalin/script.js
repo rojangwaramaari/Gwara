@@ -123,3 +123,181 @@ if (contactForm) {
     });
 
 }
+
+/* =========================================================
+   PORTFOLIO LIGHTBOX
+   ========================================================= */
+
+const galleryImages = [
+    {
+        src: "images/work/Subina/1.jpg",
+        alt: "Bridal Makeup"
+    },
+
+    {
+        src: "images/work/Subina/2.jpg",
+        alt: "Bridal Makeup"
+    },
+
+    {
+        src: "images/work/Subina/3.jpg",
+        alt: "Bridal Makeup"
+    },
+
+    {
+        src: "images/work/Subina/4.jpg",
+        alt: "Bridal Makeup"
+    }
+];
+
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightboxImage");
+const lightboxClose = document.getElementById("lightboxClose");
+const lightboxPrev = document.getElementById("lightboxPrev");
+const lightboxNext = document.getElementById("lightboxNext");
+const lightboxCounter = document.getElementById("lightboxCounter");
+
+let currentImage = 0;
+
+
+/* OPEN */
+
+function openLightbox(index) {
+
+    currentImage = index;
+
+    updateLightbox();
+
+    lightbox.classList.add("is-open");
+
+    document.body.style.overflow = "hidden";
+}
+
+
+/* CLOSE */
+
+function closeLightbox() {
+
+    lightbox.classList.remove("is-open");
+
+    document.body.style.overflow = "";
+}
+
+
+/* UPDATE IMAGE */
+
+function updateLightbox() {
+
+    const image = galleryImages[currentImage];
+
+    lightboxImage.src = image.src;
+
+    lightboxImage.alt = image.alt;
+
+    lightboxCounter.textContent =
+        (currentImage + 1) +
+        " / " +
+        galleryImages.length;
+}
+
+
+/* NEXT */
+
+function nextImage() {
+
+    currentImage++;
+
+    if (currentImage >= galleryImages.length) {
+        currentImage = 0;
+    }
+
+    updateLightbox();
+}
+
+
+/* PREVIOUS */
+
+function previousImage() {
+
+    currentImage--;
+
+    if (currentImage < 0) {
+        currentImage = galleryImages.length - 1;
+    }
+
+    updateLightbox();
+}
+
+
+/* BUTTONS */
+
+if (lightboxClose) {
+
+    lightboxClose.addEventListener(
+        "click",
+        closeLightbox
+    );
+
+}
+
+
+if (lightboxNext) {
+
+    lightboxNext.addEventListener(
+        "click",
+        nextImage
+    );
+
+}
+
+
+if (lightboxPrev) {
+
+    lightboxPrev.addEventListener(
+        "click",
+        previousImage
+    );
+
+}
+
+
+/* CLICK OUTSIDE IMAGE */
+
+if (lightbox) {
+
+    lightbox.addEventListener("click", function(event) {
+
+        if (event.target === lightbox) {
+            closeLightbox();
+        }
+
+    });
+
+}
+
+
+/* KEYBOARD */
+
+document.addEventListener("keydown", function(event) {
+
+    if (!lightbox.classList.contains("is-open")) {
+        return;
+    }
+
+
+    if (event.key === "Escape") {
+        closeLightbox();
+    }
+
+
+    if (event.key === "ArrowRight") {
+        nextImage();
+    }
+
+
+    if (event.key === "ArrowLeft") {
+        previousImage();
+    }
+
+});
