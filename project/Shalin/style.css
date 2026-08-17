@@ -227,10 +227,20 @@ button{ font-family:inherit; cursor:pointer; }
 .services{ background:var(--ivory-2); padding:6.5rem 1.5rem; }
 .services-list{ max-width:900px; margin:0 auto; }
 .service-row{
-  display:grid; grid-template-columns:1fr 1.6fr; gap:2rem;
-  padding:1.9rem 0; border-top:1px solid rgba(42,23,18,0.14);
+  display:grid;
+  grid-template-columns: 30% 50% 20%;
+  gap:0;
+  padding:1.9rem 0;
+  border-top:1px solid rgba(42,23,18,0.14);
   align-items:baseline;
 }
+
+.service-price{
+  color:#4a352e;
+  font-size:1rem;
+  white-space:nowrap;
+}
+
 .services-list article:last-child{ border-bottom:1px solid rgba(42,23,18,0.14); }
 .service-row h3{
   font-size:1.35rem; color:var(--maroon); position:relative; padding-left:1.4rem;
