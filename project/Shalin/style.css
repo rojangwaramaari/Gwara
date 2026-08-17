@@ -410,7 +410,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 lipe name
 .stat-credit {
-  margin-top: 1.75rem;
+  margin-top: 2.5rem;   /* increase this to push it further down */
   padding-top: 1.5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
