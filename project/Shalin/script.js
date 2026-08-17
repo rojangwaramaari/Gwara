@@ -43,7 +43,12 @@ navLinks.querySelectorAll('a').forEach(link => {
    ========================================================= */
 
 const WORKS = [
-  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  {
+    src: "images/work/1sabina.jpg",
+    alt: "Bridal makeup, red and gold",
+    category: "Photoshoot",
+    page: "bridal.html"
+  },
   { src: "images/word/2.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
   { src: "images/work/3.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
   { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
