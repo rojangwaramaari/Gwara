@@ -44,6 +44,11 @@ navLinks.querySelectorAll('a').forEach(link => {
 
 const WORKS = [
   { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
+  { src: "images/work/1sabina.jpg", alt: "Bridal makeup, red and gold", category: "Bridal" },
 ];
 
 const MIN_GRID_SLOTS = 6; // keeps the section looking intentional while empty
