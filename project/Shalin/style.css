@@ -200,11 +200,6 @@ button{ font-family:inherit; cursor:pointer; }
 .about-frame img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
 }
-.about-frame::after{
-  content:""; position:absolute; inset:0; z-index:1;
-  background:linear-gradient(0deg, rgba(74,18,28,0.85), rgba(74,18,28,0.15) 60%);
-}
-.about-frame-inner{ color:var(--ivory); position:relative; z-index:2; }
 .about-frame-label{
   display:block; font-family:var(--display); font-style:italic; font-size:1.5rem;
 }
@@ -221,6 +216,10 @@ button{ font-family:inherit; cursor:pointer; }
 .about-stats div{ display:flex; flex-direction:column; gap:0.25rem; }
 .about-stats strong{ font-family:var(--display); font-size:1.15rem; color:var(--maroon); }
 .about-stats span{ font-size:0.78rem; color:#6b5850; }
+.about-stats .stat-credit{
+  margin-top:0.4rem; font-family:var(--display); font-style:italic;
+  font-size:0.85rem; color:var(--maroon);
+}
 
 /* =========================================================
    SERVICES
