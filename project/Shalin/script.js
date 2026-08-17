@@ -130,171 +130,185 @@ if (contactForm) {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const images = document.querySelectorAll(".gallery-image");
+    const images = document.querySelectorAll(
+        "#bridalGallery .gallery-image"
+    );
 
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightboxImg");
-  const lightboxClose = document.getElementById("lightboxClose");
-  const lightboxPrev = document.getElementById("lightboxPrev");
-  const lightboxNext = document.getElementById("lightboxNext");
-  const lightboxCounter = document.getElementById("lightboxCounter");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxClose = document.getElementById("lightboxClose");
+    const lightboxPrev = document.getElementById("lightboxPrev");
+    const lightboxNext = document.getElementById("lightboxNext");
+    const lightboxCounter = document.getElementById("lightboxCounter");
 
-  let currentIndex = 0;
+    /* If gallery/lightbox doesn't exist, stop */
+    if (
+        !images.length ||
+        !lightbox ||
+        !lightboxImg ||
+        !lightboxClose ||
+        !lightboxPrev ||
+        !lightboxNext
+    ) {
+        return;
+    }
+
+    let currentIndex = 0;
 
 
-  /* =========================
-     OPEN IMAGE
-     ========================= */
+    /* =====================================================
+       SHOW IMAGE
+       ===================================================== */
 
-  images.forEach(function (image, index) {
+    function showImage() {
 
-    image.addEventListener("click", function () {
+        const image = images[currentIndex];
 
-      currentIndex = index;
+        if (!image) return;
 
-      showImage();
+        lightboxImg.src = image.src;
+        lightboxImg.alt = image.alt;
 
-      lightbox.classList.add("is-open");
+        if (lightboxCounter) {
+            lightboxCounter.textContent =
+                (currentIndex + 1) + " / " + images.length;
+        }
 
-      document.body.style.overflow = "hidden";
+    }
+
+
+    /* =====================================================
+       OPEN IMAGE
+       ===================================================== */
+
+    images.forEach(function (image, index) {
+
+        image.addEventListener("click", function () {
+
+            currentIndex = index;
+
+            showImage();
+
+            lightbox.classList.add("is-open");
+
+            document.body.style.overflow = "hidden";
+
+        });
 
     });
 
-  });
+
+    /* =====================================================
+       NEXT
+       ===================================================== */
+
+    lightboxNext.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        currentIndex++;
+
+        if (currentIndex >= images.length) {
+            currentIndex = 0;
+        }
+
+        showImage();
+
+    });
 
 
-  /* =========================
-     SHOW CURRENT IMAGE
-     ========================= */
+    /* =====================================================
+       PREVIOUS
+       ===================================================== */
 
-  function showImage() {
+    lightboxPrev.addEventListener("click", function (event) {
 
-    const image = images[currentIndex];
+        event.stopPropagation();
 
-    if (!image) return;
+        currentIndex--;
 
-    lightboxImg.src = image.src;
+        if (currentIndex < 0) {
+            currentIndex = images.length - 1;
+        }
 
-    lightboxImg.alt = image.alt;
+        showImage();
 
-    lightboxCounter.textContent =
-      (currentIndex + 1) + " / " + images.length;
-
-  }
-
-
-  /* =========================
-     NEXT
-     ========================= */
-
-  lightboxNext.addEventListener("click", function (e) {
-
-    e.stopPropagation();
-
-    currentIndex++;
-
-    if (currentIndex >= images.length) {
-      currentIndex = 0;
-    }
-
-    showImage();
-
-  });
+    });
 
 
-  /* =========================
-     PREVIOUS
-     ========================= */
+    /* =====================================================
+       CLOSE
+       ===================================================== */
 
-  lightboxPrev.addEventListener("click", function (e) {
+    function closeLightbox() {
 
-    e.stopPropagation();
+        lightbox.classList.remove("is-open");
 
-    currentIndex--;
-
-    if (currentIndex < 0) {
-      currentIndex = images.length - 1;
-    }
-
-    showImage();
-
-  });
-
-
-  /* =========================
-     CLOSE
-     ========================= */
-
-  lightboxClose.addEventListener("click", function () {
-
-    closeLightbox();
-
-  });
-
-
-  function closeLightbox() {
-
-    lightbox.classList.remove("is-open");
-
-    document.body.style.overflow = "";
-
-  }
-
-
-  /* =========================
-     CLICK OUTSIDE IMAGE
-     ========================= */
-
-  lightbox.addEventListener("click", function (e) {
-
-    if (e.target === lightbox) {
-
-      closeLightbox();
+        document.body.style.overflow = "";
 
     }
 
-  });
+
+    lightboxClose.addEventListener("click", function () {
+
+        closeLightbox();
+
+    });
 
 
-  /* =========================
-     KEYBOARD
-     ========================= */
+    /* =====================================================
+       CLICK OUTSIDE
+       ===================================================== */
 
-  document.addEventListener("keydown", function (e) {
+    lightbox.addEventListener("click", function (event) {
 
-    if (!lightbox.classList.contains("is-open")) {
-      return;
-    }
+        if (event.target === lightbox) {
 
-    if (e.key === "Escape") {
-      closeLightbox();
-    }
+            closeLightbox();
 
-    if (e.key === "ArrowRight") {
+        }
 
-      currentIndex++;
+    });
 
-      if (currentIndex >= images.length) {
-        currentIndex = 0;
-      }
 
-      showImage();
+    /* =====================================================
+       KEYBOARD
+       ===================================================== */
 
-    }
+    document.addEventListener("keydown", function (event) {
 
-    if (e.key === "ArrowLeft") {
+        if (!lightbox.classList.contains("is-open")) {
+            return;
+        }
 
-      currentIndex--;
+        if (event.key === "Escape") {
+            closeLightbox();
+        }
 
-      if (currentIndex < 0) {
-        currentIndex = images.length - 1;
-      }
+        if (event.key === "ArrowRight") {
 
-      showImage();
+            currentIndex++;
 
-    }
+            if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
 
-  });
+            showImage();
+
+        }
+
+        if (event.key === "ArrowLeft") {
+
+            currentIndex--;
+
+            if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            }
+
+            showImage();
+
+        }
+
+    });
 
 });
-

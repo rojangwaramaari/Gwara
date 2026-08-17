@@ -1342,3 +1342,81 @@ textarea:focus-visible{
     }
 
 }
+/* =========================================================
+   BRIDAL GALLERY PAGE
+   ========================================================= */
+
+#bridalGallery .bridal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+
+/* Individual photo box */
+
+#bridalGallery .work-card {
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+
+/* Gallery thumbnail */
+
+#bridalGallery .gallery-image {
+    display: block;
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.4s ease;
+}
+
+
+/* Small zoom effect */
+
+#bridalGallery .work-card:hover .gallery-image {
+    transform: scale(1.03);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    #bridalGallery .bridal-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    #bridalGallery .gallery-image {
+        height: 350px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #bridalGallery .bridal-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    #bridalGallery .gallery-image {
+        height: auto;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+    }
+
+}
+
+#bridalGallery .gallery-image {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+}
