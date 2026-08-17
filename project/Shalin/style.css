@@ -195,24 +195,23 @@ button{ font-family:inherit; cursor:pointer; }
     linear-gradient(160deg, var(--maroon) 0%, var(--maroon-dark) 100%);
   position:relative; display:flex; align-items:flex-end; padding:2rem;
   box-shadow:14px 14px 0 var(--gold-soft);
+  overflow:hidden;
 }
-
-/* ↓↓↓ ADD THE NEW RULES HERE ↓↓↓ */
-.about-frame{ overflow:hidden; }
 .about-frame img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-}
-.about-frame-inner{
-  position:relative; z-index:2;
 }
 .about-frame::after{
   content:""; position:absolute; inset:0; z-index:1;
   background:linear-gradient(0deg, rgba(74,18,28,0.85), rgba(74,18,28,0.15) 60%);
 }
-/* ↑↑↑ ADD THE NEW RULES HERE ↑↑↑ */
-
-.about-frame-inner{ color:var(--ivory); }
-
+.about-frame-inner{ color:var(--ivory); position:relative; z-index:2; }
+.about-frame-label{
+  display:block; font-family:var(--display); font-style:italic; font-size:1.5rem;
+}
+.about-frame-role{
+  display:block; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--gold-soft); margin-top:0.4rem; font-weight:600;
+}
 .about-copy h2{ font-size:clamp(1.6rem,3vw,2.2rem); line-height:1.3; margin-bottom:1.3rem; }
 .about-copy p{ color:#4a352e; margin-bottom:1.1rem; max-width:52ch; }
 .about-stats{
