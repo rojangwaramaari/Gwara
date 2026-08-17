@@ -125,216 +125,175 @@ if (contactForm) {
 }
 
 /* =========================================================
-   PORTFOLIO LIGHTBOX
-   Automatically uses ALL photos in .work-card
+   SHALIN STUDIO — PHOTO GALLERY
    ========================================================= */
 
-const lightbox = document.getElementById("lightbox");
-const lightboxImage = document.getElementById("lightboxImage");
-const lightboxClose = document.getElementById("lightboxClose");
-const lightboxPrev = document.getElementById("lightboxPrev");
-const lightboxNext = document.getElementById("lightboxNext");
-const lightboxCounter = document.getElementById("lightboxCounter");
+document.addEventListener("DOMContentLoaded", function () {
 
-const workCards = document.querySelectorAll(".work-card");
+  const images = document.querySelectorAll(".gallery-image");
 
-let currentImage = 0;
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+  const lightboxClose = document.getElementById("lightboxClose");
+  const lightboxPrev = document.getElementById("lightboxPrev");
+  const lightboxNext = document.getElementById("lightboxNext");
+  const lightboxCounter = document.getElementById("lightboxCounter");
 
-
-/* Get all portfolio images directly from HTML */
-
-const galleryImages = Array.from(workCards).map(function(card) {
-
-    const image = card.querySelector("img");
-
-    return {
-        src: image.src,
-        alt: image.alt
-    };
-
-});
+  let currentIndex = 0;
 
 
-/* =========================================================
-   OPEN LIGHTBOX
-   ========================================================= */
+  /* =========================
+     OPEN IMAGE
+     ========================= */
 
-function openLightbox(index) {
+  images.forEach(function (image, index) {
 
-    currentImage = index;
+    image.addEventListener("click", function () {
 
-    updateLightbox();
+      currentIndex = index;
 
-    lightbox.classList.add("is-open");
+      showImage();
 
-    document.body.style.overflow = "hidden";
-}
+      lightbox.classList.add("is-open");
+
+      document.body.style.overflow = "hidden";
+
+    });
+
+  });
 
 
-/* =========================================================
-   CLOSE LIGHTBOX
-   ========================================================= */
+  /* =========================
+     SHOW CURRENT IMAGE
+     ========================= */
 
-function closeLightbox() {
+  function showImage() {
+
+    const image = images[currentIndex];
+
+    if (!image) return;
+
+    lightboxImg.src = image.src;
+
+    lightboxImg.alt = image.alt;
+
+    lightboxCounter.textContent =
+      (currentIndex + 1) + " / " + images.length;
+
+  }
+
+
+  /* =========================
+     NEXT
+     ========================= */
+
+  lightboxNext.addEventListener("click", function (e) {
+
+    e.stopPropagation();
+
+    currentIndex++;
+
+    if (currentIndex >= images.length) {
+      currentIndex = 0;
+    }
+
+    showImage();
+
+  });
+
+
+  /* =========================
+     PREVIOUS
+     ========================= */
+
+  lightboxPrev.addEventListener("click", function (e) {
+
+    e.stopPropagation();
+
+    currentIndex--;
+
+    if (currentIndex < 0) {
+      currentIndex = images.length - 1;
+    }
+
+    showImage();
+
+  });
+
+
+  /* =========================
+     CLOSE
+     ========================= */
+
+  lightboxClose.addEventListener("click", function () {
+
+    closeLightbox();
+
+  });
+
+
+  function closeLightbox() {
 
     lightbox.classList.remove("is-open");
 
     document.body.style.overflow = "";
-}
+
+  }
 
 
-/* =========================================================
-   UPDATE IMAGE
-   ========================================================= */
+  /* =========================
+     CLICK OUTSIDE IMAGE
+     ========================= */
 
-function updateLightbox() {
+  lightbox.addEventListener("click", function (e) {
 
-    const image = galleryImages[currentImage];
+    if (e.target === lightbox) {
 
-    if (!image) return;
-
-    lightboxImage.src = image.src;
-
-    lightboxImage.alt = image.alt || "Shalin Studio Makeup";
-
-    lightboxCounter.textContent =
-        (currentImage + 1) +
-        " / " +
-        galleryImages.length;
-}
-
-
-/* =========================================================
-   NEXT IMAGE
-   ========================================================= */
-
-function nextImage() {
-
-    currentImage++;
-
-    if (currentImage >= galleryImages.length) {
-        currentImage = 0;
-    }
-
-    updateLightbox();
-}
-
-
-/* =========================================================
-   PREVIOUS IMAGE
-   ========================================================= */
-
-function previousImage() {
-
-    currentImage--;
-
-    if (currentImage < 0) {
-        currentImage = galleryImages.length - 1;
-    }
-
-    updateLightbox();
-}
-
-
-/* =========================================================
-   CLICK PHOTO
-   ========================================================= */
-
-workCards.forEach(function(card, index) {
-
-    card.addEventListener("click", function(event) {
-
-        event.preventDefault();
-
-        openLightbox(index);
-
-    });
-
-});
-
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-if (lightboxClose) {
-
-    lightboxClose.addEventListener(
-        "click",
-        closeLightbox
-    );
-
-}
-
-
-if (lightboxNext) {
-
-    lightboxNext.addEventListener(
-        "click",
-        nextImage
-    );
-
-}
-
-
-if (lightboxPrev) {
-
-    lightboxPrev.addEventListener(
-        "click",
-        previousImage
-    );
-
-}
-
-
-/* =========================================================
-   CLICK OUTSIDE IMAGE
-   ========================================================= */
-
-if (lightbox) {
-
-    lightbox.addEventListener("click", function(event) {
-
-        if (event.target === lightbox) {
-
-            closeLightbox();
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
-   KEYBOARD CONTROLS
-   ========================================================= */
-
-document.addEventListener("keydown", function(event) {
-
-    if (!lightbox || !lightbox.classList.contains("is-open")) {
-        return;
-    }
-
-
-    if (event.key === "Escape") {
-
-        closeLightbox();
+      closeLightbox();
 
     }
 
+  });
 
-    if (event.key === "ArrowRight") {
 
-        nextImage();
+  /* =========================
+     KEYBOARD
+     ========================= */
+
+  document.addEventListener("keydown", function (e) {
+
+    if (!lightbox.classList.contains("is-open")) {
+      return;
+    }
+
+    if (e.key === "Escape") {
+      closeLightbox();
+    }
+
+    if (e.key === "ArrowRight") {
+
+      currentIndex++;
+
+      if (currentIndex >= images.length) {
+        currentIndex = 0;
+      }
+
+      showImage();
 
     }
 
+    if (e.key === "ArrowLeft") {
 
-    if (event.key === "ArrowLeft") {
+      currentIndex--;
 
-        previousImage();
+      if (currentIndex < 0) {
+        currentIndex = images.length - 1;
+      }
+
+      showImage();
 
     }
+
+  });
 
 });
