@@ -48,7 +48,7 @@ if (navToggle && navLinks) {
    CONTACT FORM
    ========================================================= */
 
-const STUDIO_EMAIL = "hello@shalinstudio.example";
+const STUDIO_EMAIL = "lipeeshrestha@gmail.com";
 
 const contactForm = document.getElementById("contactForm");
 const formNote = document.getElementById("formNote");
