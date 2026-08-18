@@ -574,6 +574,31 @@ button{
 /* =========================================================
    gap between
    ========================================================= */
+.services-header,
+.service-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 140px; /* adjust widths to match your design */
+  gap: 24px;
+  align-items: start;
+}
+
+.services-header {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #8a7a63; /* muted tone to match your palette */
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d8cdbb;
+}
+
+.services-header div:nth-child(1) { text-align: left; }
+.services-header div:nth-child(2) { text-align: left; }
+.services-header div:nth-child(3) { text-align: right; }
+
+.service-price {
+  text-align: right;
+}
+
 .service-row {
     display: grid;
     grid-template-columns: 30% 45% 25%;
