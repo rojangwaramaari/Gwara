@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakwo Resort | Peaceful Resort in Sankhu, Kathmandu</title>
+<meta name="description" content="Discover Sakwo Resort in Sankhu, Kathmandu — comfortable rooms, swimming pool, restaurant, picnic spots, events and peaceful nature experiences for families, couples and friends.">
+<meta name="keywords" content="Sakwo Resort, Sankhu resort, Kathmandu resort, Nepal resort, resort near Kathmandu, weekend getaway Nepal, family resort Nepal">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Sakwo Resort | Peaceful Resort in Sankhu, Kathmandu">
+<meta property="og:description" content="A peaceful nature resort in Sankhu, Kathmandu with comfortable rooms, a pool, restaurant and spaces for families, couples and friends.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/hero.jpg">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ CUSTOM CURSOR / GRAIN OVERLAY ============ -->
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar" id="navbar">
+  <div class="navbar__inner container">
+    <a href="#home" class="logo" aria-label="Sakwo Resort home">
+      <span class="logo__mark">SAKWO</span>
+      <span class="logo__sub">Resort &amp; Retreat</span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#rooms" class="nav-link">Rooms</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#packages" class="nav-link">Packages</a>
+      <a href="#about" class="nav-link">About Sakwo</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a href="#booknow" class="nav-link nav-link--cta">Book Now</a>
+    </nav>
+
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ MOBILE MENU BACKDROP ============ -->
+<div class="mobile-backdrop" id="mobileBackdrop"></div>
+
+<main id="home">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__media">
+      <!-- REPLACE: resort's real hero photo (wide mountain/nature/resort shot) -->
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1920&auto=format&fit=crop" alt="Green terraced hills and mountain view surrounding Sakwo Resort" class="hero__img">
+      <div class="hero__overlay"></div>
+    </div>
+
+    <div class="hero__content container">
+      <p class="eyebrow reveal" data-reveal>Welcome to Sakwo</p>
+      <h1 class="hero__title reveal" data-reveal>Escape to Nature.<br>Stay in Comfort.</h1>
+      <p class="hero__text reveal" data-reveal>A peaceful resort retreat in Sankhu, Kathmandu, surrounded by nature, fresh air and beautiful views.</p>
+      <div class="hero__actions reveal" data-reveal>
+        <a href="#booknow" class="btn btn--gold">Book Your Stay</a>
+        <a href="#rooms" class="btn btn--ghost">Explore Rooms</a>
+      </div>
+    </div>
+
+    <a href="#booking-bar" class="scroll-indicator" aria-label="Scroll down">
+      <span></span>
+      Scroll
+    </a>
+  </section>
+
+  <!-- ============ QUICK BOOKING BAR ============ -->
+  <section class="booking-bar-wrap" id="booking-bar">
+    <div class="container">
+      <form class="booking-bar" id="quickBookingForm" novalidate>
+        <div class="booking-field">
+          <label for="qCheckin">Check-in</label>
+          <input type="date" id="qCheckin" name="checkin" required>
+        </div>
+        <div class="booking-field">
+          <label for="qCheckout">Check-out</label>
+          <input type="date" id="qCheckout" name="checkout" required>
+        </div>
+
+        <div class="booking-field guests-field">
+          <label for="guestsToggle">Guests</label>
+          <button type="button" class="guests-toggle" id="guestsToggle" aria-haspopup="true" aria-expanded="false">
+            <span id="guestsSummary">2 Adults, 0 Children</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="guests-panel" id="guestsPanel">
+            <div class="guests-row">
+              <div>
+                <p class="guests-row__title">Adults</p>
+                <p class="guests-row__sub">Ages 13+</p>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper__btn" data-target="adults" data-action="minus" aria-label="Decrease adults">−</button>
+                <span class="stepper__value" id="adultsValue">2</span>
+                <button type="button" class="stepper__btn" data-target="adults" data-action="plus" aria-label="Increase adults">+</button>
+              </div>
+            </div>
+            <div class="guests-row">
+              <div>
+                <p class="guests-row__title">Children</p>
+                <p class="guests-row__sub">Ages 0–12</p>
+              </div>
+              <div class="stepper">
+                <button type="button" class="stepper__btn" data-target="children" data-action="minus" aria-label="Decrease children">−</button>
+                <span class="stepper__value" id="childrenValue">0</span>
+                <button type="button" class="stepper__btn" data-target="children" data-action="plus" aria-label="Increase children">+</button>
+              </div>
+            </div>
+            <button type="button" class="btn btn--forest guests-done" id="guestsDone">Done</button>
+          </div>
+        </div>
+
+        <div class="booking-field">
+          <label for="qRooms">Rooms</label>
+          <select id="qRooms" name="rooms">
+            <option value="1">1 Room</option>
+            <option value="2">2 Rooms</option>
+            <option value="3">3 Rooms</option>
+            <option value="4">4+ Rooms</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn--gold booking-bar__submit">Check Availability</button>
+      </form>
+      <p class="booking-error" id="bookingError" role="alert" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ============ AVAILABILITY RESULTS ============ -->
+  <section class="availability" id="availabilitySection" hidden>
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Availability</p>
+      <h2 class="section-title reveal" data-reveal>Rooms for Your Stay</h2>
+      <p class="availability__summary" id="availabilitySummary"></p>
+      <div class="availability-grid" id="availabilityResults"></div>
+    </div>
+  </section>
+
+  <!-- ============ ROOMS SECTION ============ -->
+  <section class="section" id="rooms">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Accommodation</p>
+      <h2 class="section-title reveal" data-reveal>Stay Your Way</h2>
+      <p class="section-subtitle reveal" data-reveal>Comfortable spaces designed for peaceful stays, romantic escapes and memorable family getaways.</p>
+
+      <div class="rooms-grid" id="roomsGrid"><!-- populated by JS from ROOMS data --></div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES SECTION ============ -->
+  <section class="section section--tint" id="services">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Amenities</p>
+      <h2 class="section-title reveal" data-reveal>Everything You Need</h2>
+      <p class="section-subtitle reveal" data-reveal>Relax, dine, celebrate and make memories at Sakwo Resort.</p>
+
+      <div class="services-grid">
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-water-ladder"></i></div>
+          <h3>Swimming Pool</h3>
+          <p>Relax by the pool while enjoying the peaceful surroundings and nature views.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-utensils"></i></div>
+          <h3>Restaurant</h3>
+          <p>Enjoy snacks, lunch, dinner and refreshing meals in a comfortable setting.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-mug-hot"></i></div>
+          <h3>Breakfast</h3>
+          <p>Start your day with a delicious breakfast before exploring Sankhu and the surrounding valley.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+          <h3>Banquet Hall</h3>
+          <p>A comfortable venue for celebrations, gatherings, parties and private events.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-tree"></i></div>
+          <h3>Picnic Spots</h3>
+          <p>Enjoy a relaxed outdoor experience with family, friends and colleagues.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-fire-burner"></i></div>
+          <h3>BBQ &amp; Night Stay</h3>
+          <p>Combine an evening of great food, outdoor fun and a comfortable overnight stay.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-van-shuttle"></i></div>
+          <h3>Vehicle Service</h3>
+          <p>Convenient transportation support for guests travelling to and from the resort.</p>
+        </div>
+        <div class="service-card reveal" data-reveal>
+          <div class="service-card__icon"><i class="fa-solid fa-people-roof"></i></div>
+          <h3>Family &amp; Couple Stay</h3>
+          <p>Comfortable spaces designed for couples, families and groups.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE SECTION (split layout) ============ -->
+  <section class="experience section">
+    <div class="container experience__grid">
+      <div class="experience__media reveal" data-reveal>
+        <!-- REPLACE: wide lifestyle photo of the resort grounds -->
+        <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1400&auto=format&fit=crop" alt="Guests relaxing in the green grounds of Sakwo Resort" loading="lazy">
+        <div class="experience__badge">
+          <span class="experience__badge-line"></span>
+          Sankhu, Kathmandu
+        </div>
+      </div>
+      <div class="experience__content">
+        <p class="eyebrow reveal" data-reveal>The Sakwo Experience</p>
+        <h2 class="section-title reveal" data-reveal>A Peaceful Escape from the City</h2>
+        <p class="reveal" data-reveal>Just outside the busy rhythm of Kathmandu, Sakwo Resort offers a peaceful setting where families, couples and friends can slow down, reconnect and enjoy nature.</p>
+        <ul class="experience__list reveal" data-reveal>
+          <li><i class="fa-solid fa-leaf"></i> Fresh air &amp; green surroundings</li>
+          <li><i class="fa-solid fa-mountain-sun"></i> Mountain views</li>
+          <li><i class="fa-solid fa-bed"></i> Comfortable rooms</li>
+          <li><i class="fa-solid fa-water-ladder"></i> Swimming pool</li>
+          <li><i class="fa-solid fa-utensils"></i> Restaurant</li>
+          <li><i class="fa-solid fa-tree"></i> Picnic areas</li>
+          <li><i class="fa-solid fa-champagne-glasses"></i> Events</li>
+          <li><i class="fa-solid fa-hands-holding-circle"></i> Friendly hospitality</li>
+        </ul>
+        <a href="#about" class="btn btn--forest reveal" data-reveal>Discover Sakwo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT SAKWO ============ -->
+  <section class="section section--tint" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__collage reveal" data-reveal>
+          <!-- REPLACE: collage of 3 real resort images -->
+          <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=900&auto=format&fit=crop" alt="Sakwo Resort building surrounded by greenery" class="collage collage--1" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1602002418082-a4443e081dd1?q=80&w=700&auto=format&fit=crop" alt="Poolside seating area at Sakwo Resort" class="collage collage--2" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=700&auto=format&fit=crop" alt="Traditional Newar architecture near Sankhu" class="collage collage--3" loading="lazy">
+        </div>
+        <div class="about__content">
+          <p class="eyebrow reveal" data-reveal>About Sakwo Resort</p>
+          <h2 class="section-title reveal" data-reveal>Rooted in Sankhu, Open to Everyone</h2>
+          <p class="reveal" data-reveal>Sakwo Resort is located in Sankhu, on the edge of the Kathmandu Valley — a historic Newar settlement known for its traditional architecture and quiet valley surroundings. Here, guests can combine a relaxing resort stay with time exploring the wider Kathmandu Valley.</p>
+          <p class="reveal" data-reveal>Our hospitality is built around comfort and warmth: spacious rooms for families, quiet corners for couples, open spaces for friends, and welcoming venues for celebrations. Whichever way you like to travel, Sakwo is designed to help you slow down.</p>
+
+          <div class="stats reveal" data-reveal>
+            <div class="stat">
+              <p class="stat__num">5</p>
+              <p class="stat__label">Room Categories</p>
+            </div>
+            <div class="stat">
+              <p class="stat__num"><i class="fa-solid fa-leaf"></i></p>
+              <p class="stat__label">Nature-Filled Surroundings</p>
+            </div>
+            <div class="stat">
+              <p class="stat__num"><i class="fa-solid fa-water-ladder"></i></p>
+              <p class="stat__label">Pool &amp; Recreation</p>
+            </div>
+            <div class="stat">
+              <p class="stat__num"><i class="fa-solid fa-champagne-glasses"></i></p>
+              <p class="stat__label">Events &amp; Gatherings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PACKAGES SECTION ============ -->
+  <section class="section" id="packages">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Curated Stays</p>
+      <h2 class="section-title reveal" data-reveal>Packages</h2>
+      <p class="section-subtitle reveal" data-reveal>Choose the rhythm of your visit — a quiet weekend, a family week, a night with friends, or just a day away.</p>
+
+      <div class="packages-grid">
+        <div class="package-card reveal" data-reveal>
+          <h3>Weekend Escape</h3>
+          <p class="package-card__tag">Perfect for couples and small families.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Comfortable room</li>
+            <li><i class="fa-solid fa-check"></i> Breakfast option</li>
+            <li><i class="fa-solid fa-check"></i> Pool access</li>
+            <li><i class="fa-solid fa-check"></i> Relaxing nature experience</li>
+          </ul>
+          <p class="package-card__price">Contact for Current Price</p>
+          <button class="btn btn--forest btn--full enquire-btn" data-package="Weekend Escape">Enquire Now</button>
+        </div>
+
+        <div class="package-card package-card--featured reveal" data-reveal>
+          <span class="package-card__ribbon">Most Popular</span>
+          <h3>Family Getaway</h3>
+          <p class="package-card__tag">Designed for families and groups.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Spacious accommodation</li>
+            <li><i class="fa-solid fa-check"></i> Pool experience</li>
+            <li><i class="fa-solid fa-check"></i> Restaurant</li>
+            <li><i class="fa-solid fa-check"></i> Picnic area</li>
+          </ul>
+          <p class="package-card__price">Contact for Current Price</p>
+          <button class="btn btn--gold btn--full enquire-btn" data-package="Family Getaway">Enquire Now</button>
+        </div>
+
+        <div class="package-card reveal" data-reveal>
+          <h3>BBQ &amp; Night Stay</h3>
+          <p class="package-card__tag">For groups, friends and celebrations.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> BBQ experience</li>
+            <li><i class="fa-solid fa-check"></i> Evening gathering</li>
+            <li><i class="fa-solid fa-check"></i> Overnight stay</li>
+            <li><i class="fa-solid fa-check"></i> Breakfast option</li>
+          </ul>
+          <p class="package-card__price">Contact for Current Price</p>
+          <button class="btn btn--forest btn--full enquire-btn" data-package="BBQ & Night Stay">Enquire Now</button>
+        </div>
+
+        <div class="package-card reveal" data-reveal>
+          <h3>Day Staycation</h3>
+          <p class="package-card__tag">A peaceful escape without spending the night.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Room / day-use experience</li>
+            <li><i class="fa-solid fa-check"></i> Pool access</li>
+            <li><i class="fa-solid fa-check"></i> Food options</li>
+            <li><i class="fa-solid fa-check"></i> Nature surroundings</li>
+          </ul>
+          <p class="package-card__price">Contact for Current Price</p>
+          <button class="btn btn--forest btn--full enquire-btn" data-package="Day Staycation">Enquire Now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SPECIAL OFFER BANNER ============ -->
+  <section class="offer-banner">
+    <!-- REPLACE: wide banner image, forest/pool at golden hour -->
+    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1600&auto=format&fit=crop" alt="Golden hour view over the hills near Sankhu" class="offer-banner__img">
+    <div class="offer-banner__overlay"></div>
+    <div class="offer-banner__content container">
+      <h2 class="reveal" data-reveal>Your Weekend Starts at Sakwo</h2>
+      <p class="reveal" data-reveal>Escape the city, breathe fresh air and make time for the people who matter.</p>
+      <a href="#booknow" class="btn btn--gold reveal" data-reveal>Book Now</a>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section class="section" id="gallery">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Glimpses of Sakwo</p>
+      <h2 class="section-title reveal" data-reveal>Gallery</h2>
+
+      <div class="gallery-filters reveal" data-reveal>
+        <button class="gallery-filter active" data-filter="all">All</button>
+        <button class="gallery-filter" data-filter="resort">Resort</button>
+        <button class="gallery-filter" data-filter="rooms">Rooms</button>
+        <button class="gallery-filter" data-filter="pool">Pool</button>
+        <button class="gallery-filter" data-filter="food">Food</button>
+        <button class="gallery-filter" data-filter="nature">Nature</button>
+        <button class="gallery-filter" data-filter="events">Events</button>
+      </div>
+
+      <div class="gallery-grid" id="galleryGrid"><!-- populated by JS --></div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="section section--tint" id="testimonials">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Guest Voices</p>
+      <h2 class="section-title reveal" data-reveal>What Guests Say</h2>
+      <p class="section-subtitle reveal" data-reveal>Sample testimonials shown for illustration — not verified guest reviews. Replace with real feedback from Sakwo guests.</p>
+
+      <div class="testimonial-slider reveal" data-reveal>
+        <div class="testimonial-track" id="testimonialTrack">
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+            <p>"A peaceful place to spend time with family. The surroundings and atmosphere were wonderful."</p>
+            <p class="testimonial-card__name">Sample Guest — Family Stay</p>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+            <p>"Comfortable rooms, beautiful surroundings and friendly service."</p>
+            <p class="testimonial-card__name">Sample Guest — Couple's Getaway</p>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+            <p>"A relaxing weekend away from the city. Great spot for a group of friends to unwind."</p>
+            <p class="testimonial-card__name">Sample Guest — Friends' Trip</p>
+          </div>
+        </div>
+        <div class="testimonial-controls">
+          <button class="testimonial-btn" id="testimonialPrev" aria-label="Previous testimonial"><i class="fa-solid fa-arrow-left"></i></button>
+          <div class="testimonial-dots" id="testimonialDots"></div>
+          <button class="testimonial-btn" id="testimonialNext" aria-label="Next testimonial"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOOK NOW / RESERVATION ============ -->
+  <section class="section reservation" id="booknow">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Reservations</p>
+      <h2 class="section-title reveal" data-reveal>Reserve Your Stay</h2>
+      <p class="section-subtitle reveal" data-reveal>Tell us about your stay and we'll confirm availability and price directly with you.</p>
+
+      <form class="reservation-form reveal" data-reveal id="reservationForm" novalidate>
+        <div class="reservation-form__section">
+          <h3>Stay Details</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="rCheckin">Check-in</label>
+              <input type="date" id="rCheckin" required>
+            </div>
+            <div class="form-field">
+              <label for="rCheckout">Check-out</label>
+              <input type="date" id="rCheckout" required>
+            </div>
+            <div class="form-field">
+              <label for="rAdults">Adults</label>
+              <input type="number" id="rAdults" min="1" value="2" required>
+            </div>
+            <div class="form-field">
+              <label for="rChildren">Children</label>
+              <input type="number" id="rChildren" min="0" value="0">
+            </div>
+            <div class="form-field">
+              <label for="rRoomsCount">Rooms</label>
+              <input type="number" id="rRoomsCount" min="1" value="1" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-form__section">
+          <h3>Select Room</h3>
+          <div class="room-select-grid" id="roomSelectGrid"><!-- populated by JS --></div>
+          <p class="room-select-info" id="roomSelectInfo"></p>
+        </div>
+
+        <div class="reservation-form__section">
+          <h3>Guest Information</h3>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="gName">Full Name</label>
+              <input type="text" id="gName" required>
+            </div>
+            <div class="form-field">
+              <label for="gPhone">Phone Number</label>
+              <input type="tel" id="gPhone" required>
+            </div>
+            <div class="form-field">
+              <label for="gEmail">Email Address</label>
+              <input type="email" id="gEmail" required>
+            </div>
+            <div class="form-field">
+              <label for="gWhatsapp">WhatsApp Number</label>
+              <input type="tel" id="gWhatsapp">
+            </div>
+          </div>
+          <div class="form-field form-field--full">
+            <label for="gRequests">Special Requests</label>
+            <textarea id="gRequests" rows="3" placeholder="Early check-in, birthday setup, food preference, etc."></textarea>
+          </div>
+        </div>
+
+        <p class="form-error" id="reservationError" role="alert" aria-live="polite"></p>
+
+        <button type="submit" class="btn btn--gold btn--large">Request Reservation</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section section--tint" id="contact">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Get in Touch</p>
+      <h2 class="section-title reveal" data-reveal>We Would Love to Welcome You</h2>
+
+      <div class="contact-grid reveal" data-reveal>
+        <div class="contact-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <h3>Address</h3>
+          <p>Bagmati, Kathmandu, Nepal</p>
+        </div>
+        <a class="contact-card" href="tel:9769325515">
+          <i class="fa-solid fa-phone"></i>
+          <h3>Telephone</h3>
+          <p>9769325515</p>
+        </a>
+        <a class="contact-card" href="https://wa.me/9779849318047" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i>
+          <h3>WhatsApp</h3>
+          <p>+977 984 931 8047</p>
+        </a>
+        <a class="contact-card" href="viber://chat?number=%2B9779849318047">
+          <i class="fa-brands fa-viber"></i>
+          <h3>Viber</h3>
+          <p>+977 984 931 8047</p>
+        </a>
+        <a class="contact-card" href="mailto:sakwo15@gmail.com">
+          <i class="fa-solid fa-envelope"></i>
+          <h3>Email</h3>
+          <p>sakwo15@gmail.com</p>
+        </a>
+      </div>
+
+      <div class="contact-cta reveal" data-reveal>
+        <a href="tel:9769325515" class="btn btn--forest"><i class="fa-solid fa-phone"></i> Call Us</a>
+        <a href="https://wa.me/9779849318047" target="_blank" rel="noopener" class="btn btn--gold"><i class="fa-brands fa-whatsapp"></i> WhatsApp Us</a>
+        <a href="mailto:sakwo15@gmail.com" class="btn btn--ghost-dark"><i class="fa-solid fa-envelope"></i> Email Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MAP / LOCATION ============ -->
+  <section class="section" id="location">
+    <div class="container">
+      <p class="eyebrow reveal" data-reveal>Getting Here</p>
+      <h2 class="section-title reveal" data-reveal>Find Sakwo Resort</h2>
+
+      <div class="map-block reveal" data-reveal>
+        <div class="map-block__card">
+          <h3>Sakwo Resort</h3>
+          <p><i class="fa-solid fa-location-dot"></i> Sankhu, Kathmandu, Nepal</p>
+          <p><i class="fa-solid fa-phone"></i> 9769325515</p>
+          <a href="https://maps.app.goo.gl/AbSnJgjEwqkVdYqd6" target="_blank" rel="noopener" class="btn btn--gold">
+            <i class="fa-solid fa-diamond-turn-right"></i> Get Directions
+          </a>
+        </div>
+        <div class="map-block__visual">
+          <a href="https://maps.app.goo.gl/AbSnJgjEwqkVdYqd6" target="_blank" rel="noopener" class="map-block__open" aria-label="Open Sakwo Resort location in Google Maps">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>Open in Google Maps</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__col">
+      <a href="#home" class="logo logo--footer">
+        <span class="logo__mark">SAKWO</span>
+        <span class="logo__sub">Resort &amp; Retreat</span>
+      </a>
+      <p>A peaceful escape in Sankhu, Kathmandu.</p>
+      <div class="footer__social">
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h4>Quick Links</h4>
+      <a href="#home">Home</a>
+      <a href="#rooms">Rooms</a>
+      <a href="#services">Services</a>
+      <a href="#packages">Packages</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#booknow">Book Now</a>
+    </div>
+
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <a href="tel:9769325515"><i class="fa-solid fa-phone"></i> 9769325515</a>
+      <a href="https://wa.me/9779849318047" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> +977 984 931 8047</a>
+      <a href="viber://chat?number=%2B9779849318047"><i class="fa-brands fa-viber"></i> +977 984 931 8047</a>
+      <a href="mailto:sakwo15@gmail.com"><i class="fa-solid fa-envelope"></i> sakwo15@gmail.com</a>
+    </div>
+
+    <div class="footer__col">
+      <h4>Follow Us</h4>
+      <p class="footer__note">Facebook, Instagram &amp; TikTok — links coming soon.</p>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p>&copy; <span id="currentYear"></span> Sakwo Resort. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<!-- ============ FLOATING ACTION BUTTONS ============ -->
+<div class="fab-stack">
+  <a href="https://wa.me/9779849318047" target="_blank" rel="noopener" class="fab fab--whatsapp" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+  <a href="tel:9769325515" class="fab fab--call" aria-label="Call Sakwo Resort">
+    <i class="fa-solid fa-phone"></i>
+  </a>
+  <a href="#booknow" class="fab fab--book" aria-label="Book now">
+    <i class="fa-solid fa-calendar-check"></i>
+  </a>
+</div>
+
+<!-- ============ BACK TO TOP ============ -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button class="lightbox__close" id="lightboxClose" aria-label="Close image viewer">&times;</button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+  <img src="" alt="" class="lightbox__img" id="lightboxImg">
+  <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+  <p class="lightbox__counter" id="lightboxCounter"></p>
+</div>
+
+<!-- ============ ENQUIRY MODAL (packages) ============ -->
+<div class="modal" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="enquiryTitle" hidden>
+  <div class="modal__backdrop" data-close-modal></div>
+  <div class="modal__box">
+    <button class="modal__close" data-close-modal aria-label="Close">&times;</button>
+    <i class="fa-solid fa-champagne-glasses modal__icon"></i>
+    <h3 id="enquiryTitle">Enquire About <span id="enquiryPackageName">a Package</span></h3>
+    <p>Message us and our team will get back to you with current pricing and availability.</p>
+    <div class="modal__actions">
+      <a href="#" id="enquiryWhatsappBtn" target="_blank" rel="noopener" class="btn btn--gold"><i class="fa-brands fa-whatsapp"></i> Ask on WhatsApp</a>
+      <a href="mailto:sakwo15@gmail.com" class="btn btn--ghost-dark"><i class="fa-solid fa-envelope"></i> Email Us</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESERVATION CONFIRMATION MODAL ============ -->
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+  <div class="modal__backdrop" data-close-modal></div>
+  <div class="modal__box">
+    <button class="modal__close" data-close-modal aria-label="Close">&times;</button>
+    <i class="fa-solid fa-circle-check modal__icon modal__icon--success"></i>
+    <h3 id="confirmTitle">Reservation Request Received</h3>
+    <p id="confirmText"></p>
+    <div class="modal__actions">
+      <a href="mailto:sakwo15@gmail.com" class="btn btn--forest"><i class="fa-solid fa-envelope"></i> Contact Sakwo</a>
+      <a href="#" id="confirmWhatsappBtn" target="_blank" rel="noopener" class="btn btn--gold"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <button class="btn btn--ghost-dark" data-close-modal>Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
