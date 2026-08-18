@@ -577,23 +577,26 @@ button{
 .services-header,
 .service-row {
   display: grid;
-  grid-template-columns: 200px 1fr 140px; /* adjust widths to match your design */
-  gap: 24px;
-  align-items: start;
+  grid-template-columns: 30% 45% 25%;
+  gap: 0;
+  align-items: baseline;
 }
 
 .services-header {
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
-  color: #8a7a63; /* muted tone to match your palette */
+  color: #8a7a63;
   padding-bottom: 12px;
   border-bottom: 1px solid #d8cdbb;
 }
 
-.services-header div:nth-child(1) { text-align: left; }
+.services-header div:nth-child(1) {
+  text-align: left;
+  padding-left: 1.4rem;
+}
 .services-header div:nth-child(2) { text-align: left; }
-.services-header div:nth-child(3) { text-align: right; }
+.services-header div:nth-child(3) { text-align: left; }
 
 .service-price {
   text-align: right;
