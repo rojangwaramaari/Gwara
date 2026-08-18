@@ -571,12 +571,14 @@ button{
   max-width:1000px;
   margin:0 auto;
 }
-
+/* =========================================================
+   gap between
+   ========================================================= */
 .service-row {
     display: grid;
     grid-template-columns: 30% 45% 25%;
     gap: 0;
-    padding: 1.9rem 0;
+    padding: 2.1rem 0;
     border-top: 1px solid rgba(42,23,18,0.14);
     align-items: baseline;
 }
