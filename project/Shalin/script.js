@@ -155,6 +155,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let currentIndex = 0;
 
+    
+
 
     /* =====================================================
        SHOW IMAGE
@@ -312,3 +314,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+/* =========================================================
+   VIDEO MODAL
+   ========================================================= */
+
+function openVideo(url) {
+    const frame = document.getElementById("videoFrame");
+    const modal = document.getElementById("videoModal");
+
+    if (!frame || !modal) return;
+
+    frame.src = url;
+    modal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+}
+
+function closeVideo() {
+    const frame = document.getElementById("videoFrame");
+    const modal = document.getElementById("videoModal");
+
+    if (!frame || !modal) return;
+
+    modal.classList.remove("is-open");
+    frame.src = "";
+    document.body.style.overflow = "";
+}
